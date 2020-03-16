@@ -1,0 +1,9 @@
+@import '../../assets/styles/_basics.scss';
+
+.trading-area {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 10px;
+  width: 40%;
+}

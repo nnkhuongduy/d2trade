@@ -1,0 +1,13 @@
+@import '../../assets/styles/_colors.scss';
+
+.inventory-slot {
+
+  width: 17%;
+  margin: 1.25%;
+
+  .inventory-slot-height {
+    background-color: $neutral-dark-blue;
+    width: 100%;
+    padding-top: 100%;
+  }
+}

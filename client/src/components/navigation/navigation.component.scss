@@ -1,0 +1,13 @@
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.setting {
+  margin-right: 40px;
+
+  &:hover {
+    cursor: pointer;
+  }
+}

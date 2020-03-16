@@ -1,0 +1,10 @@
+@import '../../assets/styles/_basics.scss';
+
+.filter-box {
+  display: inline-block;
+  background-color: white;
+  padding: 5%;
+  border-radius: $border-radius-value;
+  width: 30%;
+  text-align: center;
+}

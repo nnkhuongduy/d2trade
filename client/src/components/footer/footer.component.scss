@@ -1,0 +1,27 @@
+@import '../../assets/styles/_colors.scss';
+@import '../../assets/styles/_basics.scss';
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px $margin-horizontal-value;
+  height: 50px;
+  background-color: $primary-red-pink;
+
+  .footer-nav {
+    width: 40%;
+
+    a {
+      margin: 0 10px;
+    }
+  }
+
+  svg {
+    margin: 0 5px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

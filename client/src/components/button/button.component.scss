@@ -1,0 +1,49 @@
+@import '../../assets/styles/_colors.scss';
+@import '../../assets/styles/_basics.scss';
+
+.btn {
+  border: none;
+  width: 100%;
+  border-radius: $border-radius-value;
+  transition: $transition-value;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &.btn-filter {
+    padding: 5% 0;
+    background-color: $primary-red-pink;
+    color: white;
+
+    &:hover {
+      background-color: $primary-bright-pink;
+    }
+  }
+
+
+  &.btn-trade {
+    background-color: $neutral-dark-blue;
+    height: 10%;
+    color: white;
+    font-weight: 700;
+    font-size: 2rem;
+
+    &:hover {
+      filter: brightness(150%);
+    }
+  }
+
+  &.btn-smart {
+    background-color: $primary-gray-pink;
+    height: 8%;
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    margin: 10px 0;
+
+    &:hover {
+      background-color: $primary-bright-pink;
+    }
+  }
+}

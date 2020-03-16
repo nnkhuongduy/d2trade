@@ -1,0 +1,16 @@
+.trade-inventory {
+  grid-row-end: span 2;
+  grid-column-end: span 3;
+
+  &.steam {
+    height: 85%;
+  }
+}
+
+.inventory-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 1.5%;
+  padding-right: 0;
+}

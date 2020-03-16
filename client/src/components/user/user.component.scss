@@ -1,0 +1,33 @@
+@import '../../assets/styles/_fonts.scss';
+
+@mixin hover {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.user-container {
+  display: flex;
+  align-items: center;
+
+  .avatar {
+    width: 40px;
+    border-radius: 100%;
+    margin-right: 20px;
+    @include hover;
+  }
+
+  .username {
+    font-family: $header-font;
+    font-weight: 700;
+    margin-right: 20px;
+    @include hover;
+
+  }
+
+  .dropdown-arrow {
+    margin-right: 40px;
+    @include hover;
+  }
+
+}

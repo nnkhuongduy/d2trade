@@ -1,0 +1,14 @@
+@import '../../assets/styles/_colors.scss';
+@import '../../assets/styles/_basics.scss';
+@import '../../assets/styles/_fonts.scss';
+
+.label {
+  background-color: $primary-red-pink;
+  width: 100%;
+  border-radius: 0 0 $border-radius-value $border-radius-value;
+  text-align: center;
+  padding: 10px 0;
+  color: white;
+  font-family: $header-font;
+  font-weight: 700;
+}

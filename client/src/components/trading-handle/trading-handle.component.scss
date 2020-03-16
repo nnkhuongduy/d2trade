@@ -1,0 +1,34 @@
+@import '../../assets/styles/_colors.scss';
+@import '../../assets/styles/_basics.scss';
+
+.trading-handle {
+  width: 16%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .rate-container {
+    text-align: center;
+    width: 100%;
+    height: 12%;
+    background-color: $primary-red-pink;
+    border-radius: $border-radius-value;
+    color: white;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+
+    .rate {
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+
+  .handle-filter-container {
+    background-color: $primary-gray-pink;
+    height: 70%;
+    border-radius: $border-radius-value;
+    display: flex;
+    flex-direction: column;
+  }
+}

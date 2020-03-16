@@ -1,0 +1,13 @@
+@import './assets/styles/_colors.scss';
+@import './assets/styles/_fonts.scss';
+
+a {
+  text-decoration: none;
+  color: unset;
+}
+
+body {
+  background-color: $background-color;
+  margin: 0;
+  font-family: $body-font;
+}
