@@ -9,9 +9,9 @@ class BodyContainer extends React.Component {
   render() {
     return (
       <div className="body-container" >
-        <TradingArea />
+        <TradingArea type={"user"} />
         <TradingHandle />
-        <TradingArea />
+        <TradingArea type={"bot"} />
       </div>
     );
   }

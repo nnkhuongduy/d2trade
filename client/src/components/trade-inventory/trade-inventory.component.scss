@@ -5,6 +5,11 @@
   &.steam {
     height: 85%;
   }
+
+  &.bot {
+    grid-column-start: 1;
+    grid-row-start: 1;
+  }
 }
 
 .inventory-container {

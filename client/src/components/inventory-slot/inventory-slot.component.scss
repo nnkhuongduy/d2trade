@@ -1,13 +1,27 @@
 @import '../../assets/styles/_colors.scss';
+@import '../../assets/styles/_fonts.scss';
 
 .inventory-slot {
-
   width: 17%;
   margin: 1.25%;
+  background-color: $neutral-dark-blue;
+  text-align: center;
+  color: white;
+  font-family: $header-font;
+  font-size: 0.8rem;
+  font-weight: 700;
 
-  .inventory-slot-height {
-    background-color: $neutral-dark-blue;
-    width: 100%;
-    padding-top: 100%;
+  .item-price {
+    margin: 5px 0;
   }
+
+  .item-rarity {
+    margin: 5px 0;
+  }
+
+  .item-img {
+    width: 100%;
+  }
+
+
 }

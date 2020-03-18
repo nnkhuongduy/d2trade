@@ -6,12 +6,16 @@ import SteamInventoryArea from '../steam-inventory-area/steam-inventory-area.com
 
 import './trading-area.component.scss';
 
-const TradingArea = () => (
-  <div className="trading-area">
-    <TradingCounter />
-    <TradeInventory mode="user" />
-    <SteamInventoryArea />
-  </div>
-)
+const TradingArea = (props) => {
+  const type = props.type;
+
+  return (
+    <div className="trading-area">
+      <TradingCounter type={type} />
+      <TradeInventory mode={type} type={type} />
+      <SteamInventoryArea type={type} />
+    </div>
+  )
+}
 
 export default TradingArea;

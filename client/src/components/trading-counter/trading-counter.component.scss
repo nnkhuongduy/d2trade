@@ -25,4 +25,8 @@
       font-weight: 700;
     }
   }
+
+  &.bot {
+    grid-column-start: 4;
+  }
 }
