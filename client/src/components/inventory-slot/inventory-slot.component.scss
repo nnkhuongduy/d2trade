@@ -17,11 +17,14 @@
 
   .item-rarity {
     margin: 5px 0;
+    overflow-x: hidden;
   }
 
   .item-img {
     width: 100%;
   }
 
-
+  &:hover {
+    cursor: pointer;
+  }
 }

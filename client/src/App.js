@@ -16,7 +16,14 @@ const App = (props) => {
 
     async function fetchData() {
       const result = await axios('/inventory');
-      getBotInventory(result.data);
+      const inventory = result.data.map(item => ({
+        ...item,
+        item: {
+          ...item.item,
+          market_price: "2.25"
+        }
+      }));
+      getBotInventory(inventory);
     }
 
     fetchData();

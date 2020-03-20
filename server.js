@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const app = express();
 const inventoryApi = new InventoryAPI();
 
-mongoose.connect("mongodb://localhost:27017/itempricesDB", { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect("mongodb://localhost:27017/botinventoryDB", { useNewUrlParser: true, useUnifiedTopology: true });
 
 const port = 5000;
 const steamInfo = {
@@ -15,30 +15,40 @@ const steamInfo = {
   contextId: 2
 }
 
-const itemPriceSchema = new mongoose.Schema({
-  name: String,
-  price: {
-    sucess: Boolean,
-    lowest_price: String,
-    volume: String,
-    median_price: String,
-    market_hash_name: String
-  }
+const botItemsSchema = new mongoose.Schema({
+  item: Object
 })
 
-const ItemPrice = mongoose.model("MarketPrice", itemPriceSchema);
+const BotItems = mongoose.model("BotItem", botItemsSchema);
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
 
 app.get('/inventory', (req, res) => {
-  const inventory = [];
+  let inventory = [];
 
-  inventoryApi.get(steamInfo.steamId, steamInfo.appId, steamInfo.contextId, true, 10)
-    .then(steamRes => {
-      JSON.stringify(steamRes.inventory.map(item => inventory.push(item)));
-    })
-    .then(steamRes => res.json(inventory))
-    .catch(err => console.log(err));
+  BotItems.find({}, (err, items) => {
+    res.json(items);
+  })
+
+  // inventoryApi.get(steamInfo.steamId, steamInfo.appId, steamInfo.contextId, true, 10)
+  //   .then(steamRes => {
+  //     JSON.stringify(steamRes.inventory.map(item => {
+  //       const botitem = new BotItems({
+  //         item: item
+  //       })
+  //       console.log("Sucessfully added item to database");
+  //       botitem.save();
+  //     }));
+  //   })
+  //   .then(steamRes => res.json(inventory))
+  //   .catch(err => console.log(err));
+
+  // inventoryApi.get(steamInfo.steamId, steamInfo.appId, steamInfo.contextId, true, 10)
+  //   .then(steamRes => {
+  //     JSON.stringify(steamRes.inventory.map(item => inventory.push(item)));
+  //   })
+  //   .then(steamRes => res.json(inventory))
+  //   .catch(err => console.log(err));
 })
 
 app.get('/itemprice/:id', (req, res) => {
