@@ -6,24 +6,32 @@ import Header from './components/header/header.component';
 import BodyContainer from './components/body-container/body-container.component';
 import Footer from './components/footer/footer.component';
 
-import { getBotInventory } from './redux/inventory/inventory.actions';
+import { setBotInventory, setUserInventory } from './redux/inventory/inventory.actions';
 
 import './App.scss';
 
-const App = (props) => {
+const App = ({ setBotInventory, setUserInventory }) => {
   useEffect(() => {
-    const { getBotInventory } = props;
 
     async function fetchData() {
-      const result = await axios('/inventory');
-      const inventory = result.data.map(item => ({
+      const botResult = await axios('/inventory');
+      const userResult = await axios('/inventory2')
+      const botInventory = botResult.data.map(item => ({
         ...item,
         item: {
           ...item.item,
           market_price: "2.25"
         }
       }));
-      getBotInventory(inventory);
+      const userInventory = userResult.data.map(item => ({
+        ...item,
+        item: {
+          ...item.item,
+          market_price: "2.00"
+        }
+      }));
+      setBotInventory(botInventory);
+      setUserInventory(userInventory);
     }
 
     fetchData();
@@ -40,7 +48,8 @@ const App = (props) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  getBotInventory: inventory => dispatch(getBotInventory(inventory))
+  setBotInventory: inventory => dispatch(setBotInventory(inventory)),
+  setUserInventory: inventory => dispatch(setUserInventory(inventory))
 })
 
 

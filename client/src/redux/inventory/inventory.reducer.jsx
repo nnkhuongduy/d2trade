@@ -1,19 +1,25 @@
 import { InventoryActionTypes } from './inventory.types';
 
 const INITIAL_STATE = {
-  inventory: null
+  botInventory: null,
+  userInventory: null
 }
 
-const botInventoryReducer = (state = INITIAL_STATE, action) => {
+const inventoryReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case InventoryActionTypes.GET_BOT_INVENTORY:
+    case InventoryActionTypes.SET_BOT_INVENTORY:
       return {
         ...state,
-        inventory: action.payload
+        botInventory: action.payload
+      }
+    case InventoryActionTypes.SET_USER_INVENTORY:
+      return {
+        ...state,
+        userInventory: action.payload
       }
     default:
       return state
   }
 }
 
-export default botInventoryReducer;
+export default inventoryReducer;

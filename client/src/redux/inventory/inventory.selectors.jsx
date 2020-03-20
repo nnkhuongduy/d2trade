@@ -1,5 +1,7 @@
 import { createSelector } from 'reselect';
 
-const selectBotInventory = state => state.botInventory;
+const selectInventory = state => state.inventory;
 
-export const selectInventory = createSelector([selectBotInventory], botInventory => botInventory.inventory);
+export const selectBotInventory = createSelector([selectInventory], inventory => inventory.botInventory);
+
+export const selectUserInventory = createSelector([selectInventory], inventory => inventory.userInventory);

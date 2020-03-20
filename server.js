@@ -11,6 +11,7 @@ mongoose.connect("mongodb://localhost:27017/botinventoryDB", { useNewUrlParser: 
 const port = 5000;
 const steamInfo = {
   steamId: '76561198105770372',
+  steamId2: '76561198083658783',
   appId: 570,
   contextId: 2
 }
@@ -20,6 +21,7 @@ const botItemsSchema = new mongoose.Schema({
 })
 
 const BotItems = mongoose.model("BotItem", botItemsSchema);
+const UserItems = mongoose.model("UserItem", botItemsSchema);
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
 
@@ -97,4 +99,10 @@ app.get('/itemprice/:id', (req, res) => {
   }
 
   handle();
+})
+
+app.get("/inventory2", (req, res) => {
+  UserItems.find({}, (err, items) => {
+    res.json(items);
+  })
 })
