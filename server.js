@@ -1,10 +1,46 @@
+require('dotenv').config();
 const express = require('express');
-const InventoryAPI = require('steam-inventory-api-ng');
-const market = require('steam-market-pricing');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+const InventoryAPI = require('steam-inventory-api-ng');
+const market = require('steam-market-pricing');
+const SteamUser = require('steam-user');
+const SteamTotp = require('steam-totp');
+const SteamCommunity = require('steamcommunity');
+const TradeOfferManager = require('steam-tradeoffer-manager');
+
 const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 const inventoryApi = new InventoryAPI();
+
+const client = new SteamUser();
+const community = new SteamCommunity();
+const manager = new TradeOfferManager({
+  steam: client,
+  community: community,
+  language: 'en'
+});
+
+const steamLogOnOptions = {
+  accountName: process.env.STEAM_USER_NAME,
+  password: process.env.STEAM_PASSWORD,
+  twoFactorCode: SteamTotp.generateAuthCode(process.env.STEAM_SHARED_SECRET)
+}
+
+client.logOn(steamLogOnOptions);
+
+client.on("loggedOn", () => {
+  console.log("Logged into bot steam");
+})
+
+client.on("webSession", (sessionid, cookies) => {
+  manager.setCookies(cookies);
+
+  community.setCookies(cookies);
+  community.startConfirmationChecker(10000, process.env.STEAM_IDENTITY_SECRET);
+})
 
 mongoose.connect("mongodb://localhost:27017/botinventoryDB", { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -105,4 +141,90 @@ app.get("/inventory2", (req, res) => {
   UserItems.find({}, (err, items) => {
     res.json(items);
   })
+})
+
+app.post("/tradeoffer", (req, res) => {
+  manager.loadInventory(steamInfo.appId, steamInfo.contextId, true, (err, botInventory) => {
+    if (err) {
+      console.log(err);
+      res.sendStatus(503);
+    } else {
+      const offer = manager.createOffer(steamInfo.steamId2)
+
+      req.body.bot.forEach(id => {
+        botInventory.map(item => {
+          if (item.id === id) {
+            offer.addMyItem(item);
+          }
+        })
+      })
+
+      manager.loadUserInventory(steamInfo.steamId2, steamInfo.appId, steamInfo.contextId, true, (err, userInventory) => {
+        if (err) {
+          console.log(err);
+          res.sendStatus(503);
+        } else {
+          req.body.user.forEach(id => {
+            userInventory.map(item => {
+              if (item.id === id) {
+                offer.addTheirItem(item);
+              }
+            })
+          })
+
+          offer.setMessage("testing");
+          offer.send((err, status) => {
+            if (err) {
+              console.log(err);
+              res.sendStatus(500);
+            } else {
+              console.log(`Sent offer. Status: ${status}.`);
+            }
+          })
+        }
+      })
+      res.sendStatus(200);
+    }
+  })
+  // manager.loadInventory(steamInfo.appId, steamInfo.contextId, true, (err, inventory) => {
+  //   if (err) {
+  //     console.log(err);
+  //     res.sendStatus(503);
+  //   } else {
+  //     const offer = manager.createOffer(steamInfo.steamId2);
+  //     const botItems = [];
+
+  //     req.body.bot.forEach(id => {
+  //       botItems.push(inventory.filter(item => item.id === id));
+  //     })
+
+  //     offer.addMyItems(botItems);
+
+  //     manager.loadUserInventory(steamInfo.steamId2, steamInfo.appId, steamInfo.contextId, true, (err, userInventory) => {
+  //       if (err) {
+  //         console.log(err);
+  //         res.sendStatus(503);
+  //       } else {
+  //         const userItems = [];
+
+  //         req.body.user.forEach(id => {
+  //           userItems.push(userInventory.filter(item => item.id === id));
+  //         })
+
+  //         offer.addTheirItems(userItems);
+
+  //         offer.setMessage("testing");
+  //         offer.send((err, status) => {
+  //           if (err) {
+  //             console.log(err);
+  //             res.sendStatus(500);
+  //           } else {
+  //             console.log(`Sent offer. Status: ${status}.`)
+  //             res.sendStatus(200);
+  //           }
+  //         })
+  //       }
+  //     })
+  //   }
+  // })
 })

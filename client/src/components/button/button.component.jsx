@@ -2,11 +2,11 @@ import React from 'react';
 
 import './button.component.scss';
 
-const Button = (props) => {
-  const classes = props.classes ? "btn " + props.classes.join(' ') : "btn";
+const Button = ({ classes, onClickHandle, children }) => {
+  const propClasses = classes ? "btn " + classes.join(' ') : "btn";
 
   return (
-    <button className={classes}>{props.children}</button>
+    <button className={propClasses} onClick={onClickHandle}>{children}</button>
   )
 }
 

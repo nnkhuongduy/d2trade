@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-const selectStateTempItem = state => state.tempItem;
+export const selectStateTempItem = state => state.tempItem;
 
 export const selectBotTempItem = createSelector([selectStateTempItem], stateTempItem => stateTempItem.botTempItem);
 
