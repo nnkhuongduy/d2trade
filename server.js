@@ -144,17 +144,21 @@ app.get("/inventory2", (req, res) => {
 })
 
 app.post("/tradeoffer", (req, res) => {
+
+
   manager.loadInventory(steamInfo.appId, steamInfo.contextId, true, (err, botInventory) => {
     if (err) {
       console.log(err);
       res.sendStatus(503);
     } else {
       const offer = manager.createOffer(steamInfo.steamId2)
+      let botItems = [];
+      let userItems = [];
 
       req.body.bot.forEach(id => {
-        botInventory.map(item => {
+        botInventory.forEach(item => {
           if (item.id === id) {
-            offer.addMyItem(item);
+            botItems.push(item);
           }
         })
       })
@@ -165,66 +169,32 @@ app.post("/tradeoffer", (req, res) => {
           res.sendStatus(503);
         } else {
           req.body.user.forEach(id => {
-            userInventory.map(item => {
+            userInventory.forEach(item => {
               if (item.id === id) {
-                offer.addTheirItem(item);
+                userItems.push(item);
               }
             })
           })
 
-          offer.setMessage("testing");
-          offer.send((err, status) => {
-            if (err) {
-              console.log(err);
-              res.sendStatus(500);
-            } else {
-              console.log(`Sent offer. Status: ${status}.`);
-            }
-          })
+          if (botItems.length === req.body.bot.length && userItems.length === req.body.user.length) {
+            offer.addMyItems(botItems);
+            offer.addTheirItems(userItems);
+            offer.setMessage("Test");
+            offer.send((err) => {
+              if (err) {
+                console.log(err);
+                res.sendStatus(500);
+              } else {
+                console.log("Sent");
+                res.sendStatus(200);
+              }
+            });
+          } else {
+            console.log("Missing item(s)");
+            res.sendStatus(500);
+          }
         }
       })
-      res.sendStatus(200);
     }
   })
-  // manager.loadInventory(steamInfo.appId, steamInfo.contextId, true, (err, inventory) => {
-  //   if (err) {
-  //     console.log(err);
-  //     res.sendStatus(503);
-  //   } else {
-  //     const offer = manager.createOffer(steamInfo.steamId2);
-  //     const botItems = [];
-
-  //     req.body.bot.forEach(id => {
-  //       botItems.push(inventory.filter(item => item.id === id));
-  //     })
-
-  //     offer.addMyItems(botItems);
-
-  //     manager.loadUserInventory(steamInfo.steamId2, steamInfo.appId, steamInfo.contextId, true, (err, userInventory) => {
-  //       if (err) {
-  //         console.log(err);
-  //         res.sendStatus(503);
-  //       } else {
-  //         const userItems = [];
-
-  //         req.body.user.forEach(id => {
-  //           userItems.push(userInventory.filter(item => item.id === id));
-  //         })
-
-  //         offer.addTheirItems(userItems);
-
-  //         offer.setMessage("testing");
-  //         offer.send((err, status) => {
-  //           if (err) {
-  //             console.log(err);
-  //             res.sendStatus(500);
-  //           } else {
-  //             console.log(`Sent offer. Status: ${status}.`)
-  //             res.sendStatus(200);
-  //           }
-  //         })
-  //       }
-  //     })
-  //   }
-  // })
 })

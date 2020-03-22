@@ -1,7 +1,7 @@
 import React from 'react';
 
 import User from '../user/user.component';
-import { ReactComponent as Setting } from '../../assets/setting.svg';
+import { ReactComponent as Setting } from '../../assets/svg/setting.svg';
 
 import './navigation.component.scss';
 

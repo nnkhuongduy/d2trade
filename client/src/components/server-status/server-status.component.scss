@@ -1,0 +1,25 @@
+@import '../../assets/styles/_fonts.scss';
+
+.server-status {
+  position: absolute;
+  transform: translate(50%, 50%);
+  width: 50%;
+  height: 50%;
+  background-color: #fff;
+  z-index: 2;
+  text-align: center;
+
+  svg {
+    width: 50%;
+    height: 50%;
+    margin: 5% auto 0;
+  }
+
+  p {
+    width: 100%;
+    font-size: 1.5rem;
+    margin-top: 5%;
+    font-family: $header-font;
+    font-weight: 700;
+  }
+}

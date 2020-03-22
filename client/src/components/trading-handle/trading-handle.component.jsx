@@ -7,32 +7,40 @@ import Button from '../button/button.component';
 import Filter from '../filter/filter.component';
 import Label from '../label/label.component';
 
-import { selectStateTempItem } from '../../redux/temp-item/temp-item.selectors';
+import { selectStateTempItem, selectTradeButtonState } from '../../redux/temp-item/temp-item.selectors';
+
+import { toggleBlackScreen, setServerOfferSuccessState } from '../../redux/client-states/client-states.actions';
+import { ClientStatesTypes } from '../../redux/client-states/client-states.types';
 
 import './trading-handle.component.scss';
 
-const TradingHandle = ({ tempItem }) => {
-
+const TradingHandle = ({ tempItem, tradeButtonState, toggleBlackScreen, setServerOfferSuccessState }) => {
   const onClickHandle = () => {
-    const itemObject = {
-      user: [],
-      bot: []
+    if (tradeButtonState) {
+
+      let itemObject = {
+        user: [],
+        bot: []
+      }
+
+      tempItem.userTempItem.forEach(item => {
+        itemObject.user.push(item.id);
+      });
+      tempItem.botTempItem.forEach(item => {
+        itemObject.bot.push(item.id);
+      })
+
+      if (itemObject.user.length > 0 || itemObject.bot.length > 0) {
+        axios.post("/tradeoffer", itemObject)
+      }
+
+      toggleBlackScreen();
     }
-    tempItem.userTempItem.forEach(item => {
-      itemObject.user.push(item.id);
-    });
-    tempItem.botTempItem.forEach(item => {
-      itemObject.bot.push(item.id);
-    })
-    if (itemObject.user.length > 0 || itemObject.bot.length > 0) {
-      axios.post("/tradeoffer", itemObject);
-    }
-    console.log(JSON.stringify(itemObject));
   }
 
   return (
     <div className="trading-handle">
-      <Button classes={["btn-trade"]} onClickHandle={onClickHandle}>TRADE</Button>
+      <Button classes={["btn-trade"]} onClickHandle={onClickHandle} available={tradeButtonState}>TRADE</Button>
       <Button classes={["btn-smart"]}>SMART SELECT</Button>
       <div className="rate-container">
         <div className="rate">Rate:</div>
@@ -45,9 +53,14 @@ const TradingHandle = ({ tempItem }) => {
   )
 }
 
-const mapStateToProps = createStructuredSelector({
-  tempItem: selectStateTempItem
+const mapDispatchToProps = dispatch => ({
+  toggleBlackScreen: () => dispatch(toggleBlackScreen()),
+  setServerOfferSuccessState: () => dispatch(setServerOfferSuccessState())
 })
 
+const mapStateToProps = createStructuredSelector({
+  tempItem: selectStateTempItem,
+  tradeButtonState: selectTradeButtonState
+})
 
-export default connect(mapStateToProps)(TradingHandle);
+export default connect(mapStateToProps, mapDispatchToProps)(TradingHandle);

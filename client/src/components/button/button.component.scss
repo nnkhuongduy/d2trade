@@ -28,9 +28,19 @@
     color: white;
     font-weight: 700;
     font-size: 2rem;
+    filter: brightness(50%) grayscale(100%);
 
     &:hover {
-      filter: brightness(150%);
+      cursor: default;
+    }
+
+    &.available {
+      filter: unset;
+
+      &:hover {
+        cursor: pointer;
+        filter: brightness(150%);
+      }
     }
   }
 

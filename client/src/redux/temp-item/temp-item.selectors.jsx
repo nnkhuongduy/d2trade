@@ -13,3 +13,7 @@ export const selectTotalPricesBot = createSelector([selectBotTempItem], items =>
 export const selectTotalPricesUser = createSelector([selectUserTempItem], items => (
   items.reduce((accumulator, item) => (accumulator + parseFloat(item.item.market_price)), 0)
 ))
+
+export const selectTradeButtonState = createSelector([selectTotalPricesBot, selectTotalPricesUser], (botPrices, userPrices) => (
+  userPrices >= botPrices && userPrices !== 0
+))

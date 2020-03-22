@@ -2,7 +2,7 @@ import React from 'react';
 
 import Navigation from '../navigation/navigation.component';
 
-import { ReactComponent as Logo } from '../../assets/logo.svg';
+import { ReactComponent as Logo } from '../../assets/svg/logo.svg';
 
 import './header.component.scss';
 

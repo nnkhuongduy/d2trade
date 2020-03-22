@@ -41,7 +41,7 @@ const InventorySlot = ({ item, mode, type, setBotTempItem, unsetBotTempItem, set
     }
   }, [])
 
-  const doubleClickHandle = () => {
+  const onClickHandle = () => {
     const tempItem = {
       id: item.id,
       item: item
@@ -77,7 +77,7 @@ const InventorySlot = ({ item, mode, type, setBotTempItem, unsetBotTempItem, set
   }
 
   return (
-    <div className="inventory-slot" style={itemRarityStyle} onDoubleClick={doubleClickHandle}>
+    <div className="inventory-slot" style={itemRarityStyle} onClick={onClickHandle}>
       <div mode="single" className="item-price">$ {item.market_price}</div>
       <img src={steamImageUrl} className="item-img"></img>
       <div className="item-rarity" >{item.tags[1].name}</div>

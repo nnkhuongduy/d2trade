@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ReactComponent as ArrowSVG } from '../../assets/arrow.svg';
+import { ReactComponent as ArrowSVG } from '../../assets/svg/arrow.svg';
 import avatar from '../../assets/images/ava.jpg';
 
 import './user.component.scss';
