@@ -9,32 +9,33 @@ import Label from '../label/label.component';
 
 import { selectStateTempItem, selectTradeButtonState } from '../../redux/temp-item/temp-item.selectors';
 
-import { toggleBlackScreen, setServerOfferSuccessState } from '../../redux/client-states/client-states.actions';
-import { ClientStatesTypes } from '../../redux/client-states/client-states.types';
+import { toggleBlackScreen, fetchOfferStatusStart } from '../../redux/client-states/client-states.actions';
 
 import './trading-handle.component.scss';
 
-const TradingHandle = ({ tempItem, tradeButtonState, toggleBlackScreen, setServerOfferSuccessState }) => {
+const TradingHandle = ({ tempItem, tradeButtonState, toggleBlackScreen, fetchOfferStatusStart }) => {
   const onClickHandle = () => {
     if (tradeButtonState) {
 
-      let itemObject = {
-        user: [],
-        bot: []
-      }
+      fetchOfferStatusStart();
 
-      tempItem.userTempItem.forEach(item => {
-        itemObject.user.push(item.id);
-      });
-      tempItem.botTempItem.forEach(item => {
-        itemObject.bot.push(item.id);
-      })
+      // let itemObject = {
+      //   user: [],
+      //   bot: []
+      // }
 
-      if (itemObject.user.length > 0 || itemObject.bot.length > 0) {
-        axios.post("/tradeoffer", itemObject)
-      }
+      // tempItem.userTempItem.forEach(item => {
+      //   itemObject.user.push(item.id);
+      // });
+      // tempItem.botTempItem.forEach(item => {
+      //   itemObject.bot.push(item.id);
+      // })
 
-      toggleBlackScreen();
+      // if (itemObject.user.length > 0 || itemObject.bot.length > 0) {
+      //   axios.post("/tradeoffer", itemObject)
+      // }
+
+      // toggleBlackScreen();
     }
   }
 
@@ -55,7 +56,7 @@ const TradingHandle = ({ tempItem, tradeButtonState, toggleBlackScreen, setServe
 
 const mapDispatchToProps = dispatch => ({
   toggleBlackScreen: () => dispatch(toggleBlackScreen()),
-  setServerOfferSuccessState: () => dispatch(setServerOfferSuccessState())
+  fetchOfferStatusStart: () => dispatch(fetchOfferStatusStart())
 })
 
 const mapStateToProps = createStructuredSelector({

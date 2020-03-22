@@ -2,6 +2,6 @@ import { createSelector } from 'reselect';
 
 const selectInventory = state => state.inventory;
 
-export const selectBotInventory = createSelector([selectInventory], inventory => inventory.botInventory);
+export const selectBotInventory = createSelector([selectInventory], inventory => inventory.bot.inventory);
 
-export const selectUserInventory = createSelector([selectInventory], inventory => inventory.userInventory);
+export const selectUserInventory = createSelector([selectInventory], inventory => inventory.user.inventory);

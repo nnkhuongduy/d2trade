@@ -18,7 +18,7 @@ const InventorySlot = ({ item, mode, type, setBotTempItem, unsetBotTempItem, set
   const itemRarityStyle = {
     backgroundColor: `#${item.tags[1].color}`,
     color: ((item.tags[1].name === "Common" || item.tags[1].name === "Immortal") ? "black" : "white"),
-    filter: mode === "steam" && ((slotState[slotId]) ? "" : "grayscale(100%) brightness(50%)"),
+    filter: mode === "steam" && ((slotState[slotId]) ? "grayscale(100%) brightness(50%)" : ""),
   }
 
   // useEffect(() => {
@@ -32,46 +32,46 @@ const InventorySlot = ({ item, mode, type, setBotTempItem, unsetBotTempItem, set
   //   fetchPrice();
   // }, []);
 
-  useEffect(() => {
-    if (mode === "steam") {
-      toggleSlotState({
-        id: slotId,
-        status: true
-      })
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (mode === "steam") {
+  //     toggleSlotState({
+  //       id: slotId,
+  //       status: true
+  //     })
+  //   }
+  // }, [])
 
   const onClickHandle = () => {
     const tempItem = {
       id: item.id,
       item: item
     }
-    if (mode === "steam" && type === "bot" && slotState[slotId] === true) {
+    if (mode === "steam" && type === "bot" && (slotState[slotId] === false || slotState[slotId] === undefined)) {
       setBotTempItem(tempItem);
       toggleSlotState({
         id: slotId,
-        status: false
+        status: true
       })
     }
-    if (mode === "steam" && type === "user" && slotState[slotId] === true) {
+    if (mode === "steam" && type === "user" && (slotState[slotId] === false || slotState[slotId] === undefined)) {
       setUserTempItem(tempItem);
       toggleSlotState({
         id: slotId,
-        status: false
+        status: true
       })
     }
-    if ((mode === "bot" && type === "bot") || slotState[slotId] === false) {
+    if ((mode === "bot" && type === "bot") || slotState[slotId] === true) {
       unsetBotTempItem(tempItem);
       toggleSlotState({
         id: slotId,
-        status: true
+        status: false
       })
     }
-    if ((mode === "bot" && type === "user") || slotState[slotId] === false) {
+    if ((mode === "bot" && type === "user") || slotState[slotId] === true) {
       unsetUserTempItem(tempItem);
       toggleSlotState({
         id: slotId,
-        status: true
+        status: false
       })
     }
   }

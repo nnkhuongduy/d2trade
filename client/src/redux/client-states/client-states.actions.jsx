@@ -4,7 +4,15 @@ export const toggleBlackScreen = () => ({
   type: ClientStatesTypes.TOGGLE_BLACK_SCREEN,
 })
 
-export const setServerOfferSuccessState = state => ({
-  type: ClientStatesTypes.SET_SERVER_OFFER_SUCCESS_STATE,
-  payload: state
+export const fetchOfferStatusStart = () => ({
+  type: ClientStatesTypes.FETCH_OFFER_STATUS_START,
+})
+
+export const fetchOfferStatusSuccess = status => ({
+  type: ClientStatesTypes.FETCH_OFFER_STATUS_SUCCESS,
+  payload: status
+})
+
+export const fetchOfferStatusFailure = () => ({
+  type: ClientStatesTypes.FETCH_OFFER_STATUS_FAILURE,
 })

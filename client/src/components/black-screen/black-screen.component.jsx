@@ -6,14 +6,14 @@ import ServerStatus from '../server-status/server-status.component';
 
 import { toggleBlackScreen } from '../../redux/client-states/client-states.actions';
 
-import { selectServerOfferSuccessState } from '../../redux/client-states/client-states.selectors';
+import { selectOfferStatus } from '../../redux/client-states/client-states.selectors';
 
 import './black-screen.component.scss';
 
-const BlackScreen = ({ toggleBlackScreen, serverOfferSuccessStatus }) => {
+const BlackScreen = ({ toggleBlackScreen, selectOfferStatus }) => {
 
   const onClickHandle = () => {
-    if (serverOfferSuccessStatus !== 0) {
+    if (selectOfferStatus) {
       toggleBlackScreen();
     }
   }
@@ -30,7 +30,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 const mapStateToProps = createStructuredSelector({
-  serverOfferSuccessStatus: selectServerOfferSuccessState
+  selectOfferStatus: selectOfferStatus
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(BlackScreen);
