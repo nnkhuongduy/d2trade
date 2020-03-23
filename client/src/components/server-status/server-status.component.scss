@@ -2,23 +2,29 @@
 
 .server-status {
   position: absolute;
+  top: 0;
+  left: 0;
   transform: translate(50%, 50%);
   width: 50%;
   height: 50%;
   background-color: #fff;
   z-index: 2;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
 
   svg {
     width: 50%;
     height: 50%;
-    margin: 5% auto 0;
+    margin: 0 auto 0;
   }
 
   p {
-    width: 100%;
+    width: 80%;
     font-size: 1.5rem;
-    margin-top: 5%;
+    margin: 5% auto 0;
     font-family: $header-font;
     font-weight: 700;
   }

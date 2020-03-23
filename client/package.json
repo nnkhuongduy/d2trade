@@ -48,6 +48,7 @@
     "@iconify/icons-dashicons": "^1.0.4",
     "@iconify/icons-emojione": "^1.0.5",
     "@iconify/icons-fa-solid": "^1.0.7",
+    "@iconify/icons-ic": "^1.0.9",
     "@iconify/icons-mdi": "^1.0.81",
     "@iconify/react": "^1.1.3"
   }

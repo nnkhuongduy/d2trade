@@ -35,6 +35,7 @@ export function* fetchOfferStatusAsync() {
     }
   } catch (err) {
     yield put(fetchOfferStatusFailure(err.message));
+    yield put(fetchOfferStatusSuccess(false));
   }
 }
 

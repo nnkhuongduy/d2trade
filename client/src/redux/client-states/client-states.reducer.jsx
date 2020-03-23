@@ -42,6 +42,15 @@ const clientStatesReducer = (state = INITIAL_STATE, action) => {
           errorMessage: action.payload
         }
       }
+    case ClientStatesTypes.RESET_OFFER_STATUS:
+      return {
+        ...state,
+        offerStatus: {
+          ...state.offerStatus,
+          status: null,
+          errorMessage: undefined,
+        }
+      }
     default:
       return state
   }

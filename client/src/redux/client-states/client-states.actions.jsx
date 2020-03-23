@@ -13,6 +13,11 @@ export const fetchOfferStatusSuccess = status => ({
   payload: status
 })
 
-export const fetchOfferStatusFailure = () => ({
+export const fetchOfferStatusFailure = status => ({
   type: ClientStatesTypes.FETCH_OFFER_STATUS_FAILURE,
+  payload: status
+})
+
+export const resetOfferStatus = () => ({
+  type: ClientStatesTypes.RESET_OFFER_STATUS
 })

@@ -9,6 +9,7 @@ const SteamUser = require('steam-user');
 const SteamTotp = require('steam-totp');
 const SteamCommunity = require('steamcommunity');
 const TradeOfferManager = require('steam-tradeoffer-manager');
+const FS = require('fs');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -18,9 +19,9 @@ const inventoryApi = new InventoryAPI();
 const client = new SteamUser();
 const community = new SteamCommunity();
 const manager = new TradeOfferManager({
-  steam: client,
-  community: community,
-  language: 'en'
+  "steam": client,
+  "community": community,
+  "language": 'en'
 });
 
 const steamLogOnOptions = {
@@ -36,10 +37,14 @@ client.on("loggedOn", () => {
 })
 
 client.on("webSession", (sessionid, cookies) => {
-  manager.setCookies(cookies);
+  manager.setCookies(cookies)
 
   community.setCookies(cookies);
-  community.startConfirmationChecker(10000, process.env.STEAM_IDENTITY_SECRET);
+  //community.startConfirmationChecker(10000, process.env.STEAM_IDENTITY_SECRET);
+})
+
+community.on("sessionExpired", err => {
+  client.webLogOn();
 })
 
 mongoose.connect("mongodb://localhost:27017/botinventoryDB", { useNewUrlParser: true, useUnifiedTopology: true });
@@ -56,8 +61,13 @@ const botItemsSchema = new mongoose.Schema({
   item: Object
 })
 
+const itemIdOnTrade = new mongoose.Schema({
+  itemId: String
+})
+
 const BotItems = mongoose.model("BotItem", botItemsSchema);
 const UserItems = mongoose.model("UserItem", botItemsSchema);
+const ItemsOnTrade = mongoose.model("ItemsOnTrade", itemIdOnTrade);
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
 
@@ -144,9 +154,7 @@ app.get("/inventory2", (req, res) => {
 })
 
 app.post("/tradeoffer", (req, res) => {
-
-
-  manager.loadInventory(steamInfo.appId, steamInfo.contextId, true, (err, botInventory) => {
+  manager.getInventoryContents(steamInfo.appId, steamInfo.contextId, true, (err, botInventory) => {
     if (err) {
       console.log(err);
       res.sendStatus(503);
@@ -163,7 +171,7 @@ app.post("/tradeoffer", (req, res) => {
         })
       })
 
-      manager.loadUserInventory(steamInfo.steamId2, steamInfo.appId, steamInfo.contextId, true, (err, userInventory) => {
+      manager.getUserInventoryContents(steamInfo.steamId2, steamInfo.appId, steamInfo.contextId, true, (err, userInventory) => {
         if (err) {
           console.log(err);
           res.sendStatus(503);
@@ -180,11 +188,19 @@ app.post("/tradeoffer", (req, res) => {
             offer.addMyItems(botItems);
             offer.addTheirItems(userItems);
             offer.setMessage("Test");
-            offer.send((err) => {
+            offer.send((err, status) => {
               if (err) {
                 console.log(err);
                 res.sendStatus(500);
               } else {
+                if (status === "pending") {
+                  community.acceptConfirmationForObject(process.env.STEAM_IDENTITY_SECRET, offer.id, (err) => {
+                    if (err) {
+                      console.log(err);
+                      res.sendStatus(500);
+                    }
+                  })
+                }
                 console.log("Sent");
                 res.sendStatus(200);
               }
