@@ -15,7 +15,7 @@ $margin-value: 30px;
   .searchbar {
     display: flex;
     align-items: center;
-    width: 30%;
+    width: 40%;
     margin-left: $margin-value;
     padding: 8px;
     background-color: white;
@@ -25,7 +25,8 @@ $margin-value: 30px;
       border: none;
       background-color: unset;
       width: 100%;
-      margin-left: 5px;
+      margin: 0 15px 0 5px;
+      padding: 5px 20px 5px 0;
     }
   }
 
