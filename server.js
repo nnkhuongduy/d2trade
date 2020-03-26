@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const request = require('request');
+const _ = require('lodash');
 
 const InventoryAPI = require('steam-inventory-api-ng');
 const market = require('steam-market-pricing');
@@ -47,7 +49,7 @@ community.on("sessionExpired", err => {
   client.webLogOn();
 })
 
-mongoose.connect("mongodb://localhost:27017/botinventoryDB", { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect("mongodb://localhost:27017/botinventoryDB", { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true });
 
 const port = 5000;
 const steamInfo = {
@@ -61,18 +63,17 @@ const botItemsSchema = new mongoose.Schema({
   item: Object
 })
 
-const itemIdOnTrade = new mongoose.Schema({
-  itemId: String
-})
+const heroesSchema = new mongoose.Schema({
+}, { strict: false })
 
 const BotItems = mongoose.model("BotItem", botItemsSchema);
 const UserItems = mongoose.model("UserItem", botItemsSchema);
-const ItemsOnTrade = mongoose.model("ItemsOnTrade", itemIdOnTrade);
+const Heroes = mongoose.model("Hero", heroesSchema);
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
 
 app.get('/inventory', (req, res) => {
-  let inventory = [];
+  //let inventory = [];
 
   BotItems.find({}, (err, items) => {
     res.json(items);
@@ -213,4 +214,8 @@ app.post("/tradeoffer", (req, res) => {
       })
     }
   })
+})
+
+app.get("/heroes", (req, res) => {
+  Heroes.find({}, (err, hero) => res.json(hero));
 })

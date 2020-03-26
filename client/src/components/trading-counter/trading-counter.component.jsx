@@ -25,7 +25,7 @@ const TradingCounter = ({ type, totalPriceBot, totalPriceUser }) => {
           {/* </Textfit> */}
         </div>
       </div>
-      <Filter counter={false} />
+      <Filter counter={false} type={type} />
       <Label>
         {type === "user" ? "YOU" : "BOT"}
       </Label>

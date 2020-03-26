@@ -1,3 +1,25 @@
+@import './_colors.scss';
+
 $margin-horizontal-value: 3%;
 $border-radius-value: 20px;
 $transition-value: all 0.1s ease-in-out;
+
+@mixin scrollBar {
+
+  //Scrollbar customization
+  /* width */
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background-color: $primary-gray-pink;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: $primary-red-pink;
+    border-radius: 30px;
+  }
+}

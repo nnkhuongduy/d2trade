@@ -1,0 +1,14 @@
+.hero-portrait {
+  width: 15%;
+  margin: 2.09%;
+  position: relative;
+
+  img {
+    width: 100%;
+  }
+
+  &:hover {
+    cursor: pointer;
+
+  }
+}
