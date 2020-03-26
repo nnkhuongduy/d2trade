@@ -7,7 +7,7 @@ import './steam-inventory-area.component.scss';
 
 const SteamInventoryArea = ({ type }) => (
   <div className="steam-inven-area">
-    <SteamInventoryToolbar />
+    <SteamInventoryToolbar type={type} />
     <TradeInventory mode="steam" type={type} />
   </div>
 )

@@ -26,10 +26,20 @@ export const fetchUserInventoryFailure = () => ({
   type: InventoryActionTypes.FETCH_USER_INVENTORY_FAILURE,
 })
 
-export const updateBotRenderedInventory = () => ({
-  type: InventoryActionTypes.UPDATE_BOT_RENDERED_INVENTORY,
+export const updateBotRenderedInventoryStart = () => ({
+  type: InventoryActionTypes.UPDATE_BOT_RENDERED_INVENTORY_START
 })
 
-export const updateUserRenderedInventory = () => ({
+export const updateUserRenderedInventoryStart = () => ({
+  type: InventoryActionTypes.UPDATE_USER_RENDERED_INVENTORY_START
+})
+
+export const updateBotRenderedInventory = updateArray => ({
+  type: InventoryActionTypes.UPDATE_BOT_RENDERED_INVENTORY,
+  payload: updateArray
+})
+
+export const updateUserRenderedInventory = updateArray => ({
   type: InventoryActionTypes.UPDATE_USER_RENDERED_INVENTORY,
+  payload: updateArray
 })

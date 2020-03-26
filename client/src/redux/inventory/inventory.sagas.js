@@ -1,8 +1,18 @@
-import { takeLatest, put } from 'redux-saga/effects';
+import { takeLatest, takeEvery, put, select } from 'redux-saga/effects';
 import axios from 'axios';
 
 import { InventoryActionTypes } from './inventory.types';
-import { fetchBotInventorySuccess, fetchBotInventoryFailure, fetchUserInventorySuccess, fetchUserInventoryFailure, updateBotRenderedInventory, updateUserRenderedInventory } from './inventory.actions';
+
+import {
+  fetchBotInventorySuccess, fetchBotInventoryFailure,
+  fetchUserInventorySuccess, fetchUserInventoryFailure,
+  updateBotRenderedInventoryStart, updateUserRenderedInventoryStart,
+  updateBotRenderedInventory, updateUserRenderedInventory
+} from './inventory.actions';
+
+import { selectBotSearchingState, selectUserSearchingState, selectBotQueryIds, selectUserQueryIds } from '../searching/searching.selectors'
+
+import { selectBotInventory, selectUserInventory, selectBotRenderedInventory, selectUserRenderedInventory } from './inventory.selectors'
 
 export function* fetchBotInventoryAsync() {
   try {
@@ -20,7 +30,7 @@ export function* fetchBotInventoryAsync() {
     });
 
     yield put(fetchBotInventorySuccess(botInventory));
-    yield put(updateBotRenderedInventory());
+    yield put(updateBotRenderedInventoryStart());
   } catch (error) {
     yield put(fetchBotInventoryFailure(error.message));
   }
@@ -42,10 +52,42 @@ export function* fetchUserInventoryAsync() {
     });
 
     yield put(fetchUserInventorySuccess(userInventory));
-    yield put(updateUserRenderedInventory());
+    yield put(updateUserRenderedInventoryStart());
   } catch (error) {
     yield put(fetchUserInventoryFailure(error.message));
   }
+}
+
+export function* updateBotRenderedInventoryAsync() {
+  const searchingState = yield select(selectBotSearchingState);
+  const renderedIds = yield select(selectBotRenderedInventory);
+  let updateArray = [];
+
+  if (searchingState) {
+    const inventory = yield select(selectBotQueryIds)
+    yield updateArray = inventory.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL);
+  } else {
+    const inventory = yield select(selectBotInventory)
+    yield inventory.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL).forEach(item => updateArray.push(item.item.id));
+  }
+
+  yield put(updateBotRenderedInventory(updateArray));
+}
+
+export function* updateUserRenderedInventoryAsync() {
+  const searchingState = yield select(selectUserSearchingState);
+  const renderedIds = yield select(selectUserRenderedInventory);
+  let updateArray = [];
+
+  if (searchingState) {
+    const inventory = yield select(selectUserQueryIds)
+    yield updateArray = inventory.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL);
+  } else {
+    const inventory = yield select(selectUserInventory)
+    yield inventory.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL).forEach(item => updateArray.push(item.item.id));
+  }
+
+  yield put(updateUserRenderedInventory(updateArray));
 }
 
 export function* fetchBotInventoryStart() {
@@ -54,4 +96,12 @@ export function* fetchBotInventoryStart() {
 
 export function* fetchUserInventoryStart() {
   yield takeLatest(InventoryActionTypes.FETCH_USER_INVENTORY_START, fetchUserInventoryAsync)
+}
+
+export function* updateBotRenderedInventoryStarting() {
+  yield takeEvery(InventoryActionTypes.UPDATE_BOT_RENDERED_INVENTORY_START, updateBotRenderedInventoryAsync)
+}
+
+export function* updateUserRenderedInventoryStarting() {
+  yield takeEvery(InventoryActionTypes.UPDATE_USER_RENDERED_INVENTORY_START, updateUserRenderedInventoryAsync)
 }

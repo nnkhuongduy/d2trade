@@ -1,16 +1,29 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+
 import { Icon } from '@iconify/react';
 import magnifyIcon from '@iconify/icons-mdi/magnify';
 import sortIcon from '@iconify/icons-dashicons/sort';
 import bxRefresh from '@iconify/icons-bx/bx-refresh';
 
+import { selectBotSearchingQuery, selectUserSearchingQuery } from '../../redux/searching/searching.selectors';
+
+import { setBotSearchingQuery, setUserSearchingQuery } from '../../redux/searching/searching.actions';
+
 import './steam-inventory-toolbar.component.scss';
 
-const SteamInventoryToolbar = () => {
-  const [searchValue, setSearchValue] = useState("");
+const SteamInventoryToolbar = ({
+  type,
+  botSearchingQuery, userSearchingQuery,
+  setBotSearchingQuery, setUserSearchingQuery
+}) => {
 
-  const handleInputChange = (e) => {
-    setSearchValue(e.target.value);
+  const inputChangeHandle = (e) => {
+    const value = e.target.value;
+    if (type === "bot")
+      setBotSearchingQuery(value)
+    else setUserSearchingQuery(value)
   }
 
 
@@ -20,7 +33,7 @@ const SteamInventoryToolbar = () => {
         <div>
           <Icon icon={magnifyIcon} width="1.5em" height="1.5em" />
         </div>
-        <input type="text" value={searchValue} onChange={handleInputChange} placeholder="Search" />
+        <input type="text" value={type === "bot" ? botSearchingQuery : userSearchingQuery} onChange={inputChangeHandle} placeholder="Search" />
       </div>
       <div className="tool-section">
         <div>
@@ -32,7 +45,16 @@ const SteamInventoryToolbar = () => {
       </div>
     </div>
   )
-
 }
 
-export default SteamInventoryToolbar;
+const mapDispatchToProps = dispatch => ({
+  setBotSearchingQuery: query => dispatch(setBotSearchingQuery(query)),
+  setUserSearchingQuery: query => dispatch(setUserSearchingQuery(query))
+})
+
+const mapStateToProps = createStructuredSelector({
+  botSearchingQuery: selectBotSearchingQuery,
+  userSearchingQuery: selectUserSearchingQuery
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(SteamInventoryToolbar);

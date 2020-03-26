@@ -6,14 +6,12 @@ const INITIAL_STATE = {
     isFetching: false,
     errorMessage: undefined,
     rendered: [],
-    temp: []
   },
   user: {
     inventory: null,
     isFetching: false,
     errorMessage: undefined,
     rendered: [],
-    temp: []
   }
 }
 
@@ -27,6 +25,7 @@ const inventoryReducer = (state = INITIAL_STATE, action) => {
           isFetching: true
         }
       }
+
     case InventoryActionTypes.FETCH_BOT_INVENTORY_SUCCESS:
       return {
         ...state,
@@ -36,6 +35,7 @@ const inventoryReducer = (state = INITIAL_STATE, action) => {
           inventory: action.payload
         }
       }
+
     case InventoryActionTypes.FETCH_BOT_INVENTORY_FAILURE:
       return {
         ...state,
@@ -45,6 +45,7 @@ const inventoryReducer = (state = INITIAL_STATE, action) => {
           errorMessage: action.payload
         }
       }
+
     case InventoryActionTypes.FETCH_USER_INVENTORY_START:
       return {
         ...state,
@@ -53,6 +54,7 @@ const inventoryReducer = (state = INITIAL_STATE, action) => {
           isFetching: true
         }
       }
+
     case InventoryActionTypes.FETCH_USER_INVENTORY_SUCCESS:
       return {
         ...state,
@@ -62,6 +64,7 @@ const inventoryReducer = (state = INITIAL_STATE, action) => {
           inventory: action.payload
         }
       }
+
     case InventoryActionTypes.FETCH_USER_INVENTORY_FAILURE:
       return {
         ...state,
@@ -71,26 +74,26 @@ const inventoryReducer = (state = INITIAL_STATE, action) => {
           errorMessage: action.payload
         }
       }
+
     case InventoryActionTypes.UPDATE_BOT_RENDERED_INVENTORY:
-      const botArray = [];
-      state.bot.inventory.slice(0, state.bot.rendered.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL).forEach(item => botArray.push(item.item.id));
       return {
         ...state,
         bot: {
           ...state.bot,
-          rendered: botArray
+          rendered: action.payload
         }
       }
+
     case InventoryActionTypes.UPDATE_USER_RENDERED_INVENTORY:
-      const userArray = [];
-      state.user.inventory.slice(0, state.user.rendered.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL).forEach(item => userArray.push(item.item.id));
       return {
         ...state,
         user: {
           ...state.user,
-          rendered: userArray
+          rendered: action.payload
         }
       }
+
+
     default:
       return state
   }
