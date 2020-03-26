@@ -3,7 +3,8 @@ import { HeroesTypes } from './heroes.types'
 const INITIAL_STATE = {
   heroes: [],
   isFetching: false,
-  errorMessage: null
+  errorMessage: null,
+  container: null,
 }
 
 export const heroesReducer = (state = INITIAL_STATE, action) => {
@@ -26,6 +27,12 @@ export const heroesReducer = (state = INITIAL_STATE, action) => {
         ...state,
         isFetching: false,
         errorMessage: action.payload
+      }
+
+    case HeroesTypes.SET_HERO_CONTAINER:
+      return {
+        ...state,
+        container: action.payload
       }
 
     default:

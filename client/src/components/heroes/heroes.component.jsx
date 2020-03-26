@@ -2,15 +2,15 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
-import { selectHeroesData } from '../../redux/heroes/heroes.selectors'
-
 import HeroPortrait from '../hero-portrait/hero-portrait.component'
+
+import { selectHeroesData } from '../../redux/heroes/heroes.selectors'
 
 import './heroes.component.scss'
 
-const Heroes = ({ type, heroesData }) => {
+const Heroes = ({ type, heroesData, heroesContainer }) => {
   const componentStyles = {
-    top: type === undefined ? "30%" : "0",
+    top: type === "global" ? "30%" : "0",
     right: type === "bot" && "calc(100% + 20px)",
     left: type === "user" && "calc(100% + 20px)"
   }
@@ -27,7 +27,7 @@ const Heroes = ({ type, heroesData }) => {
 }
 
 const mapStateToProps = createStructuredSelector({
-  heroesData: selectHeroesData
+  heroesData: selectHeroesData,
 })
 
 export default connect(mapStateToProps)(Heroes)
