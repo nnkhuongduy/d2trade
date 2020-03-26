@@ -1,6 +1,10 @@
 import { all, call } from 'redux-saga/effects';
 
-import { fetchBotInventoryStart, fetchUserInventoryStart, updateBotRenderedInventoryStarting, updateUserRenderedInventoryStarting } from './inventory/inventory.sagas';
+import {
+  fetchBotInventoryStart, fetchUserInventoryStart,
+  updateBotRenderedInventoryStarting, updateUserRenderedInventoryStarting,
+  refreshBotInventoryStart, refreshUserInventoryStart
+} from './inventory/inventory.sagas';
 import { fetchOfferStatusStart } from './client-states/client-states.sagas';
 import { botQuerySearchingStart, userQuerySearchingStart } from './searching/searching.sagas'
 
@@ -12,6 +16,8 @@ export default function* rootSaga() {
     call(botQuerySearchingStart),
     call(userQuerySearchingStart),
     call(updateBotRenderedInventoryStarting),
-    call(updateUserRenderedInventoryStarting)
+    call(updateUserRenderedInventoryStarting),
+    call(refreshBotInventoryStart),
+    call(refreshUserInventoryStart)
   ]);
 }

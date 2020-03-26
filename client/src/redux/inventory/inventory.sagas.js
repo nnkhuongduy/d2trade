@@ -7,8 +7,10 @@ import {
   fetchBotInventorySuccess, fetchBotInventoryFailure,
   fetchUserInventorySuccess, fetchUserInventoryFailure,
   updateBotRenderedInventoryStart, updateUserRenderedInventoryStart,
-  updateBotRenderedInventory, updateUserRenderedInventory
+  updateBotRenderedInventory, updateUserRenderedInventory,
+  fetchBotInventoryStart as fetchBotStart, fetchUserInventoryStart as fetchUserStart
 } from './inventory.actions';
+import { refreshBotQuery, refreshtUserQuery } from '../searching/searching.actions'
 
 import { selectBotSearchingState, selectUserSearchingState, selectBotQueryIds, selectUserQueryIds } from '../searching/searching.selectors'
 
@@ -90,6 +92,16 @@ export function* updateUserRenderedInventoryAsync() {
   yield put(updateUserRenderedInventory(updateArray));
 }
 
+export function* refreshBotInventoryAsync() {
+  yield put(refreshBotQuery())
+  yield put(fetchBotStart())
+}
+
+export function* refreshUserInventoryAsync() {
+  yield put(refreshtUserQuery())
+  yield put(fetchUserStart())
+}
+
 export function* fetchBotInventoryStart() {
   yield takeLatest(InventoryActionTypes.FETCH_BOT_INVENTORY_START, fetchBotInventoryAsync)
 }
@@ -104,4 +116,12 @@ export function* updateBotRenderedInventoryStarting() {
 
 export function* updateUserRenderedInventoryStarting() {
   yield takeEvery(InventoryActionTypes.UPDATE_USER_RENDERED_INVENTORY_START, updateUserRenderedInventoryAsync)
+}
+
+export function* refreshBotInventoryStart() {
+  yield takeLatest(InventoryActionTypes.REFRESH_BOT_INVENTORY_START, refreshBotInventoryAsync)
+}
+
+export function* refreshUserInventoryStart() {
+  yield takeLatest(InventoryActionTypes.REFRESH_USER_INVENTORY_START, refreshUserInventoryAsync)
 }

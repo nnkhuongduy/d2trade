@@ -93,6 +93,27 @@ const inventoryReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
+    case InventoryActionTypes.REFRESH_BOT_INVENTORY_START:
+      return {
+        ...state,
+        bot: {
+          ...state.bot,
+          inventory: null,
+          errorMessage: undefined,
+          rendered: []
+        }
+      }
+
+    case InventoryActionTypes.REFRESH_USER_INVENTORY_START:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          inventory: null,
+          errorMessage: undefined,
+          rendered: []
+        }
+      }
 
     default:
       return state

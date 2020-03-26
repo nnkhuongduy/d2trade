@@ -17,16 +17,18 @@ export function* botQuerySearchingAsync() {
 
   const queryArray = [];
 
-  yield put(updateBotRenderedInventory([]));
+  if (botInventory) {
+    yield put(updateBotRenderedInventory([]));
 
-  yield botInventory.forEach(item => {
-    if (item.item.market_hash_name.includes(query)) {
-      queryArray.push(item.item.id);
-    }
-  })
+    yield botInventory.forEach(item => {
+      if (item.item.market_hash_name.includes(query)) {
+        queryArray.push(item.item.id);
+      }
+    })
 
-  yield put(setBotQueryItems(queryArray));
-  yield put(updateBotRenderedInventoryStart());
+    yield put(setBotQueryItems(queryArray));
+    yield put(updateBotRenderedInventoryStart());
+  }
 }
 
 export function* userQuerySearchingAsync() {
@@ -35,16 +37,19 @@ export function* userQuerySearchingAsync() {
 
   const queryArray = [];
 
-  yield put(updateUserRenderedInventory([]));
+  if (userInventory) {
+    yield put(updateUserRenderedInventory([]));
 
-  yield userInventory.forEach(item => {
-    if (item.item.market_hash_name.includes(query)) {
-      queryArray.push(item.item.id);
-    }
-  })
+    yield userInventory.forEach(item => {
+      if (item.item.market_hash_name.includes(query)) {
+        queryArray.push(item.item.id);
+      }
+    })
 
-  yield put(setUserQueryItems(queryArray));
-  yield put(updateUserRenderedInventoryStart());
+    yield put(setUserQueryItems(queryArray));
+    yield put(updateUserRenderedInventoryStart());
+  }
+
 }
 
 export function* botQuerySearchingStart() {

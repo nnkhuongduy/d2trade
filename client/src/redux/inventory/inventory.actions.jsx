@@ -43,3 +43,11 @@ export const updateUserRenderedInventory = updateArray => ({
   type: InventoryActionTypes.UPDATE_USER_RENDERED_INVENTORY,
   payload: updateArray
 })
+
+export const refreshBotInventory = () => ({
+  type: InventoryActionTypes.REFRESH_BOT_INVENTORY_START
+})
+
+export const refreshUserInventory = () => ({
+  type: InventoryActionTypes.REFRESH_USER_INVENTORY_START
+})

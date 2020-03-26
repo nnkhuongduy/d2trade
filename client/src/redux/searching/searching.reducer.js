@@ -53,6 +53,28 @@ export const searchingReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
+    case SearchingTypes.REFRESH_BOT_QUERY:
+      return {
+        ...state,
+        bot: {
+          ...state.bot,
+          isSearching: false,
+          query: "",
+          queryItemsId: []
+        }
+      }
+
+    case SearchingTypes.REFRESH_USER_QUERY:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          isSearching: false,
+          query: "",
+          queryItemsId: []
+        }
+      }
+
     default:
       return state
   }
