@@ -6,11 +6,18 @@ import { createStructuredSelector } from 'reselect';
 import { setBotTempItem, unsetBotTempItem, setUserTempItem, unsetUserTempItem } from '../../redux/temp-item/temp-item.actions';
 import { toggleSlotState } from '../../redux/slot-state/slot-state.actions';
 import { selectSlotStates } from '../../redux/slot-state/slot-state.selectors';
+import { selectBotRenderedInventory, selectUserRenderedInventory } from '../../redux/inventory/inventory.selectors';
 
 import './inventory-slot.component.scss';
 
-const InventorySlot = ({ item, mode, type, setBotTempItem, unsetBotTempItem, setUserTempItem, unsetUserTempItem, slotState, toggleSlotState }) => {
+const InventorySlot = ({ item, mode, type,
+  setBotTempItem, unsetBotTempItem, setUserTempItem, unsetUserTempItem,
+  slotState, toggleSlotState,
+  botRenderedInventory, userRenderedInventory
+}) => {
   // const [price, setPrice] = useState();
+  const [displayState, setDisplayState] = useState();
+
   const slotId = item.id;
 
   const steamImageUrl = `https://steamcommunity-a.akamaihd.net/economy/image/${item.icon_url}`;
@@ -19,7 +26,20 @@ const InventorySlot = ({ item, mode, type, setBotTempItem, unsetBotTempItem, set
     backgroundColor: `#${item.tags[1].color}`,
     color: ((item.tags[1].name === "Common" || item.tags[1].name === "Immortal") ? "black" : "white"),
     filter: mode === "steam" && ((slotState[slotId]) ? "grayscale(100%) brightness(50%)" : ""),
+    display: mode === "steam" ? displayState : "block"
   }
+
+  useEffect(() => {
+    if (mode === "steam" && type === "bot") {
+      setDisplayState(botRenderedInventory.includes(slotId) ? "block" : "none")
+    }
+  }, [botRenderedInventory])
+
+  useEffect(() => {
+    if (mode === "steam" && type === "user") {
+      setDisplayState(userRenderedInventory.includes(slotId) ? "block" : "none")
+    }
+  }, [userRenderedInventory])
 
   // useEffect(() => {
   //   async function fetchPrice() {
@@ -90,11 +110,13 @@ const mapDispatchToProps = dispatch => ({
   unsetBotTempItem: item => dispatch(unsetBotTempItem(item)),
   setUserTempItem: item => dispatch(setUserTempItem(item)),
   unsetUserTempItem: item => dispatch(unsetUserTempItem(item)),
-  toggleSlotState: slot => dispatch(toggleSlotState(slot))
+  toggleSlotState: slot => dispatch(toggleSlotState(slot)),
 })
 
 const mapStateToProps = createStructuredSelector({
-  slotState: selectSlotStates
+  slotState: selectSlotStates,
+  botRenderedInventory: selectBotRenderedInventory,
+  userRenderedInventory: selectUserRenderedInventory
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(InventorySlot);

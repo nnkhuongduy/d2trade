@@ -72,7 +72,8 @@ const inventoryReducer = (state = INITIAL_STATE, action) => {
         }
       }
     case InventoryActionTypes.UPDATE_BOT_RENDERED_INVENTORY:
-      const botArray = state.bot.inventory.slice(0, state.bot.rendered.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL);
+      const botArray = [];
+      state.bot.inventory.slice(0, state.bot.rendered.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL).forEach(item => botArray.push(item.item.id));
       return {
         ...state,
         bot: {
@@ -81,7 +82,8 @@ const inventoryReducer = (state = INITIAL_STATE, action) => {
         }
       }
     case InventoryActionTypes.UPDATE_USER_RENDERED_INVENTORY:
-      const userArray = state.user.inventory.slice(0, state.user.rendered.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL);
+      const userArray = [];
+      state.user.inventory.slice(0, state.user.rendered.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL).forEach(item => userArray.push(item.item.id));
       return {
         ...state,
         user: {

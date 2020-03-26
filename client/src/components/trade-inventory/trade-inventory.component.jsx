@@ -47,10 +47,10 @@ const TradeInventory = ({ mode, type,
         {(!botInventory && type === "bot" && mode === "steam") && <RollingSVG />}
         {(!userInventory && type === "user" && mode === "steam") && <RollingSVG />}
 
-        {(botRenderedInventory.length !== 0 && type === "bot" && mode === "steam") && botRenderedInventory.map(item => (
+        {(botInventory && type === "bot" && mode === "steam") && botInventory.map(item => (
           <InventorySlot key={item.item.id} item={item.item} mode={mode} type={type}></InventorySlot>
         ))}
-        {(userRenderedInventory.length !== 0 && type === "user" && mode === "steam") && userRenderedInventory.map(item => (
+        {(userInventory && type === "user" && mode === "steam") && userInventory.map(item => (
           <InventorySlot key={item.item.id} item={item.item} mode={mode} type={type}></InventorySlot>
         ))}
 
