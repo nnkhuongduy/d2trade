@@ -19,3 +19,11 @@ export const unsetUserTempItem = item => ({
   type: TempItemTypes.UNSET_USER_TEMP_ITEM,
   payload: item
 })
+
+export const refreshBotTempItems = () => ({
+  type: TempItemTypes.REFRESH_BOT_TEMP_ITEMS,
+})
+
+export const refreshUserTempItems = () => ({
+  type: TempItemTypes.REFRESH_USER_TEMP_ITEMS,
+})

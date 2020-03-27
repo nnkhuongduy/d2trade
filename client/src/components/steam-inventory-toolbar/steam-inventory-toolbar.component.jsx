@@ -18,7 +18,7 @@ const SteamInventoryToolbar = ({
   type,
   botSearchingQuery, userSearchingQuery,
   setBotSearchingQuery, setUserSearchingQuery,
-  refreshBotInventory, refreshUserInventory
+  refreshBotInventory, refreshUserInventory,
 }) => {
 
   const inputChangeHandle = (e) => {
@@ -29,9 +29,11 @@ const SteamInventoryToolbar = ({
   }
 
   const refreshClickHandle = () => {
-    if (type === "bot")
+    if (type === "bot") {
       refreshBotInventory();
-    else refreshUserInventory();
+    } else {
+      refreshUserInventory();
+    }
   }
 
   return (
@@ -58,7 +60,7 @@ const mapDispatchToProps = dispatch => ({
   setBotSearchingQuery: query => dispatch(setBotSearchingQuery(query)),
   setUserSearchingQuery: query => dispatch(setUserSearchingQuery(query)),
   refreshBotInventory: () => dispatch(refreshBotInventory()),
-  refreshUserInventory: () => dispatch(refreshUserInventory())
+  refreshUserInventory: () => dispatch(refreshUserInventory()),
 })
 
 const mapStateToProps = createStructuredSelector({

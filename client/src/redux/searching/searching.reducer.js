@@ -4,12 +4,16 @@ const INITIAL_STATE = {
   bot: {
     isSearching: false,
     query: "",
-    queryItemsId: []
+    queryItemsId: [],
+    isFilter: false,
+    filteredItems: []
   },
   user: {
     isSearching: false,
     query: "",
-    queryItemsId: []
+    queryItemsId: [],
+    isFilter: false,
+    filteredItems: []
   }
 }
 

@@ -18,3 +18,8 @@ export const setHeroesContainer = type => ({
   type: HeroesTypes.SET_HERO_CONTAINER,
   payload: type
 })
+
+export const filterHeroes = heroName => ({
+  type: HeroesTypes.FILTER_HEROES,
+  payload: heroName
+})

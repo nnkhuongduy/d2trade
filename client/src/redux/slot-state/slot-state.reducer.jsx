@@ -14,6 +14,13 @@ const slotStateReducer = (state = INITIAL_STATE, action) => {
           [action.payload.id]: action.payload.status
         }
       }
+
+    case SlotStateTypes.REFRESH_SLOTS_STATE:
+      return {
+        ...state,
+        slotsState: {}
+      }
+
     default:
       return state
   }
