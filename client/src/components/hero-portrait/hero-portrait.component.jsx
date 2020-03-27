@@ -1,25 +1,25 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { filterHeroes } from '../../redux/heroes/heroes.actions'
+import { filterHeroesStart } from '../../redux/heroes/heroes.actions'
 
 import './hero-portrait.component.scss'
 
-const HeroPortrait = ({ hero, filterHeroes }) => {
+const HeroPortrait = ({ hero, filterHeroesStart, type }) => {
 
   const filterHandle = () => {
-    filterHeroes(hero.localized_name)
+    filterHeroesStart(hero.localized_name, type)
   }
 
   return (
-    <div className={"hero-portrait"} onClick={filterHandle}>
+    <div className={`hero-portrait`} onClick={filterHandle}>
       <img src={hero.portrait_url} />
     </div>
   )
 }
 
 const mapDispatchToProps = dispatch => ({
-  filterHeroes: heroName => dispatch(filterHeroes(heroName))
+  filterHeroesStart: (heroName, type) => dispatch(filterHeroesStart(heroName, type))
 })
 
 export default connect(null, mapDispatchToProps)(HeroPortrait)

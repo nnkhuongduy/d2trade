@@ -8,7 +8,7 @@ import { selectHeroesData } from '../../redux/heroes/heroes.selectors'
 
 import './heroes.component.scss'
 
-const Heroes = ({ type, heroesData, heroesContainer }) => {
+const Heroes = ({ type, heroesData }) => {
   const componentStyles = {
     top: type === "global" ? "30%" : "0",
     right: type === "bot" && "calc(100% + 20px)",
@@ -16,7 +16,7 @@ const Heroes = ({ type, heroesData, heroesContainer }) => {
   }
 
   const renderHeroPortrait = hero => (
-    <HeroPortrait key={hero._id} hero={hero} />
+    <HeroPortrait key={hero._id} hero={hero} type={type} />
   )
 
   return (
