@@ -25,9 +25,10 @@ export const filterHeroesStart = (heroName, filterType) => ({
   filterType: filterType
 })
 
-export const filterHeroesFinish = (filterHero, filterType, filterState, isFilterState) => ({
+export const filterHeroesFinish = (filterHero, filterType, filterState, filterItems) => ({
   type: HeroesTypes.FILTER_HEROES_FINISH,
   filterHero: filterHero,
   filterType: filterType,
   filterState: filterState,
+  filterItems: filterItems
 })

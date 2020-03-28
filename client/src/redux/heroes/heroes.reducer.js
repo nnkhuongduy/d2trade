@@ -13,6 +13,10 @@ const INITIAL_STATE = {
     bot: null,
     user: null
   },
+  filteredItemsId: {
+    bot: [],
+    user: []
+  }
 }
 
 export const heroesReducer = (state = INITIAL_STATE, action) => {
@@ -63,6 +67,10 @@ export const heroesReducer = (state = INITIAL_STATE, action) => {
           ...state.filteredHero,
           [action.filterType]: action.filterHero
         },
+        filteredItemsId: {
+          ...state.filteredItemsId,
+          [action.filterType]: action.filterItems
+        }
       }
 
     default:

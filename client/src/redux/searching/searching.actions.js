@@ -24,6 +24,6 @@ export const refreshBotQuery = () => ({
   type: SearchingTypes.REFRESH_BOT_QUERY,
 })
 
-export const refreshtUserQuery = () => ({
+export const refreshUserQuery = () => ({
   type: SearchingTypes.REFRESH_USER_QUERY,
 })

@@ -10,11 +10,11 @@ import {
   updateBotRenderedInventory, updateUserRenderedInventory,
   fetchBotInventoryStart as fetchBotStart, fetchUserInventoryStart as fetchUserStart
 } from './inventory.actions';
-import { refreshBotQuery, refreshtUserQuery } from '../searching/searching.actions'
+import { refreshBotQuery, refreshUserQuery } from '../searching/searching.actions'
 
 import { selectBotSearchingState, selectUserSearchingState, selectBotQueryIds, selectUserQueryIds } from '../searching/searching.selectors'
-
 import { selectBotInventory, selectUserInventory, selectBotRenderedInventory, selectUserRenderedInventory } from './inventory.selectors'
+import { selectFilteredType, selectFilteredItems } from '../heroes/heroes.selectors'
 
 export function* fetchBotInventoryAsync() {
   try {
@@ -62,34 +62,51 @@ export function* fetchUserInventoryAsync() {
 
 export function* updateBotRenderedInventoryAsync() {
   const searchingState = yield select(selectBotSearchingState);
+  const filteringState = yield select(selectFilteredType);
   const renderedIds = yield select(selectBotRenderedInventory);
   let updateArray = [];
 
-  if (searchingState) {
+  if (searchingState && !filteringState.bot) {
     const inventory = yield select(selectBotQueryIds)
     yield updateArray = inventory.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL);
-  } else {
+  }
+
+  if (!searchingState && filteringState.bot) {
+    const inventory = yield select(selectFilteredItems)
+    yield updateArray = inventory.bot.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL);
+  }
+
+  if (!searchingState && !filteringState.bot) {
     const inventory = yield select(selectBotInventory)
     yield inventory.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL).forEach(item => updateArray.push(item.item.id));
   }
 
-  yield put(updateBotRenderedInventory(updateArray));
+  if (!(updateArray.length === renderedIds.length)) yield put(updateBotRenderedInventory(updateArray));
 }
 
 export function* updateUserRenderedInventoryAsync() {
   const searchingState = yield select(selectUserSearchingState);
+  const filteringState = yield select(selectFilteredType);
   const renderedIds = yield select(selectUserRenderedInventory);
   let updateArray = [];
 
-  if (searchingState) {
+  if (searchingState && !filteringState.user) {
     const inventory = yield select(selectUserQueryIds)
     yield updateArray = inventory.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL);
-  } else {
+  }
+
+  if (!searchingState && filteringState.user) {
+    const inventory = yield select(selectFilteredItems)
+    yield updateArray = inventory.user.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL);
+  }
+
+  if (!searchingState && !filteringState.user) {
     const inventory = yield select(selectUserInventory)
     yield inventory.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL).forEach(item => updateArray.push(item.item.id));
   }
 
-  yield put(updateUserRenderedInventory(updateArray));
+  if (!(updateArray.length === renderedIds.length)) yield put(updateUserRenderedInventory(updateArray));
+
 }
 
 export function* refreshBotInventoryAsync() {
@@ -98,7 +115,7 @@ export function* refreshBotInventoryAsync() {
 }
 
 export function* refreshUserInventoryAsync() {
-  yield put(refreshtUserQuery())
+  yield put(refreshUserQuery())
   yield put(fetchUserStart())
 }
 
