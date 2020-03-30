@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
-import FilterBox from '../filter-box/filter-box.component';
 import Button from '../button/button.component';
 import Heroes from '../heroes/heroes.component';
 
@@ -13,6 +12,9 @@ import { selectHeroesContainer } from '../../redux/heroes/heroes.selectors'
 import './filter.component.scss';
 
 const Filter = ({ counter, type, setHeroesContainer, heroesContainer }) => {
+  const [filterMinValue, setFilterMinValue] = useState("");
+  const [filterMaxValue, setFilterMaxValue] = useState("");
+
   type = type === undefined ? "global" : type;
 
   const heroClickHandle = () => {
@@ -21,13 +23,23 @@ const Filter = ({ counter, type, setHeroesContainer, heroesContainer }) => {
     else setHeroesContainer(type);
   }
 
+  const onChangeHandle = e => {
+    const value = e.target.value;
+    if (!isNaN(value)) {
+      if (e.target.className.includes("filter-min"))
+        setFilterMinValue(value)
+      else setFilterMaxValue(value)
+    }
+  }
+
+
   return (
     <div className={`filter ${counter && 'filter-counter'}`}>
       <div className="filter-box-container">
         <div className={`filter-label ${type}`}>From</div>
-        <FilterBox type={type} mode={"filter-min"} />
+        <input className="filter-box filter-min" value={filterMinValue} onChange={onChangeHandle} />
         <div className={`filter-label ${type}`}>To</div>
-        <FilterBox type={type} mode={"filter-max"} />
+        <input className="filter-box filter-max" value={filterMaxValue} onChange={onChangeHandle} />
         <Button classes={["btn-filter", `btn-filter-${type}`]}>APPLY</Button>
       </div>
       <Button classes={["btn-filter"]} onClickHandle={heroClickHandle} >HERO</Button>

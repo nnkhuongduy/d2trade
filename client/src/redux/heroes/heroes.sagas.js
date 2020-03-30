@@ -2,7 +2,7 @@ import { takeLatest, put, select, all } from 'redux-saga/effects'
 import axios from 'axios'
 
 import { fetchHeroesSuccess, fetchHeroesFail, setHeroesContainer, filterHeroesFinish } from './heroes.actions';
-import { updateBotRenderedInventory, updateUserRenderedInventory, updateBotRenderedInventoryStart, updateUserRenderedInventoryStart } from '../inventory/inventory.actions'
+import { updateRenderedInventory, updateRenderedInventoryStart } from '../inventory/inventory.actions'
 
 import { selectHeroesData, selectFilteredHero } from './heroes.selectors'
 import { selectBotInventory, selectUserInventory } from '../inventory/inventory.selectors'
@@ -60,11 +60,11 @@ export function* filterHeroAsync({ type, heroName, filterType }) {
   }
 
   yield all(filterTypeArray.map(type => {
-    return type === "bot" ? put(updateBotRenderedInventory([])) : put(updateUserRenderedInventory([]))
+    return type === "bot" ? put(updateRenderedInventory("bot", [])) : put(updateRenderedInventory("user", []))
   }))
 
   yield all(filterTypeArray.map(type => {
-    return type === "bot" ? put(updateBotRenderedInventoryStart()) : put(updateUserRenderedInventoryStart())
+    return type === "bot" ? put(updateRenderedInventoryStart("bot")) : put(updateRenderedInventoryStart("user"))
   }))
 
   yield put(setHeroesContainer(null));

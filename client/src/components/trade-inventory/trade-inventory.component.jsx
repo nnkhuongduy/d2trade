@@ -8,20 +8,20 @@ import arrowDown from '@iconify/icons-fa-solid/arrow-down';
 
 import InventorySlot from '../inventory-slot/inventory-slot.component';
 
-import { updateBotRenderedInventoryStart, updateUserRenderedInventoryStart } from '../../redux/inventory/inventory.actions';
+import { updateRenderedInventoryStart } from '../../redux/inventory/inventory.actions';
 
 import { selectBotTempItem, selectUserTempItem } from '../../redux/temp-item/temp-item.selectors';
-import { selectBotInventory, selectUserInventory, selectBotRenderedInventory, selectUserRenderedInventory } from '../../redux/inventory/inventory.selectors';
+import { selectBotInventory, selectUserInventory, selectBotRenderedInventory, selectUserRenderedInventory, selectInventoryState } from '../../redux/inventory/inventory.selectors';
 import { selectBotSearchingState, selectUserSearchingState, selectBotQueryIds, selectUserQueryIds } from '../../redux/searching/searching.selectors';
 import { selectFilteredItems, selectFilteredType } from '../../redux/heroes/heroes.selectors'
 
 import './trade-inventory.component.scss';
 
-const TradeInventory = ({ mode, type,
+const TradeInventory = ({ mode, type, inventoryState,
   botInventory, userInventory,
   botRenderedInventory, userRenderedInventory,
   botTempItem, userTempItem,
-  updateBotRenderedInventoryStart, updateUserRenderedInventoryStart,
+  updateRenderedInventoryStart,
   botSearchingState, userSearchingState,
   botQueryIds, userQueryIds,
   filteredItems, filteredType
@@ -47,10 +47,10 @@ const TradeInventory = ({ mode, type,
       const percentScroll = currentScroll / maxScroll * 100;
       if (percentScroll === 100) {
         if (type === "bot" && botRenderedInventory.length < botInventory.length) {
-          updateBotRenderedInventoryStart();
+          updateRenderedInventoryStart("bot");
         }
         if (type === "user" && userRenderedInventory.length < userInventory.length) {
-          updateUserRenderedInventoryStart();
+          updateRenderedInventoryStart("user");
         }
       }
     }
@@ -63,70 +63,28 @@ const TradeInventory = ({ mode, type,
   return (
     <div ref={scrollRef} onScroll={onScollHandle} className={`trade-inventory ${mode}`} >
       <div className={`inventory-container ${mode} ${type}`}>
-        {(!botInventory && type === "bot" && mode === "steam") && <RollingSVG />}
-        {(!userInventory && type === "user" && mode === "steam") && <RollingSVG />}
+        {/* {(!botInventory && type === "bot" && mode === "steam") && <RollingSVG />}
+        {(!userInventory && type === "user" && mode === "steam") && <RollingSVG />} */}
+        {((type === "bot" || type === "user") && mode === "steam" && !inventoryState[type].inventory) && <RollingSVG />}
 
-        {(botInventory && type === "bot" && mode === "steam") && botInventory.map(item => renderInventorySlot(item))}
-        {(userInventory && type === "user" && mode === "steam") && userInventory.map(item => renderInventorySlot(item))}
+        {/* {(botInventory && type === "bot" && mode === "steam") && botInventory.map(item => renderInventorySlot(item))}
+        {(userInventory && type === "user" && mode === "steam") && userInventory.map(item => renderInventorySlot(item))} */}
+        {((type === "bot" || type === "user") && mode === "steam" && inventoryState[type].inventory) && inventoryState[type].inventory.map(item => renderInventorySlot(item))}
 
         {(botTempItem && type === "bot" && mode === "bot") && botTempItem.map(item => renderInventorySlot(item))}
         {(userTempItem && type === "user" && mode === "user") && userTempItem.map(item => renderInventorySlot(item))}
 
-        {(
-          botRenderedInventory.length !== 0 &&
-          botRenderedInventory.length < botInventory.length &&
-          botSearchingState === false &&
-          filteredType.bot === false &&
-          mode === "steam" && type === "bot") &&
-          <Icon icon={arrowDown} width="2rem" />}
-        {(
-          userRenderedInventory.length !== 0 &&
-          userRenderedInventory.length < userInventory.length &&
-          userSearchingState === false &&
-          filteredType.user === false &&
-          mode === "steam" && type === "user") &&
-          <Icon icon={arrowDown} width="2rem" />}
-
-        {(
-          botRenderedInventory.length !== 0 &&
-          botRenderedInventory.length < botQueryIds.length &&
-          botSearchingState === true &&
-          filteredType.bot === false &&
-          mode === "steam" && type === "bot") &&
-          <Icon icon={arrowDown} width="2rem" />}
-        {(
-          userRenderedInventory.length !== 0 &&
-          userRenderedInventory.length < userQueryIds.length &&
-          userSearchingState === true &&
-          filteredType.user === false &&
-          mode === "steam" && type === "user") &&
-          <Icon icon={arrowDown} width="2rem" />}
-
-        {(
-          botRenderedInventory.length !== 0 &&
-          botRenderedInventory.length < filteredItems.bot.length &&
-          botSearchingState === false &&
-          filteredType.bot === true &&
-          mode === "steam" && type === "bot") &&
-          <Icon icon={arrowDown} width="2rem" />}
-        {(
-          userRenderedInventory.length !== 0 &&
-          userRenderedInventory.length < filteredItems.user.length &&
-          userSearchingState === false &&
-          filteredType.user === true &&
-          mode === "steam" && type === "user") &&
-          <Icon icon={arrowDown} width="2rem" />}
       </div>
     </div>
   )
 }
 
 const mapDispatchToProps = dispatch => ({
-  updateBotRenderedInventoryStart: () => dispatch(updateBotRenderedInventoryStart()),
-  updateUserRenderedInventoryStart: () => dispatch(updateUserRenderedInventoryStart())
+  updateRenderedInventoryStart: type => dispatch(updateRenderedInventoryStart(type)),
 })
 
 const mapStateToProps = createStructuredSelector({
+  inventoryState: selectInventoryState,
   botInventory: selectBotInventory,
   userInventory: selectUserInventory,
   botRenderedInventory: selectBotRenderedInventory,

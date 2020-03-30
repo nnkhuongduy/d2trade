@@ -9,8 +9,8 @@ import { selectFilteredType, selectFilteredItems, selectHeroesData } from '../he
 
 import { setBotQueryItems, setUserQueryItems } from './searching.actions'
 import {
-  updateBotRenderedInventoryStart, updateUserRenderedInventoryStart,
-  updateBotRenderedInventory, updateUserRenderedInventory
+  updateRenderedInventoryStart,
+  updateRenderedInventory,
 } from '../inventory/inventory.actions'
 import { setHeroesRendered } from '../heroes/heroes.actions'
 
@@ -24,7 +24,7 @@ export function* botQuerySearchingAsync() {
 
   if (botInventory) {
     if (!isFiltering.bot) {
-      yield put(updateBotRenderedInventory([]));
+      yield put(updateRenderedInventory("bot", []));
 
       yield botInventory.forEach(item => {
         if (_.lowerCase(item.item.market_hash_name).includes(_.lowerCase(query))) {
@@ -33,9 +33,9 @@ export function* botQuerySearchingAsync() {
       })
 
       yield put(setBotQueryItems(queryArray));
-      yield put(updateBotRenderedInventoryStart());
+      yield put(updateRenderedInventoryStart("bot"));
     } else {
-      yield put(updateBotRenderedInventory([]));
+      yield put(updateRenderedInventory("bot", []));
 
       yield filterInventory.bot.forEach(id => {
         botInventory.forEach(botItem => {
@@ -45,7 +45,7 @@ export function* botQuerySearchingAsync() {
       })
 
       yield put(setBotQueryItems(queryArray));
-      yield put(updateBotRenderedInventoryStart());
+      yield put(updateRenderedInventoryStart("bot"));
     }
   }
 }
@@ -61,7 +61,7 @@ export function* userQuerySearchingAsync() {
 
   if (userInventory) {
     if (!isFiltering.user) {
-      yield put(updateUserRenderedInventory([]));
+      yield put(updateRenderedInventory("user", []));
 
       yield userInventory.forEach(item => {
         if (_.lowerCase(item.item.market_hash_name).includes(_.lowerCase(query))) {
@@ -70,9 +70,9 @@ export function* userQuerySearchingAsync() {
       })
 
       yield put(setUserQueryItems(queryArray));
-      yield put(updateUserRenderedInventoryStart());
+      yield put(updateRenderedInventoryStart("user"));
     } else {
-      yield put(updateUserRenderedInventory([]));
+      yield put(updateRenderedInventory("user", []));
 
       yield filterInventory.user.forEach(id => {
         userInventory.forEach(userItem => {
@@ -82,7 +82,7 @@ export function* userQuerySearchingAsync() {
       })
 
       yield put(setUserQueryItems(queryArray));
-      yield put(updateUserRenderedInventoryStart());
+      yield put(updateRenderedInventoryStart("user"));
     }
   }
 

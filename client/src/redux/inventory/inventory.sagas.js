@@ -4,151 +4,62 @@ import axios from 'axios';
 import { InventoryActionTypes } from './inventory.types';
 
 import {
-  fetchBotInventorySuccess, fetchBotInventoryFailure,
-  fetchUserInventorySuccess, fetchUserInventoryFailure,
-  updateBotRenderedInventoryStart, updateUserRenderedInventoryStart,
-  updateBotRenderedInventory, updateUserRenderedInventory,
-  fetchBotInventoryStart as fetchBotStart, fetchUserInventoryStart as fetchUserStart
+  fetchInventoryStart, fetchInventorySuccess, fetchInventoryFailure,
+  updateRenderedInventory, updateRenderedInventoryStart,
+  setRenderingInventory
 } from './inventory.actions';
 import { refreshBotQuery, refreshUserQuery } from '../searching/searching.actions'
 
 import { selectBotSearchingState, selectUserSearchingState, selectBotQueryIds, selectUserQueryIds } from '../searching/searching.selectors'
-import { selectBotInventory, selectUserInventory, selectBotRenderedInventory, selectUserRenderedInventory } from './inventory.selectors'
+import { selectBotInventory, selectUserInventory, selectBotRenderedInventory, selectUserRenderedInventory, selectBotRenderingInventory, selectUserRenderingInventory } from './inventory.selectors'
 import { selectFilteredType, selectFilteredItems } from '../heroes/heroes.selectors'
 
-export function* fetchBotInventoryAsync() {
+export function* fetchInventoryAsync({ type, inventoryType }) {
   try {
-    const botResult = yield axios('/inventory');
+    const miniInventory = [];
+    const result = yield inventoryType === "bot" ? axios('/inventory') : axios('/inventory2');
 
-    const botInventory = yield botResult.data.map(item => {
-      let randomPrice = (Math.random() * (40 - 0.01) + 0.01).toFixed(2);
+    const inventory = yield result.data.map(item => {
       return ({
         ...item,
         item: {
           ...item.item,
-          market_price: randomPrice
+          market_price: (Math.random() * (40 - 0.01) + 0.01).toFixed(2)
         }
       })
     });
 
-    yield put(fetchBotInventorySuccess(botInventory));
-    yield put(updateBotRenderedInventoryStart());
+    yield inventory.forEach(item => miniInventory.push(item.item.id));
+
+    yield put(fetchInventorySuccess(inventoryType, inventory));
+    yield put(setRenderingInventory(inventoryType, miniInventory));
+    yield put(updateRenderedInventoryStart(inventoryType));
   } catch (error) {
-    yield put(fetchBotInventoryFailure(error.message));
+    yield put(fetchInventoryFailure(inventoryType, error.message));
   }
 }
 
-export function* fetchUserInventoryAsync() {
-  try {
-    const userResult = yield axios('/inventory2');
+export function* updateRenderedInventoryAsync({ type, inventoryType }) {
+  const renderingInventory = yield inventoryType === "bot" ? select(selectBotRenderingInventory) : select(selectUserRenderingInventory);
+  const renderedInventory = yield inventoryType === "bot" ? select(selectBotRenderedInventory) : select(selectUserRenderedInventory);
 
-    const userInventory = yield userResult.data.map(item => {
-      let randomPrice = (Math.random() * (40 - 0.01) + 0.01).toFixed(2);
-      return ({
-        ...item,
-        item: {
-          ...item.item,
-          market_price: randomPrice
-        }
-      })
-    });
+  const updateArray = yield renderingInventory.slice(0, renderedInventory.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL);
 
-    yield put(fetchUserInventorySuccess(userInventory));
-    yield put(updateUserRenderedInventoryStart());
-  } catch (error) {
-    yield put(fetchUserInventoryFailure(error.message));
-  }
+  yield put(updateRenderedInventory(inventoryType, updateArray));
 }
 
-export function* updateBotRenderedInventoryAsync() {
-  const searchingState = yield select(selectBotSearchingState);
-  const filteringState = yield select(selectFilteredType);
-  const renderedIds = yield select(selectBotRenderedInventory);
-  let updateArray = [];
-
-  if (searchingState && filteringState.bot) {
-    const inventory = yield select(selectBotQueryIds)
-    yield updateArray = inventory.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL);
-  }
-
-  if (searchingState && !filteringState.bot) {
-    const inventory = yield select(selectBotQueryIds)
-    yield updateArray = inventory.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL);
-  }
-
-  if (!searchingState && filteringState.bot) {
-    const inventory = yield select(selectFilteredItems)
-    yield updateArray = inventory.bot.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL);
-  }
-
-  if (!searchingState && !filteringState.bot) {
-    const inventory = yield select(selectBotInventory)
-    yield inventory.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL).forEach(item => updateArray.push(item.item.id));
-  }
-
-  if (!(updateArray.length === renderedIds.length)) yield put(updateBotRenderedInventory(updateArray));
+export function* refreshInventoryAsync({ inventoryType, ...action }) {
+  yield put(fetchInventoryStart(inventoryType))
 }
 
-export function* updateUserRenderedInventoryAsync() {
-  const searchingState = yield select(selectUserSearchingState);
-  const filteringState = yield select(selectFilteredType);
-  const renderedIds = yield select(selectUserRenderedInventory);
-  let updateArray = [];
-
-  if (searchingState && filteringState.user) {
-    const inventory = yield select(selectUserQueryIds)
-    yield updateArray = inventory.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL);
-  }
-
-  if (searchingState && !filteringState.user) {
-    const inventory = yield select(selectUserQueryIds)
-    yield updateArray = inventory.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL);
-  }
-
-  if (!searchingState && filteringState.user) {
-    const inventory = yield select(selectFilteredItems)
-    yield updateArray = inventory.user.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL);
-  }
-
-  if (!searchingState && !filteringState.user) {
-    const inventory = yield select(selectUserInventory)
-    yield inventory.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL).forEach(item => updateArray.push(item.item.id));
-  }
-
-  if (!(updateArray.length === renderedIds.length)) yield put(updateUserRenderedInventory(updateArray));
-
+export function* fetchInventoryStarting() {
+  yield takeEvery(InventoryActionTypes.FETCH_INVENTORY_START, fetchInventoryAsync)
 }
 
-export function* refreshBotInventoryAsync() {
-  yield put(refreshBotQuery())
-  yield put(fetchBotStart())
+export function* updateRenderedInventoryStarting() {
+  yield takeEvery(InventoryActionTypes.UPDATE_RENDERED_INVENTORY_START, updateRenderedInventoryAsync)
 }
 
-export function* refreshUserInventoryAsync() {
-  yield put(refreshUserQuery())
-  yield put(fetchUserStart())
-}
-
-export function* fetchBotInventoryStart() {
-  yield takeLatest(InventoryActionTypes.FETCH_BOT_INVENTORY_START, fetchBotInventoryAsync)
-}
-
-export function* fetchUserInventoryStart() {
-  yield takeLatest(InventoryActionTypes.FETCH_USER_INVENTORY_START, fetchUserInventoryAsync)
-}
-
-export function* updateBotRenderedInventoryStarting() {
-  yield takeEvery(InventoryActionTypes.UPDATE_BOT_RENDERED_INVENTORY_START, updateBotRenderedInventoryAsync)
-}
-
-export function* updateUserRenderedInventoryStarting() {
-  yield takeEvery(InventoryActionTypes.UPDATE_USER_RENDERED_INVENTORY_START, updateUserRenderedInventoryAsync)
-}
-
-export function* refreshBotInventoryStart() {
-  yield takeLatest(InventoryActionTypes.REFRESH_BOT_INVENTORY_START, refreshBotInventoryAsync)
-}
-
-export function* refreshUserInventoryStart() {
-  yield takeLatest(InventoryActionTypes.REFRESH_USER_INVENTORY_START, refreshUserInventoryAsync)
+export function* refreshInventoryStart() {
+  yield takeLatest(InventoryActionTypes.REFRESH_INVENTORY_START, refreshInventoryAsync)
 }

@@ -6,109 +6,71 @@ const INITIAL_STATE = {
     isFetching: false,
     errorMessage: undefined,
     rendered: [],
+    rendering: []
   },
   user: {
     inventory: null,
     isFetching: false,
     errorMessage: undefined,
     rendered: [],
+    rendering: []
   }
 }
 
 const inventoryReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case InventoryActionTypes.FETCH_BOT_INVENTORY_START:
+    case InventoryActionTypes.FETCH_INVENTORY_START:
       return {
         ...state,
-        bot: {
-          ...state.bot,
+        [action.inventoryType]: {
+          ...state[action.inventoryType],
           isFetching: true
         }
       }
 
-    case InventoryActionTypes.FETCH_BOT_INVENTORY_SUCCESS:
+    case InventoryActionTypes.FETCH_INVENTORY_SUCCESS:
       return {
         ...state,
-        bot: {
-          ...state.bot,
+        [action.inventoryType]: {
+          ...state[action.inventoryType],
           isFetching: false,
-          inventory: action.payload
+          inventory: action.inventory,
         }
       }
 
-    case InventoryActionTypes.FETCH_BOT_INVENTORY_FAILURE:
+    case InventoryActionTypes.FETCH_INVENTORY_FAILURE:
       return {
         ...state,
-        bot: {
-          ...state.bot,
+        [action.inventoryType]: {
+          ...state[action.inventoryType],
           isFetching: false,
-          errorMessage: action.payload
+          errorMessage: action.errMessage
         }
       }
 
-    case InventoryActionTypes.FETCH_USER_INVENTORY_START:
+    case InventoryActionTypes.UPDATE_RENDERED_INVENTORY:
       return {
         ...state,
-        user: {
-          ...state.user,
-          isFetching: true
+        [action.inventoryType]: {
+          ...state[action.inventoryType],
+          rendered: action.updateInventory
         }
       }
 
-    case InventoryActionTypes.FETCH_USER_INVENTORY_SUCCESS:
+    case InventoryActionTypes.SET_RENDERING_INVENTORY:
       return {
         ...state,
-        user: {
-          ...state.user,
-          isFetching: false,
-          inventory: action.payload
+        [action.inventoryType]: {
+          ...state[action.inventoryType],
+          rendering: action.inventory
         }
       }
 
-    case InventoryActionTypes.FETCH_USER_INVENTORY_FAILURE:
+    case InventoryActionTypes.REFRESH_INVENTORY_START:
       return {
         ...state,
-        user: {
-          ...state.user,
-          isFetching: false,
-          errorMessage: action.payload
-        }
-      }
-
-    case InventoryActionTypes.UPDATE_BOT_RENDERED_INVENTORY:
-      return {
-        ...state,
-        bot: {
-          ...state.bot,
-          rendered: action.payload
-        }
-      }
-
-    case InventoryActionTypes.UPDATE_USER_RENDERED_INVENTORY:
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          rendered: action.payload
-        }
-      }
-
-    case InventoryActionTypes.REFRESH_BOT_INVENTORY_START:
-      return {
-        ...state,
-        bot: {
-          ...state.bot,
-          inventory: null,
-          errorMessage: undefined,
-          rendered: []
-        }
-      }
-
-    case InventoryActionTypes.REFRESH_USER_INVENTORY_START:
-      return {
-        ...state,
-        user: {
-          ...state.user,
+        [action.inventoryType]: {
+          ...state[action.inventoryType],
           inventory: null,
           errorMessage: undefined,
           rendered: []

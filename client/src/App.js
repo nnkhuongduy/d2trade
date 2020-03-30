@@ -8,17 +8,17 @@ import BodyContainer from './components/body-container/body-container.component'
 import Footer from './components/footer/footer.component';
 import BlackScreen from './components/black-screen/black-screen.component';
 
-import { fetchBotInventoryStart, fetchUserInventoryStart } from './redux/inventory/inventory.actions';
+import { fetchInventoryStart } from './redux/inventory/inventory.actions';
 import { fetchHeroesStart } from './redux/heroes/heroes.actions'
 
 import { selectBlackScreenState } from './redux/client-states/client-states.selectors';
 
 import './App.scss';
 
-const App = ({ fetchBotInventoryStart, fetchUserInventoryStart, blackScreenState, fetchHeroesStart }) => {
+const App = ({ fetchInventoryStart, blackScreenState, fetchHeroesStart }) => {
   useEffect(() => {
-    fetchBotInventoryStart()
-    fetchUserInventoryStart()
+    fetchInventoryStart("user")
+    fetchInventoryStart("bot")
     fetchHeroesStart()
   }, []);
 
@@ -34,8 +34,7 @@ const App = ({ fetchBotInventoryStart, fetchUserInventoryStart, blackScreenState
 }
 
 const mapDispatchToProps = dispatch => ({
-  fetchBotInventoryStart: () => dispatch(fetchBotInventoryStart()),
-  fetchUserInventoryStart: () => dispatch(fetchUserInventoryStart()),
+  fetchInventoryStart: type => dispatch(fetchInventoryStart(type)),
   fetchHeroesStart: () => dispatch(fetchHeroesStart())
 })
 

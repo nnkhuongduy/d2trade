@@ -13,7 +13,7 @@ import { selectBotSearchingQuery, selectUserSearchingQuery } from '../../redux/s
 import { selectFilteredHero, selectFilteredType } from '../../redux/heroes/heroes.selectors'
 
 import { setBotSearchingQuery, setUserSearchingQuery } from '../../redux/searching/searching.actions';
-import { refreshBotInventory, refreshUserInventory } from '../../redux/inventory/inventory.actions'
+import { refreshInventory } from '../../redux/inventory/inventory.actions'
 import { filterHeroesStart } from '../../redux/heroes/heroes.actions'
 
 import './steam-inventory-toolbar.component.scss';
@@ -22,7 +22,7 @@ const SteamInventoryToolbar = ({
   type,
   botSearchingQuery, userSearchingQuery,
   setBotSearchingQuery, setUserSearchingQuery,
-  refreshBotInventory, refreshUserInventory,
+  refreshInventory,
   filteredHero, filteredType,
   filterHeroesStart
 }) => {
@@ -36,9 +36,9 @@ const SteamInventoryToolbar = ({
 
   const refreshClickHandle = () => {
     if (type === "bot") {
-      refreshBotInventory();
+      refreshInventory("bot");
     } else {
-      refreshUserInventory();
+      refreshInventory("user");
     }
   }
 
@@ -73,8 +73,7 @@ const SteamInventoryToolbar = ({
 const mapDispatchToProps = dispatch => ({
   setBotSearchingQuery: query => dispatch(setBotSearchingQuery(query)),
   setUserSearchingQuery: query => dispatch(setUserSearchingQuery(query)),
-  refreshBotInventory: () => dispatch(refreshBotInventory()),
-  refreshUserInventory: () => dispatch(refreshUserInventory()),
+  refreshInventory: type => dispatch(refreshInventory(type)),
   filterHeroesStart: (heroName, filterType) => dispatch(filterHeroesStart(heroName, filterType))
 })
 

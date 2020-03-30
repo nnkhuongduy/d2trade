@@ -7,7 +7,7 @@ import ServerStatus from '../server-status/server-status.component';
 import { toggleBlackScreen, resetOfferStatus } from '../../redux/client-states/client-states.actions';
 import { refreshBotTempItems, refreshUserTempItems } from '../../redux/temp-item/temp-item.actions'
 import { refreshSlotsState } from '../../redux/slot-state/slot-state.actions'
-import { refreshBotInventory, refreshUserInventory } from '../../redux/inventory/inventory.actions'
+import { refreshInventory } from '../../redux/inventory/inventory.actions'
 
 import { selectOfferStatus } from '../../redux/client-states/client-states.selectors';
 
@@ -17,14 +17,14 @@ const BlackScreen = ({
   toggleBlackScreen, offerStatus,
   resetOfferStatus, refreshSlotsState,
   refreshBotTempItems, refreshUserTempItems,
-  refreshBotInventory, refreshUserInventory
+  refreshInventory
 }) => {
 
   const onClickHandle = () => {
     if (offerStatus !== null) {
       if (offerStatus === true) {
-        refreshBotInventory();
-        refreshUserInventory();
+        refreshInventory("bot");
+        refreshInventory("user");
         refreshBotTempItems();
         refreshUserTempItems();
         refreshSlotsState("user");
@@ -49,8 +49,7 @@ const mapDispatchToProps = dispatch => ({
   refreshBotTempItems: () => dispatch(refreshBotTempItems()),
   refreshUserTempItems: () => dispatch(refreshUserTempItems()),
   refreshSlotsState: () => dispatch(refreshSlotsState()),
-  refreshBotInventory: () => dispatch(refreshBotInventory()),
-  refreshUserInventory: () => dispatch(refreshUserInventory())
+  refreshInventory: type => dispatch(refreshInventory(type)),
 })
 
 const mapStateToProps = createStructuredSelector({

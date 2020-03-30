@@ -1,53 +1,40 @@
 import { InventoryActionTypes } from './inventory.types';
 
-export const fetchBotInventoryStart = () => ({
-  type: InventoryActionTypes.FETCH_BOT_INVENTORY_START,
+export const fetchInventoryStart = inventoryType => ({
+  type: InventoryActionTypes.FETCH_INVENTORY_START,
+  inventoryType: inventoryType
 })
 
-export const fetchBotInventorySuccess = inventory => ({
-  type: InventoryActionTypes.FETCH_BOT_INVENTORY_SUCCESS,
-  payload: inventory
+export const fetchInventorySuccess = (inventoryType, inventory) => ({
+  type: InventoryActionTypes.FETCH_INVENTORY_SUCCESS,
+  inventoryType: inventoryType,
+  inventory: inventory
 })
 
-export const fetchBotInventoryFailure = () => ({
-  type: InventoryActionTypes.FETCH_BOT_INVENTORY_FAILURE,
+export const fetchInventoryFailure = (inventoryType, errMessage) => ({
+  type: InventoryActionTypes.FETCH_INVENTORY_FAILURE,
+  inventoryType: inventoryType,
+  errMessage: errMessage
 })
 
-export const fetchUserInventoryStart = () => ({
-  type: InventoryActionTypes.FETCH_USER_INVENTORY_START,
+export const updateRenderedInventoryStart = inventoryType => ({
+  type: InventoryActionTypes.UPDATE_RENDERED_INVENTORY_START,
+  inventoryType: inventoryType
 })
 
-export const fetchUserInventorySuccess = inventory => ({
-  type: InventoryActionTypes.FETCH_USER_INVENTORY_SUCCESS,
-  payload: inventory
+export const updateRenderedInventory = (inventoryType, updateInventory) => ({
+  type: InventoryActionTypes.UPDATE_RENDERED_INVENTORY,
+  inventoryType: inventoryType,
+  updateInventory: updateInventory
 })
 
-export const fetchUserInventoryFailure = () => ({
-  type: InventoryActionTypes.FETCH_USER_INVENTORY_FAILURE,
+export const setRenderingInventory = (inventoryType, inventory) => ({
+  type: InventoryActionTypes.SET_RENDERING_INVENTORY,
+  inventoryType: inventoryType,
+  inventory: inventory
 })
 
-export const updateBotRenderedInventoryStart = () => ({
-  type: InventoryActionTypes.UPDATE_BOT_RENDERED_INVENTORY_START
-})
-
-export const updateUserRenderedInventoryStart = () => ({
-  type: InventoryActionTypes.UPDATE_USER_RENDERED_INVENTORY_START
-})
-
-export const updateBotRenderedInventory = updateArray => ({
-  type: InventoryActionTypes.UPDATE_BOT_RENDERED_INVENTORY,
-  payload: updateArray
-})
-
-export const updateUserRenderedInventory = updateArray => ({
-  type: InventoryActionTypes.UPDATE_USER_RENDERED_INVENTORY,
-  payload: updateArray
-})
-
-export const refreshBotInventory = () => ({
-  type: InventoryActionTypes.REFRESH_BOT_INVENTORY_START
-})
-
-export const refreshUserInventory = () => ({
-  type: InventoryActionTypes.REFRESH_USER_INVENTORY_START
+export const refreshInventory = inventoryType => ({
+  type: InventoryActionTypes.REFRESH_INVENTORY_START,
+  inventoryType: inventoryType
 })

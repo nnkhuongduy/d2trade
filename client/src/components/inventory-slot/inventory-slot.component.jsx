@@ -19,7 +19,7 @@ const InventorySlot = ({
   botSearchingState, userSearchingState
 }) => {
   // const [price, setPrice] = useState();
-  const [displayState, setDisplayState] = useState();
+  const [displayState, setDisplayState] = useState("block");
 
   const slotId = item.id;
 
