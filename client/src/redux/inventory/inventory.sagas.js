@@ -66,6 +66,11 @@ export function* updateBotRenderedInventoryAsync() {
   const renderedIds = yield select(selectBotRenderedInventory);
   let updateArray = [];
 
+  if (searchingState && filteringState.bot) {
+    const inventory = yield select(selectBotQueryIds)
+    yield updateArray = inventory.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL);
+  }
+
   if (searchingState && !filteringState.bot) {
     const inventory = yield select(selectBotQueryIds)
     yield updateArray = inventory.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL);
@@ -89,6 +94,11 @@ export function* updateUserRenderedInventoryAsync() {
   const filteringState = yield select(selectFilteredType);
   const renderedIds = yield select(selectUserRenderedInventory);
   let updateArray = [];
+
+  if (searchingState && filteringState.user) {
+    const inventory = yield select(selectUserQueryIds)
+    yield updateArray = inventory.slice(0, renderedIds.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL);
+  }
 
   if (searchingState && !filteringState.user) {
     const inventory = yield select(selectUserQueryIds)
