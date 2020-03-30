@@ -2,6 +2,7 @@ import { HeroesTypes } from './heroes.types'
 
 const INITIAL_STATE = {
   heroes: [],
+  heroesRendered: [],
   isFetching: false,
   errorMessage: null,
   container: null,
@@ -31,6 +32,7 @@ export const heroesReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         heroes: action.payload,
+        heroesRendered: action.payload,
         isFetching: false,
       }
 
@@ -41,9 +43,16 @@ export const heroesReducer = (state = INITIAL_STATE, action) => {
         errorMessage: action.payload
       }
 
+    case HeroesTypes.SET_HEROES_RENDERED:
+      return {
+        ...state,
+        heroesRendered: action.payload
+      }
+
     case HeroesTypes.SET_HERO_CONTAINER:
       return {
         ...state,
+        heroesRendered: state.heroes,
         container: action.payload
       }
 

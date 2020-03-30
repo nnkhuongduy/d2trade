@@ -19,8 +19,12 @@
     &:hover {
       background-color: $primary-bright-pink;
     }
-  }
 
+    &.btn-filter-user,
+    &.btn-filter-bot {
+      margin-top: 10px;
+    }
+  }
 
   &.btn-trade {
     background-color: $neutral-dark-blue;
@@ -41,19 +45,6 @@
         cursor: pointer;
         filter: brightness(150%);
       }
-    }
-  }
-
-  &.btn-smart {
-    background-color: $primary-gray-pink;
-    height: 8%;
-    color: white;
-    font-weight: 700;
-    font-size: 1rem;
-    margin: 10px 0;
-
-    &:hover {
-      background-color: $primary-bright-pink;
     }
   }
 

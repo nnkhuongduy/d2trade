@@ -14,6 +14,11 @@ export const fetchHeroesFail = message => ({
   payload: message
 })
 
+export const setHeroesRendered = heroes => ({
+  type: HeroesTypes.SET_HEROES_RENDERED,
+  payload: heroes
+})
+
 export const setHeroesContainer = type => ({
   type: HeroesTypes.SET_HERO_CONTAINER,
   payload: type

@@ -12,15 +12,24 @@
 
   .filter-box-container {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-  }
 
-  .line {
-    width: 5%;
-    height: 5px;
-    background-color: $neutral-dark-blue;
+    .filter-label {
+      color: white;
+
+      &.user,
+      &.bot {
+        margin: 2px 0;
+        font-size: 0.8rem;
+      }
+
+      &.global {
+        margin: 10px 0;
+      }
+    }
   }
 
   &.filter-counter {

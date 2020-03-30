@@ -27,3 +27,8 @@ export const refreshBotQuery = () => ({
 export const refreshUserQuery = () => ({
   type: SearchingTypes.REFRESH_USER_QUERY,
 })
+
+export const heroSearchingStart = query => ({
+  type: SearchingTypes.HERO_SEARCHING_START,
+  payload: query
+})

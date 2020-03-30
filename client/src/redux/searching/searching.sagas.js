@@ -1,17 +1,18 @@
-import { takeEvery, select, put } from 'redux-saga/effects'
+import { takeEvery, takeLatest, select, put } from 'redux-saga/effects'
 import _ from 'lodash';
 
 import { SearchingTypes } from './searching.types'
 
 import { selectBotSearchingQuery, selectUserSearchingQuery } from './searching.selectors'
 import { selectBotInventory, selectUserInventory } from '../inventory/inventory.selectors'
-import { selectFilteredType, selectFilteredItems } from '../heroes/heroes.selectors'
+import { selectFilteredType, selectFilteredItems, selectHeroesData } from '../heroes/heroes.selectors'
 
 import { setBotQueryItems, setUserQueryItems } from './searching.actions'
 import {
   updateBotRenderedInventoryStart, updateUserRenderedInventoryStart,
   updateBotRenderedInventory, updateUserRenderedInventory
 } from '../inventory/inventory.actions'
+import { setHeroesRendered } from '../heroes/heroes.actions'
 
 export function* botQuerySearchingAsync() {
   const query = yield select(selectBotSearchingQuery);
@@ -87,10 +88,26 @@ export function* userQuerySearchingAsync() {
 
 }
 
+export function* heroSearchingAsync(action) {
+  const heroesData = yield select(selectHeroesData);
+  const heroesRender = [];
+
+  yield heroesData.forEach(hero => {
+    if (_.lowerCase(hero.localized_name).includes(_.lowerCase(action.payload)))
+      heroesRender.push(hero);
+  })
+
+  yield put(setHeroesRendered(heroesRender));
+}
+
 export function* botQuerySearchingStart() {
   yield takeEvery(SearchingTypes.SET_BOT_SEARCHING_QUERY, botQuerySearchingAsync)
 }
 
 export function* userQuerySearchingStart() {
   yield takeEvery(SearchingTypes.SET_USER_SEARCHING_QUERY, userQuerySearchingAsync)
+}
+
+export function* heroSearchingStart() {
+  yield takeLatest(SearchingTypes.HERO_SEARCHING_START, heroSearchingAsync)
 }

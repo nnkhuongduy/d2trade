@@ -42,7 +42,6 @@ const TradingHandle = ({ tempItem, tradeButtonState, toggleBlackScreen, fetchOff
   return (
     <div className="trading-handle">
       <Button classes={["btn-trade"]} onClickHandle={onClickHandle} available={tradeButtonState}>TRADE</Button>
-      <Button classes={["btn-smart"]}>SMART SELECT</Button>
       <div className="rate-container">
         <div className="rate">Rate:</div>
       </div>

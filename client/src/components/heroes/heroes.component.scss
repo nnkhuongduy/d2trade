@@ -3,14 +3,34 @@
 
 .heroes-container {
   position: absolute;
+  display: flex;
+  flex-direction: column;
   width: 30vw;
   height: 40vh;
-  background-color: $neutral-dark-pink;
   z-index: 1;
-  padding: 1vw;
-  display: flex;
-  flex-wrap: wrap;
-  overflow-y: auto;
 
-  @include scrollBar
+  .heroes-content {
+    background-color: $neutral-dark-pink;
+    padding: 1vw;
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: auto;
+
+    @include scrollBar;
+
+  }
+
+  .heroes-input-container {
+    width: 100%;
+    background-color: $neutral-dark-pink;
+
+    .heroes-input {
+      display: block;
+      margin: 10px auto;
+      padding: 2% 5%;
+      width: 80%;
+      border: none;
+      border-radius: $border-radius-value;
+    }
+  }
 }

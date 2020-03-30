@@ -6,7 +6,7 @@ import {
   refreshBotInventoryStart, refreshUserInventoryStart
 } from './inventory/inventory.sagas';
 import { fetchOfferStatusStart } from './client-states/client-states.sagas';
-import { botQuerySearchingStart, userQuerySearchingStart } from './searching/searching.sagas'
+import { botQuerySearchingStart, userQuerySearchingStart, heroSearchingStart } from './searching/searching.sagas'
 import { fetchHeroesStart, filterHeroStart } from './heroes/heroes.sagas'
 
 export default function* rootSaga() {
@@ -16,11 +16,13 @@ export default function* rootSaga() {
     call(fetchOfferStatusStart),
     call(botQuerySearchingStart),
     call(userQuerySearchingStart),
+    call(heroSearchingStart),
     call(updateBotRenderedInventoryStarting),
     call(updateUserRenderedInventoryStarting),
     call(refreshBotInventoryStart),
     call(refreshUserInventoryStart),
     call(fetchHeroesStart),
     call(filterHeroStart),
+
   ]);
 }

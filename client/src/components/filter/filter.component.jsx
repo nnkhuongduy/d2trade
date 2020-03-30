@@ -24,13 +24,14 @@ const Filter = ({ counter, type, setHeroesContainer, heroesContainer }) => {
   return (
     <div className={`filter ${counter && 'filter-counter'}`}>
       <div className="filter-box-container">
-        <FilterBox />
-        <div className="line" />
-        <FilterBox />
+        <div className={`filter-label ${type}`}>From</div>
+        <FilterBox type={type} mode={"filter-min"} />
+        <div className={`filter-label ${type}`}>To</div>
+        <FilterBox type={type} mode={"filter-max"} />
+        <Button classes={["btn-filter", `btn-filter-${type}`]}>APPLY</Button>
       </div>
       <Button classes={["btn-filter"]} onClickHandle={heroClickHandle} >HERO</Button>
       {heroesContainer === type && <Heroes type={type} />}
-      <Button classes={["btn-filter"]}>RARITY</Button>
     </div>
   )
 }

@@ -5,12 +5,13 @@ import { createStructuredSelector } from 'reselect'
 import HeroPortrait from '../hero-portrait/hero-portrait.component'
 
 import { setHeroesContainer } from '../../redux/heroes/heroes.actions'
+import { heroSearchingStart } from '../../redux/searching/searching.actions'
 
-import { selectHeroesData } from '../../redux/heroes/heroes.selectors'
+import { selectHeroesRendered } from '../../redux/heroes/heroes.selectors'
 
 import './heroes.component.scss'
 
-const Heroes = ({ type, heroesData, setHeroesContainer }) => {
+const Heroes = ({ type, heroesRendered, setHeroesContainer, heroSearchingStart }) => {
   const heroesContainer = useRef(null);
 
   useEffect(() => {
@@ -38,19 +39,29 @@ const Heroes = ({ type, heroesData, setHeroesContainer }) => {
     <HeroPortrait key={hero._id} hero={hero} type={type} />
   )
 
+  const searchHeroHandle = e => {
+    heroSearchingStart(e.target.value);
+  }
+
   return (
     <div ref={heroesContainer} className={`heroes-container ${type}`} style={componentStyles}>
-      {heroesData.length !== 0 && heroesData.map(hero => renderHeroPortrait(hero))}
+      <div className="heroes-input-container">
+        <input className="heroes-input" placeholder="Search hero..." onChange={searchHeroHandle} />
+      </div>
+      <div className={`heroes-content`} >
+        {heroesRendered.length !== 0 && heroesRendered.map(hero => renderHeroPortrait(hero))}
+      </div>
     </div>
   )
 }
 
 const mapDispatchToProps = dispatch => ({
-  setHeroesContainer: type => dispatch(setHeroesContainer(type))
+  setHeroesContainer: type => dispatch(setHeroesContainer(type)),
+  heroSearchingStart: query => dispatch(heroSearchingStart(query))
 })
 
 const mapStateToProps = createStructuredSelector({
-  heroesData: selectHeroesData,
+  heroesRendered: selectHeroesRendered,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Heroes)

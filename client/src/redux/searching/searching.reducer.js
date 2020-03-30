@@ -79,6 +79,11 @@ export const searchingReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
+    case SearchingTypes.HERO_SEARCHING_START:
+      return {
+        ...state
+      }
+
     default:
       return state
   }
