@@ -65,6 +65,17 @@ export const heroesReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
+    case HeroesTypes.RESET_HERO_FILTER:
+      return {
+        ...state,
+        [action.filterType]: {
+          ...state[action.filterType],
+          isHeroFiltering: false,
+          filteredHero: null,
+          filteredItemIds: []
+        }
+      }
+
     default:
       return state
   }

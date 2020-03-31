@@ -37,3 +37,8 @@ export const filterHeroesFinish = (filterType, filterHero, filterArray, filterSt
   filterState: filterState,
   filterArray: filterArray
 })
+
+export const resetHeroFilter = filterType => ({
+  type: HeroesTypes.RESET_HERO_FILTER,
+  filterType: filterType
+})
