@@ -28,6 +28,11 @@ export const updateRenderedInventory = (inventoryType, updateInventory) => ({
   updateInventory: updateInventory
 })
 
+export const setRenderingInventoryStart = (inventoryType) => ({
+  type: InventoryActionTypes.SET_RENDERING_INVENTORY_START,
+  inventoryType: inventoryType,
+})
+
 export const setRenderingInventory = (inventoryType, inventory) => ({
   type: InventoryActionTypes.SET_RENDERING_INVENTORY,
   inventoryType: inventoryType,

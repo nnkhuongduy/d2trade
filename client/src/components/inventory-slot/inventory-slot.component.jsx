@@ -7,7 +7,6 @@ import { setBotTempItem, unsetBotTempItem, setUserTempItem, unsetUserTempItem } 
 import { toggleSlotState } from '../../redux/slot-state/slot-state.actions';
 import { selectSlotStates } from '../../redux/slot-state/slot-state.selectors';
 import { selectBotRenderedInventory, selectUserRenderedInventory } from '../../redux/inventory/inventory.selectors';
-import { selectBotSearchingState, selectUserSearchingState } from '../../redux/searching/searching.selectors'
 
 import './inventory-slot.component.scss';
 
@@ -16,7 +15,6 @@ const InventorySlot = ({
   setBotTempItem, unsetBotTempItem, setUserTempItem, unsetUserTempItem,
   slotState, toggleSlotState,
   botRenderedInventory, userRenderedInventory,
-  botSearchingState, userSearchingState
 }) => {
   // const [price, setPrice] = useState();
   const [displayState, setDisplayState] = useState("block");
@@ -120,8 +118,6 @@ const mapStateToProps = createStructuredSelector({
   slotState: selectSlotStates,
   botRenderedInventory: selectBotRenderedInventory,
   userRenderedInventory: selectUserRenderedInventory,
-  botSearchingState: selectBotSearchingState,
-  userSearchingState: selectUserSearchingState
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(InventorySlot);

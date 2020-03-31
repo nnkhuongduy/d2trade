@@ -8,11 +8,10 @@ import sortIcon from '@iconify/icons-dashicons/sort';
 import bxRefresh from '@iconify/icons-bx/bx-refresh';
 import cancelIcon from '@iconify/icons-topcoat/cancel';
 
-
-import { selectBotSearchingQuery, selectUserSearchingQuery } from '../../redux/searching/searching.selectors';
+import { selectBotSearchingQuery, selectUserSearchingQuery } from '../../redux/searching/searching.selectors'
 import { selectFilteredHero, selectFilteredType } from '../../redux/heroes/heroes.selectors'
 
-import { setBotSearchingQuery, setUserSearchingQuery } from '../../redux/searching/searching.actions';
+import { setQueryItemsStart } from '../../redux/searching/searching.actions';
 import { refreshInventory } from '../../redux/inventory/inventory.actions'
 import { filterHeroesStart } from '../../redux/heroes/heroes.actions'
 
@@ -21,7 +20,7 @@ import './steam-inventory-toolbar.component.scss';
 const SteamInventoryToolbar = ({
   type,
   botSearchingQuery, userSearchingQuery,
-  setBotSearchingQuery, setUserSearchingQuery,
+  setQueryItemsStart,
   refreshInventory,
   filteredHero, filteredType,
   filterHeroesStart
@@ -29,9 +28,7 @@ const SteamInventoryToolbar = ({
 
   const inputChangeHandle = (e) => {
     const value = e.target.value;
-    if (type === "bot")
-      setBotSearchingQuery(value)
-    else setUserSearchingQuery(value)
+    setQueryItemsStart(type, value);
   }
 
   const refreshClickHandle = () => {
@@ -71,8 +68,7 @@ const SteamInventoryToolbar = ({
 }
 
 const mapDispatchToProps = dispatch => ({
-  setBotSearchingQuery: query => dispatch(setBotSearchingQuery(query)),
-  setUserSearchingQuery: query => dispatch(setUserSearchingQuery(query)),
+  setQueryItemsStart: (type, query) => dispatch(setQueryItemsStart(type, query)),
   refreshInventory: type => dispatch(refreshInventory(type)),
   filterHeroesStart: (heroName, filterType) => dispatch(filterHeroesStart(heroName, filterType))
 })

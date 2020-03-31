@@ -8,9 +8,9 @@ import {
   updateRenderedInventory, updateRenderedInventoryStart,
   setRenderingInventory
 } from './inventory.actions';
-import { refreshBotQuery, refreshUserQuery } from '../searching/searching.actions'
+import { refreshQuery } from '../searching/searching.actions'
 
-import { selectBotSearchingState, selectUserSearchingState, selectBotQueryIds, selectUserQueryIds } from '../searching/searching.selectors'
+import { selectBotQueryIds, selectUserQueryIds, selectBotSearchingState, selectUserSearchingState } from '../searching/searching.selectors'
 import { selectBotInventory, selectUserInventory, selectBotRenderedInventory, selectUserRenderedInventory, selectBotRenderingInventory, selectUserRenderingInventory } from './inventory.selectors'
 import { selectFilteredType, selectFilteredItems } from '../heroes/heroes.selectors'
 
@@ -48,7 +48,25 @@ export function* updateRenderedInventoryAsync({ type, inventoryType }) {
   yield put(updateRenderedInventory(inventoryType, updateArray));
 }
 
+export function* setRenderingInventoryAsync({ inventoryType, ...action }) {
+  const isSearching = yield inventoryType === "bot" ? select(selectBotSearchingState) : select(selectUserSearchingState);
+
+  const seachingInventory = yield inventoryType === "bot" ? select(selectBotQueryIds) : select(selectUserQueryIds);
+  const inventory = yield inventoryType === "bot" ? select(selectBotInventory) : select(selectUserInventory);
+
+  let renderInventory = [];
+  if (isSearching) {
+    renderInventory = seachingInventory
+  } else {
+    inventory.forEach(item => renderInventory.push(item.item.id));
+  }
+
+  yield put(setRenderingInventory(inventoryType, renderInventory));
+  yield put(updateRenderedInventoryStart(inventoryType));
+}
+
 export function* refreshInventoryAsync({ inventoryType, ...action }) {
+  yield put(refreshQuery(inventoryType));
   yield put(fetchInventoryStart(inventoryType))
 }
 
@@ -58,6 +76,10 @@ export function* fetchInventoryStarting() {
 
 export function* updateRenderedInventoryStarting() {
   yield takeEvery(InventoryActionTypes.UPDATE_RENDERED_INVENTORY_START, updateRenderedInventoryAsync)
+}
+
+export function* setRenderingInventoryStart() {
+  yield takeEvery(InventoryActionTypes.SET_RENDERING_INVENTORY_START, setRenderingInventoryAsync)
 }
 
 export function* refreshInventoryStart() {
