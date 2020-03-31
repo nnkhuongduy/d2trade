@@ -10,6 +10,7 @@ import {
 } from './inventory.actions';
 import { refreshQuery } from '../searching/searching.actions'
 import { resetHeroFilter } from '../heroes/heroes.actions'
+import { resetPriceFilter } from '../price-filter/price-filter.actions'
 
 import { selectBotQueryIds, selectUserQueryIds, selectBotSearchingState, selectUserSearchingState } from '../searching/searching.selectors'
 import { selectBotInventory, selectUserInventory, selectBotRenderedInventory, selectUserRenderedInventory, selectBotRenderingInventory, selectUserRenderingInventory } from './inventory.selectors'
@@ -100,6 +101,7 @@ export function* refreshInventoryAsync({ inventoryType, ...action }) {
   yield put(refreshQuery(inventoryType));
   yield put(resetHeroFilter(inventoryType))
   yield put(fetchInventoryStart(inventoryType));
+  yield put(resetPriceFilter(inventoryType))
 }
 
 export function* fetchInventoryStarting() {

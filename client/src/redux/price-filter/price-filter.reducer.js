@@ -37,6 +37,18 @@ export const priceFilterReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
+    case PriceFilterTypes.RESET_PRICE_FILTER:
+      return {
+        ...state,
+        [action.filterType]: {
+          ...state[action.filterType],
+          minValue: 0,
+          maxValue: 0,
+          isPriceFiltering: false,
+          filteredIds: []
+        }
+      }
+
     default:
       return state
   }

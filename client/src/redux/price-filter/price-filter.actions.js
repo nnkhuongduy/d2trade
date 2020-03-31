@@ -13,3 +13,8 @@ export const filterFinish = (filterType, filterIds, filterState) => ({
   filterIds: filterIds,
   filterState: filterState
 })
+
+export const resetPriceFilter = filterType => ({
+  type: PriceFilterTypes.RESET_PRICE_FILTER,
+  filterType: filterType
+})
