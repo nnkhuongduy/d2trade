@@ -14,6 +14,7 @@ import { resetHeroFilter } from '../heroes/heroes.actions'
 import { selectBotQueryIds, selectUserQueryIds, selectBotSearchingState, selectUserSearchingState } from '../searching/searching.selectors'
 import { selectBotInventory, selectUserInventory, selectBotRenderedInventory, selectUserRenderedInventory, selectBotRenderingInventory, selectUserRenderingInventory } from './inventory.selectors'
 import { selectBotFilteredState, selectUserFilteredState, selectBotFilteredItems, selectUserFilteredItems } from '../heroes/heroes.selectors'
+import { selectBotPriceFilteredState, selectUserPriceFilteredState, selectBotPriceFilteredIds, selectUserPriceFilteredIds } from '../price-filter/price-filter.selectors'
 
 export function* fetchInventoryAsync({ type, inventoryType }) {
   try {
@@ -52,6 +53,7 @@ export function* updateRenderedInventoryAsync({ type, inventoryType }) {
 export function* setRenderingInventoryAsync({ inventoryType, ...action }) {
   const isSearching = yield inventoryType === "bot" ? select(selectBotSearchingState) : select(selectUserSearchingState);
   const isHeroFiltering = yield inventoryType === "bot" ? select(selectBotFilteredState) : select(selectUserFilteredState);
+  const isPriceFiltering = yield inventoryType === "bot" ? select(selectBotPriceFilteredState) : select(selectUserPriceFilteredState);
 
   const renderInventory = [];
   const inventoryArr = [];
@@ -68,6 +70,12 @@ export function* setRenderingInventoryAsync({ inventoryType, ...action }) {
     const filterHeroInventory = yield inventoryType === "bot" ? select(selectBotFilteredItems) : select(selectUserFilteredItems);
 
     yield inventoryArr.push(filterHeroInventory);
+    yield inventoryCount++;
+  }
+  if (isPriceFiltering) {
+    const filterPriceInventory = yield inventoryType === "bot" ? select(selectBotPriceFilteredIds) : select(selectUserPriceFilteredIds);
+
+    yield inventoryArr.push(filterPriceInventory);
     yield inventoryCount++;
   }
 

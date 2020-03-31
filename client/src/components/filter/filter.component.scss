@@ -32,13 +32,25 @@
       }
     }
 
-    .filter-box {
-      border: none;
-      padding: 5%;
-      border-radius: $border-radius-value;
-      width: 80%;
-      text-align: center;
+    .filter-input-container {
+      display: flex;
+      align-items: center;
+
+      span {
+        color: white;
+        margin-right: 5px;
+        font-size: 0.8rem;
+      }
+
+      .filter-box {
+        border: none;
+        padding: 5%;
+        border-radius: $border-radius-value;
+        width: 80%;
+        text-align: center;
+      }
     }
+
   }
 
   &.filter-counter {

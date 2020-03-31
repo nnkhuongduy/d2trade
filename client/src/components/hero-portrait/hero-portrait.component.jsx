@@ -8,7 +8,10 @@ import './hero-portrait.component.scss'
 const HeroPortrait = ({ hero, filterHeroesStart, type }) => {
 
   const filterHandle = () => {
-    filterHeroesStart(type, hero.localized_name)
+    if (type === "global") {
+      filterHeroesStart("bot", hero.localized_name)
+      filterHeroesStart("user", hero.localized_name)
+    } else filterHeroesStart(type, hero.localized_name)
   }
 
   return (

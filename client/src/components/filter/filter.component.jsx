@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
@@ -6,14 +6,27 @@ import Button from '../button/button.component';
 import Heroes from '../heroes/heroes.component';
 
 import { setHeroesContainer } from '../../redux/heroes/heroes.actions'
+import { filterStart } from '../../redux/price-filter/price-filter.actions'
 
 import { selectHeroesContainer } from '../../redux/heroes/heroes.selectors'
+import { selectBotMaxPrice, selectBotMinPrice, selectUserMaxPrice, selectUserMinPrice } from '../../redux/price-filter/price-filter.selectors'
 
 import './filter.component.scss';
 
-const Filter = ({ counter, type, setHeroesContainer, heroesContainer }) => {
+const Filter = ({
+  counter, type, setHeroesContainer, heroesContainer, filterStart,
+  botMaxPrice, botMinPrice, userMaxPrice, userMinPrice
+}) => {
   const [filterMinValue, setFilterMinValue] = useState("");
   const [filterMaxValue, setFilterMaxValue] = useState("");
+
+  useEffect(() => {
+    setFilterMaxValue(type === "bot" ? botMaxPrice : userMaxPrice)
+  }, [botMaxPrice, userMaxPrice])
+
+  useEffect(() => {
+    setFilterMinValue(type === "bot" ? botMinPrice : userMinPrice)
+  }, [botMinPrice, userMinPrice])
 
   type = type === undefined ? "global" : type;
 
@@ -32,15 +45,27 @@ const Filter = ({ counter, type, setHeroesContainer, heroesContainer }) => {
     }
   }
 
+  const filterAppyHandle = () => {
+    if (type === "global") {
+      filterStart("bot", filterMinValue, filterMaxValue)
+      filterStart("user", filterMinValue, filterMaxValue)
+    } else filterStart(type, filterMinValue, filterMaxValue)
+  }
 
   return (
     <div className={`filter ${counter && 'filter-counter'}`}>
       <div className="filter-box-container">
         <div className={`filter-label ${type}`}>From</div>
-        <input className="filter-box filter-min" value={filterMinValue} onChange={onChangeHandle} />
+        <div className="filter-input-container">
+          <span>$</span>
+          <input className="filter-box filter-min" value={filterMinValue} onChange={onChangeHandle} />
+        </div>
         <div className={`filter-label ${type}`}>To</div>
-        <input className="filter-box filter-max" value={filterMaxValue} onChange={onChangeHandle} />
-        <Button classes={["btn-filter", `btn-filter-${type}`]}>APPLY</Button>
+        <div className="filter-input-container">
+          <span>$</span>
+          <input className="filter-box filter-max" value={filterMaxValue} onChange={onChangeHandle} />
+        </div>
+        <Button classes={["btn-filter", `btn-filter-${type}`]} onClickHandle={filterAppyHandle}>APPLY</Button>
       </div>
       <Button classes={["btn-filter"]} onClickHandle={heroClickHandle} >HERO</Button>
       {heroesContainer === type && <Heroes type={type} />}
@@ -49,11 +74,16 @@ const Filter = ({ counter, type, setHeroesContainer, heroesContainer }) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  setHeroesContainer: type => dispatch(setHeroesContainer(type))
+  setHeroesContainer: type => dispatch(setHeroesContainer(type)),
+  filterStart: (type, minValue, maxValue) => dispatch(filterStart(type, minValue, maxValue))
 })
 
 const mapStateToProps = createStructuredSelector({
-  heroesContainer: selectHeroesContainer
+  heroesContainer: selectHeroesContainer,
+  botMaxPrice: selectBotMaxPrice,
+  botMinPrice: selectBotMinPrice,
+  userMaxPrice: selectUserMaxPrice,
+  userMinPrice: selectUserMinPrice
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Filter);

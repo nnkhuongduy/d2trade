@@ -1,0 +1,4 @@
+export const PriceFilterTypes = {
+  PRICE_FILTER_START: 'PRICE_FILTER_START',
+  PRICE_FILTER_FINSIH: 'PRICE_FILTER_FINSIH',
+}
