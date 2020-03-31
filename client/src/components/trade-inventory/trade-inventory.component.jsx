@@ -13,7 +13,6 @@ import { updateRenderedInventoryStart } from '../../redux/inventory/inventory.ac
 import { selectBotTempItem, selectUserTempItem } from '../../redux/temp-item/temp-item.selectors';
 import { selectBotInventory, selectUserInventory, selectBotRenderedInventory, selectUserRenderedInventory, selectInventoryState } from '../../redux/inventory/inventory.selectors';
 import { selectBotQueryIds, selectUserQueryIds } from '../../redux/searching/searching.selectors';
-import { selectFilteredItems, selectFilteredType } from '../../redux/heroes/heroes.selectors'
 
 import './trade-inventory.component.scss';
 
@@ -23,7 +22,6 @@ const TradeInventory = ({ mode, type, inventoryState,
   botTempItem, userTempItem,
   updateRenderedInventoryStart,
   botQueryIds, userQueryIds,
-  filteredItems, filteredType
 }) => {
 
   const scrollRef = useRef(null);
@@ -91,8 +89,6 @@ const mapStateToProps = createStructuredSelector({
   userTempItem: selectUserTempItem,
   botQueryIds: selectBotQueryIds,
   userQueryIds: selectUserQueryIds,
-  filteredItems: selectFilteredItems,
-  filteredType: selectFilteredType
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TradeInventory);

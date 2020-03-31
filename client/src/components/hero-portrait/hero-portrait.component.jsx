@@ -8,7 +8,7 @@ import './hero-portrait.component.scss'
 const HeroPortrait = ({ hero, filterHeroesStart, type }) => {
 
   const filterHandle = () => {
-    filterHeroesStart(hero.localized_name, type)
+    filterHeroesStart(type, hero.localized_name)
   }
 
   return (

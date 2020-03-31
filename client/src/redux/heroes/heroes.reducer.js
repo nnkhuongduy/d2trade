@@ -6,17 +6,15 @@ const INITIAL_STATE = {
   isFetching: false,
   errorMessage: null,
   container: null,
-  isFiltering: {
-    bot: false,
-    user: false,
+  bot: {
+    isHeroFiltering: false,
+    filteredHero: null,
+    filteredItemIds: []
   },
-  filteredHero: {
-    bot: null,
-    user: null
-  },
-  filteredItemsId: {
-    bot: [],
-    user: []
+  user: {
+    isHeroFiltering: false,
+    filteredHero: null,
+    filteredItemIds: []
   }
 }
 
@@ -56,29 +54,14 @@ export const heroesReducer = (state = INITIAL_STATE, action) => {
         container: action.payload
       }
 
-    case HeroesTypes.FILTER_HEROES_START:
-      return {
-        ...state,
-        isFiltering: {
-          ...state.isFiltering,
-          [action.filterType]: true,
-        },
-      }
-
     case HeroesTypes.FILTER_HEROES_FINISH:
       return {
         ...state,
-        isFiltering: {
-          ...state.isFiltering,
-          [action.filterType]: action.filterState
-        },
-        filteredHero: {
-          ...state.filteredHero,
-          [action.filterType]: action.filterHero
-        },
-        filteredItemsId: {
-          ...state.filteredItemsId,
-          [action.filterType]: action.filterItems
+        [action.filterType]: {
+          ...state[action.filterType],
+          isHeroFiltering: action.filterState,
+          filteredHero: action.filterHero,
+          filteredItemIds: action.filterArray
         }
       }
 

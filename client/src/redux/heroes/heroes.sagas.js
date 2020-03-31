@@ -2,9 +2,9 @@ import { takeLatest, put, select, all } from 'redux-saga/effects'
 import axios from 'axios'
 
 import { fetchHeroesSuccess, fetchHeroesFail, setHeroesContainer, filterHeroesFinish } from './heroes.actions';
-import { updateRenderedInventory, updateRenderedInventoryStart } from '../inventory/inventory.actions'
+import { updateRenderedInventory, setRenderingInventoryStart } from '../inventory/inventory.actions'
 
-import { selectHeroesData, selectFilteredHero } from './heroes.selectors'
+import { selectHeroesData, selectBotFilteredHero, selectUserFilteredHero } from './heroes.selectors'
 import { selectBotInventory, selectUserInventory } from '../inventory/inventory.selectors'
 
 import { HeroesTypes } from './heroes.types'
@@ -19,56 +19,27 @@ export function* fetchHeroesAsync() {
   }
 }
 
-export function* filterHeroAsync({ type, heroName, filterType }) {
+export function* filterHeroAsync({ filterType, heroName, ...action }) {
   const heroesData = yield select(selectHeroesData);
-  const filteredHero = yield select(selectFilteredHero);
-  const botInventory = yield select(selectBotInventory);
-  const userInventory = yield select(selectUserInventory);
+  const filteredHero = yield filterType === "bot" ? select(selectBotFilteredHero) : select(selectUserFilteredHero);
+  const inventory = yield filterType === "bot" ? select(selectBotInventory) : select(selectUserInventory);
 
-  let filterHero = null;
-  let filterTypeArray = [];
-  let filteredInventory = {
-    bot: [],
-    user: []
-  }
-  let inventory = {
-    bot: botInventory,
-    user: userInventory
-  }
+  let filteredInventory = [];
 
-
-  if (filterType === "global")
-    yield filterTypeArray = ["bot", "user"];
-  else yield filterTypeArray.push(filterType)
-
-  if (filteredHero[filterTypeArray[0]] && filteredHero[filterTypeArray[0]].localized_name === heroName) {
-    yield all(filterTypeArray.map(type => put(filterHeroesFinish(null, type, false, []))))
-
+  if (filteredHero && filteredHero.localized_name === heroName) {
+    yield put(filterHeroesFinish(filterType, null, [], false))
   } else {
-    yield heroesData.forEach(hero => {
-      if (hero.localized_name === heroName) filterHero = hero
-    })
 
-    yield all(filterTypeArray.map(type => {
-      inventory[type].forEach(item => {
-        if (item.item.tags[4].name === heroName) filteredInventory[type].push(item.item.id)
-      })
-    }))
+    const filterHero = yield heroesData.filter(hero => hero.localized_name === heroName)[0];
 
-    yield all(filterTypeArray.map(type => put(filterHeroesFinish(filterHero, type, true, filteredInventory[type]))))
+    yield inventory.forEach(item => item.item.tags[4].name === heroName && filteredInventory.push(item.item.id))
 
+    yield put(filterHeroesFinish(filterType, filterHero, filteredInventory, true))
   }
-
-  yield all(filterTypeArray.map(type => {
-    return type === "bot" ? put(updateRenderedInventory("bot", [])) : put(updateRenderedInventory("user", []))
-  }))
-
-  yield all(filterTypeArray.map(type => {
-    return type === "bot" ? put(updateRenderedInventoryStart("bot")) : put(updateRenderedInventoryStart("user"))
-  }))
 
   yield put(setHeroesContainer(null));
-
+  yield put(updateRenderedInventory(filterType, []));
+  yield put(setRenderingInventoryStart(filterType));
 }
 
 export function* fetchHeroesStart() {

@@ -12,7 +12,7 @@ import { refreshQuery } from '../searching/searching.actions'
 
 import { selectBotQueryIds, selectUserQueryIds, selectBotSearchingState, selectUserSearchingState } from '../searching/searching.selectors'
 import { selectBotInventory, selectUserInventory, selectBotRenderedInventory, selectUserRenderedInventory, selectBotRenderingInventory, selectUserRenderingInventory } from './inventory.selectors'
-import { selectFilteredType, selectFilteredItems } from '../heroes/heroes.selectors'
+import { selectBotFilteredState, selectUserFilteredState, selectBotFilteredItems, selectUserFilteredItems } from '../heroes/heroes.selectors'
 
 export function* fetchInventoryAsync({ type, inventoryType }) {
   try {
@@ -50,15 +50,37 @@ export function* updateRenderedInventoryAsync({ type, inventoryType }) {
 
 export function* setRenderingInventoryAsync({ inventoryType, ...action }) {
   const isSearching = yield inventoryType === "bot" ? select(selectBotSearchingState) : select(selectUserSearchingState);
+  const isHeroFiltering = yield inventoryType === "bot" ? select(selectBotFilteredState) : select(selectUserFilteredState);
 
-  const seachingInventory = yield inventoryType === "bot" ? select(selectBotQueryIds) : select(selectUserQueryIds);
-  const inventory = yield inventoryType === "bot" ? select(selectBotInventory) : select(selectUserInventory);
+  const renderInventory = [];
+  const inventoryArr = [];
+  let renderObj = {};
+  let inventoryCount = 0;
 
-  let renderInventory = [];
   if (isSearching) {
-    renderInventory = seachingInventory
+    const searchInventory = yield inventoryType === "bot" ? select(selectBotQueryIds) : select(selectUserQueryIds);
+
+    yield inventoryArr.push(searchInventory);
+    yield inventoryCount++;
+  }
+  if (isHeroFiltering) {
+    const filterHeroInventory = yield inventoryType === "bot" ? select(selectBotFilteredItems) : select(selectUserFilteredItems);
+
+    yield inventoryArr.push(filterHeroInventory);
+    yield inventoryCount++;
+  }
+
+  if (inventoryCount !== 0) {
+    yield inventoryArr.forEach(inventory => inventory.forEach(id => renderObj[id] ? renderObj[id]++ : renderObj[id] = 1));
+
+    const idArray = yield Object.keys(renderObj);
+
+    yield idArray.forEach(id => {
+      if (renderObj[id] === inventoryCount) renderInventory.push(id);
+    })
   } else {
-    inventory.forEach(item => renderInventory.push(item.item.id));
+    const inventory = yield inventoryType === "bot" ? select(selectBotInventory) : select(selectUserInventory);
+    yield inventory.forEach(item => renderInventory.push(item.item.id));
   }
 
   yield put(setRenderingInventory(inventoryType, renderInventory));

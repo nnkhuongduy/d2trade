@@ -24,16 +24,16 @@ export const setHeroesContainer = type => ({
   payload: type
 })
 
-export const filterHeroesStart = (heroName, filterType) => ({
+export const filterHeroesStart = (filterType, heroName) => ({
   type: HeroesTypes.FILTER_HEROES_START,
   heroName: heroName,
   filterType: filterType
 })
 
-export const filterHeroesFinish = (filterHero, filterType, filterState, filterItems) => ({
+export const filterHeroesFinish = (filterType, filterHero, filterArray, filterState) => ({
   type: HeroesTypes.FILTER_HEROES_FINISH,
-  filterHero: filterHero,
   filterType: filterType,
+  filterHero: filterHero,
   filterState: filterState,
-  filterItems: filterItems
+  filterArray: filterArray
 })
