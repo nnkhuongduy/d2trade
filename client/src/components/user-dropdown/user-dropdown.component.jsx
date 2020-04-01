@@ -14,7 +14,7 @@ const UserDropdown = ({ fowardRef, logOut }) => {
   return (
     <div ref={fowardRef} className="user-drop-down">
       <div className="option"><span>Profile</span></div>
-      <div className="option"><span>Offer Link</span></div>
+      <div className="option"><span>Steam's Offer link</span></div>
       <div className="option" onClick={logOutHandle}><span>Log out</span></div>
     </div>
   )

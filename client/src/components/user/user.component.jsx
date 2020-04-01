@@ -14,9 +14,8 @@ const User = ({ user }) => {
 
   useEffect(() => {
     const clickOutsideHandle = e => {
-      if (dropdown.current && !dropdown.current.contains(e.target) && !e.target.outerHTML.includes("dropdown-arrow")) {
+      if (dropdown.current && !dropdown.current.contains(e.target) && e.target.tagName !== "svg")
         setDropdownState(false)
-      }
     }
 
     document.addEventListener("mousedown", clickOutsideHandle)
@@ -27,10 +26,12 @@ const User = ({ user }) => {
 
   }, [dropdown])
 
+  const dropdownHandleOn = () => {
+    setDropdownState(true);
+  }
 
-
-  const dropdownHandle = () => {
-    setDropdownState(state => !state);
+  const dropdownHandleOff = () => {
+    setDropdownState(false);
   }
 
   return (
@@ -39,7 +40,8 @@ const User = ({ user }) => {
       <span className="account-balance">$ {user.accountBalance}</span>
       <img src={user.portraitUrl} alt="avatar" className="avatar" />
       <span className="username">{user.username}</span>
-      <Icon icon={dropDown} className={"dropdown-arrow"} onClick={dropdownHandle} />
+      {dropdownState ? <div className="dropdown-arrow" onClick={dropdownHandleOff} ><Icon icon={dropDown} width={"1.5em"} height={"1.5em"} rotate={"180deg"} /></div> :
+        <div className="dropdown-arrow" onClick={dropdownHandleOn} ><Icon icon={dropDown} width={"1.5em"} height={"1.5em"} /></div>}
       {dropdownState && <UserDropdown fowardRef={dropdown} />}
     </div>
   )

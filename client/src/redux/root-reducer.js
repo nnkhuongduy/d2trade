@@ -1,4 +1,6 @@
 import { combineReducers } from 'redux';
+import { persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
 
 import inventoryReducer from './inventory/inventory.reducer';
 import tempItemReducer from './temp-item/temp-item.reducer';
@@ -9,7 +11,13 @@ import heroesReducer from './heroes/heroes.reducer';
 import priceFilterReducer from './price-filter/price-filter.reducer';
 import userReducer from './user/user.reducer';
 
-export default combineReducers({
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['user']
+}
+
+const rootReducer = combineReducers({
   inventory: inventoryReducer,
   tempItem: tempItemReducer,
   slotState: slotStateReducer,
@@ -19,3 +27,5 @@ export default combineReducers({
   priceFilter: priceFilterReducer,
   user: userReducer
 });
+
+export default persistReducer(persistConfig, rootReducer);
