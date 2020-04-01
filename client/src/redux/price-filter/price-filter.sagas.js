@@ -9,12 +9,12 @@ import { selectBotInventory, selectUserInventory } from '../inventory/inventory.
 
 export function* priceFilterAsync({ filterType, minValue, maxValue, ...action }) {
   const inventory = yield filterType === "bot" ? select(selectBotInventory) : select(selectUserInventory);
-  const check = parseFloat(minValue) === 0 && parseFloat(maxValue) === 0
+  const check = (parseFloat(minValue) === 0 && parseFloat(maxValue) === 0) || (minValue === "" && maxValue === "")
 
   const filterArray = [];
 
   if (!check) {
-    if (parseFloat(maxValue) === 0) maxValue = 999999;
+    if (parseFloat(maxValue) === 0 || maxValue === "") maxValue = 999999;
     yield inventory.forEach(item => {
       if (parseFloat(item.item.market_price) >= minValue && parseFloat(item.item.market_price) <= maxValue)
         filterArray.push(item.item.id);

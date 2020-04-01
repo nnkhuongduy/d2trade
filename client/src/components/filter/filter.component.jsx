@@ -17,15 +17,17 @@ const Filter = ({
   counter, type, setHeroesContainer, heroesContainer, filterStart,
   botMaxPrice, botMinPrice, userMaxPrice, userMinPrice
 }) => {
-  const [filterMinValue, setFilterMinValue] = useState("");
-  const [filterMaxValue, setFilterMaxValue] = useState("");
+  const [filterMinValue, setFilterMinValue] = useState(0);
+  const [filterMaxValue, setFilterMaxValue] = useState(0);
 
   useEffect(() => {
-    setFilterMaxValue(type === "bot" ? botMaxPrice : userMaxPrice)
+    if (type !== "global")
+      setFilterMaxValue(type === "bot" ? botMaxPrice : userMaxPrice)
   }, [botMaxPrice, userMaxPrice])
 
   useEffect(() => {
-    setFilterMinValue(type === "bot" ? botMinPrice : userMinPrice)
+    if (type !== "global")
+      setFilterMinValue(type === "bot" ? botMinPrice : userMinPrice)
   }, [botMinPrice, userMinPrice])
 
   type = type === undefined ? "global" : type;

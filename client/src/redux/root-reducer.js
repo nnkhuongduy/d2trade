@@ -7,6 +7,7 @@ import clientStatesReducer from './client-states/client-states.reducer';
 import searchingReducer from './searching/searching.reducer';
 import heroesReducer from './heroes/heroes.reducer';
 import priceFilterReducer from './price-filter/price-filter.reducer';
+import userReducer from './user/user.reducer';
 
 export default combineReducers({
   inventory: inventoryReducer,
@@ -16,4 +17,5 @@ export default combineReducers({
   searching: searchingReducer,
   heroes: heroesReducer,
   priceFilter: priceFilterReducer,
+  user: userReducer
 });

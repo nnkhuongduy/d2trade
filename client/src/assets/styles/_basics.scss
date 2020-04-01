@@ -23,3 +23,9 @@ $transition-value: all 0.1s ease-in-out;
     border-radius: 30px;
   }
 }
+
+@mixin hoverState {
+  &:hover {
+    cursor: pointer;
+  }
+}

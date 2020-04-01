@@ -1,14 +1,14 @@
 import React from 'react';
 
 import { ReactComponent as ArrowSVG } from '../../assets/svg/arrow.svg';
-import avatar from '../../assets/images/ava.jpg';
 
 import './user.component.scss';
 
-const User = () => (
+const User = ({ user }) => (
   <div className="user-container">
-    <img src={avatar} alt="avatar" className="avatar" />
-    <span className="username">khuongduy</span>
+    <span className="account-balance">$ {user.accountBalance}</span>
+    <img src={user.portraitUrl} alt="avatar" className="avatar" />
+    <span className="username">{user.username}</span>
     <ArrowSVG className="dropdown-arrow" />
   </div>
 )

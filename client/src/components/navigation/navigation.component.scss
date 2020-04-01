@@ -1,7 +1,15 @@
+@import '../../assets//styles/_basics.scss';
+
 .navigation {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+
+  .log-in {
+    @include hoverState;
+
+    font-weight: 700;
+  }
 }
 
 .setting {

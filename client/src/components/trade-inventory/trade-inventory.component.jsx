@@ -13,6 +13,7 @@ import { updateRenderedInventoryStart } from '../../redux/inventory/inventory.ac
 import { selectBotTempItem, selectUserTempItem } from '../../redux/temp-item/temp-item.selectors';
 import { selectBotInventory, selectUserInventory, selectBotRenderedInventory, selectUserRenderedInventory, selectInventoryState } from '../../redux/inventory/inventory.selectors';
 import { selectBotQueryIds, selectUserQueryIds } from '../../redux/searching/searching.selectors';
+import { selectCurrentUser } from '../../redux/user/user.selectors'
 
 import './trade-inventory.component.scss';
 
@@ -22,6 +23,7 @@ const TradeInventory = ({ mode, type, inventoryState,
   botTempItem, userTempItem,
   updateRenderedInventoryStart,
   botQueryIds, userQueryIds,
+  currentUser
 }) => {
 
   const scrollRef = useRef(null);
@@ -60,9 +62,9 @@ const TradeInventory = ({ mode, type, inventoryState,
   return (
     <div ref={scrollRef} onScroll={onScollHandle} className={`trade-inventory ${mode}`} >
       <div className={`inventory-container ${mode} ${type}`}>
-        {((type === "bot" || type === "user") && mode === "steam" && !inventoryState[type].inventory) && <RollingSVG />}
+        {(mode === "steam" && !inventoryState[type].inventory) && <RollingSVG />}
 
-        {((type === "bot" || type === "user") && mode === "steam" && inventoryState[type].inventory) && inventoryState[type].inventory.map(item => renderInventorySlot(item))}
+        {(mode === "steam" && inventoryState[type].inventory) && inventoryState[type].inventory.map(item => renderInventorySlot(item))}
 
         {(botTempItem && type === "bot" && mode === "bot") && botTempItem.map(item => renderInventorySlot(item))}
         {(userTempItem && type === "user" && mode === "user") && userTempItem.map(item => renderInventorySlot(item))}
@@ -89,6 +91,7 @@ const mapStateToProps = createStructuredSelector({
   userTempItem: selectUserTempItem,
   botQueryIds: selectBotQueryIds,
   userQueryIds: selectUserQueryIds,
+  currentUser: selectCurrentUser
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TradeInventory);

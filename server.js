@@ -66,9 +66,16 @@ const botItemsSchema = new mongoose.Schema({
 const heroesSchema = new mongoose.Schema({
 }, { strict: false })
 
+const userSchema = new mongoose.Schema({
+  username: String,
+  portraitUrl: String,
+  accountBalance: Number
+})
+
 const BotItems = mongoose.model("BotItem", botItemsSchema);
 const UserItems = mongoose.model("UserItem", botItemsSchema);
 const Heroes = mongoose.model("Hero", heroesSchema);
+const Users = mongoose.model("User", userSchema);
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
 
@@ -218,4 +225,8 @@ app.post("/tradeoffer", (req, res) => {
 
 app.get("/heroes", (req, res) => {
   Heroes.find({}, (err, hero) => res.json(hero));
+})
+
+app.get("/users", (req, res) => {
+  Users.findOne({ username: "boybay001" }, (err, user) => res.json(user));
 })
