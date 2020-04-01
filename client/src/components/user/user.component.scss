@@ -1,37 +1,41 @@
 @import '../../assets/styles/_fonts.scss';
-
-@mixin hover {
-  &:hover {
-    cursor: pointer;
-  }
-}
+@import '../../assets/styles/_basics.scss';
 
 .user-container {
   display: flex;
   align-items: center;
+  position: relative;
+
+  .credit-card {
+    @include hoverState;
+    margin-right: 20px;
+
+  }
 
   .account-balance {
     margin-right: 20px;
     font-weight: 700;
+    background-color: white;
+    padding: 5px 10px;
+    border-radius: $border-radius-value;
   }
 
   .avatar {
     width: 40px;
     margin-right: 20px;
-    @include hover;
+
   }
 
   .username {
+    @include hoverState;
     font-family: $header-font;
-    font-weight: 700;
     margin-right: 20px;
-    @include hover;
 
   }
 
   .dropdown-arrow {
-    margin-right: 40px;
-    @include hover;
+    @include hoverState;
+    margin-right: 20px;
   }
 
 }

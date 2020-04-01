@@ -13,3 +13,7 @@ export const logInFail = errorMessage => ({
   type: UserTypes.LOG_IN_FAIL,
   errorMessage: errorMessage
 })
+
+export const logOut = () => ({
+  type: UserTypes.LOG_OUT,
+})

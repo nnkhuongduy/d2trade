@@ -1,0 +1,47 @@
+@import '../../assets/styles/_colors.scss';
+@import '../../assets/styles/_basics.scss';
+
+.user-drop-down {
+  position: absolute;
+  background-color: $primary-gray-pink;
+  right: 0;
+  top: calc(100% + 10px);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: left;
+  border: 2px solid $neutral-dark-blue;
+  font-size: 0.9rem;
+
+  .option {
+    @include hoverState;
+
+    padding: 10px 15px;
+
+    span {
+      position: relative;
+
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        transition: width 0.2s ease-in-out;
+      }
+    }
+
+    &:hover {
+      background-color: $primary-red-pink;
+
+      span {
+
+        &:after {
+          border: 1px solid black;
+          width: 100%;
+        }
+      }
+    }
+  }
+}

@@ -1,11 +1,13 @@
 import { SlotStateTypes } from './slot-state.types';
 
-export const toggleSlotState = slot => ({
+export const toggleSlotState = (slotType, id, status) => ({
   type: SlotStateTypes.TOGGLE_SLOT_STATE,
-  payload: slot
+  slotType: slotType,
+  id: id,
+  status: status
 })
 
-export const refreshSlotsState = type => ({
+export const refreshSlotsState = (slotType) => ({
   type: SlotStateTypes.REFRESH_SLOTS_STATE,
-  payload: type
+  slotType: slotType
 })

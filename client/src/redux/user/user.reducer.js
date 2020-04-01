@@ -28,6 +28,13 @@ export const userReducer = (state = INITIAL_STATE, action) => {
         errorMessage: action.errorMessage
       }
 
+    case UserTypes.LOG_OUT:
+      return {
+        ...state,
+        user: null,
+        errorMessage: null
+      }
+
     default:
       return state
   }

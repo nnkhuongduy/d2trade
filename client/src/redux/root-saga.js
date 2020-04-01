@@ -10,7 +10,7 @@ import { fetchOfferStatusStart } from './client-states/client-states.sagas';
 import { querySearchingStart, heroSearchingStart } from './searching/searching.sagas'
 import { fetchHeroesStart, filterHeroStart } from './heroes/heroes.sagas'
 import { priceFilterStart } from './price-filter/price-filter.sagas'
-import { fetchUserStart } from './user/user.sagas'
+import { fetchUserStart, logOutStart } from './user/user.sagas'
 
 export default function* rootSaga() {
   yield all([
@@ -24,6 +24,7 @@ export default function* rootSaga() {
     call(filterHeroStart),
     call(setRenderingInventoryStart),
     call(priceFilterStart),
-    call(fetchUserStart)
+    call(fetchUserStart),
+    call(logOutStart)
   ]);
 }

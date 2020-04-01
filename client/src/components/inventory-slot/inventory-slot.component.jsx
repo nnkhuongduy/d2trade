@@ -5,7 +5,7 @@ import { createStructuredSelector } from 'reselect';
 
 import { setBotTempItem, unsetBotTempItem, setUserTempItem, unsetUserTempItem } from '../../redux/temp-item/temp-item.actions';
 import { toggleSlotState } from '../../redux/slot-state/slot-state.actions';
-import { selectSlotStates } from '../../redux/slot-state/slot-state.selectors';
+import { selectBotSlotStates, selectUserSlotStates } from '../../redux/slot-state/slot-state.selectors';
 import { selectBotRenderedInventory, selectUserRenderedInventory } from '../../redux/inventory/inventory.selectors';
 
 import './inventory-slot.component.scss';
@@ -13,7 +13,7 @@ import './inventory-slot.component.scss';
 const InventorySlot = ({
   item, mode, type,
   setBotTempItem, unsetBotTempItem, setUserTempItem, unsetUserTempItem,
-  slotState, toggleSlotState,
+  botSlotStates, userSlotStates, toggleSlotState,
   botRenderedInventory, userRenderedInventory,
 }) => {
   // const [price, setPrice] = useState();
@@ -26,7 +26,7 @@ const InventorySlot = ({
   const itemRarityStyle = {
     backgroundColor: `#${item.tags[1].color}`,
     color: ((item.tags[1].name === "Common" || item.tags[1].name === "Immortal") ? "black" : "white"),
-    filter: mode === "steam" && ((slotState[slotId]) ? "grayscale(100%) brightness(50%)" : ""),
+    filter: mode === "steam" && (type === "bot" ? botSlotStates[slotId] : userSlotStates[slotId]) ? "grayscale(100%) brightness(50%)" : "",
     display: mode === "steam" ? displayState : "block"
   }
 
@@ -67,33 +67,21 @@ const InventorySlot = ({
       id: item.id,
       item: item
     }
-    if (mode === "steam" && type === "bot" && (slotState[slotId] === false || slotState[slotId] === undefined)) {
+    if (mode === "steam" && type === "bot" && (botSlotStates[slotId] === false || botSlotStates[slotId] === undefined)) {
       setBotTempItem(tempItem);
-      toggleSlotState({
-        id: slotId,
-        status: true
-      })
+      toggleSlotState(type, slotId, true)
     }
-    if (mode === "steam" && type === "user" && (slotState[slotId] === false || slotState[slotId] === undefined)) {
+    if (mode === "steam" && type === "user" && (userSlotStates[slotId] === false || userSlotStates[slotId] === undefined)) {
       setUserTempItem(tempItem);
-      toggleSlotState({
-        id: slotId,
-        status: true
-      })
+      toggleSlotState(type, slotId, true)
     }
-    if ((mode === "bot" && type === "bot") || slotState[slotId] === true) {
+    if ((mode === "bot" && type === "bot") || botSlotStates[slotId] === true) {
       unsetBotTempItem(tempItem);
-      toggleSlotState({
-        id: slotId,
-        status: false
-      })
+      toggleSlotState(type, slotId, false)
     }
-    if ((mode === "bot" && type === "user") || slotState[slotId] === true) {
+    if ((mode === "bot" && type === "user") || userSlotStates[slotId] === true) {
       unsetUserTempItem(tempItem);
-      toggleSlotState({
-        id: slotId,
-        status: false
-      })
+      toggleSlotState(type, slotId, false)
     }
   }
 
@@ -111,11 +99,12 @@ const mapDispatchToProps = dispatch => ({
   unsetBotTempItem: item => dispatch(unsetBotTempItem(item)),
   setUserTempItem: item => dispatch(setUserTempItem(item)),
   unsetUserTempItem: item => dispatch(unsetUserTempItem(item)),
-  toggleSlotState: slot => dispatch(toggleSlotState(slot)),
+  toggleSlotState: (type, id, status) => dispatch(toggleSlotState(type, id, status)),
 })
 
 const mapStateToProps = createStructuredSelector({
-  slotState: selectSlotStates,
+  botSlotStates: selectBotSlotStates,
+  userSlotStates: selectUserSlotStates,
   botRenderedInventory: selectBotRenderedInventory,
   userRenderedInventory: selectUserRenderedInventory,
 })
