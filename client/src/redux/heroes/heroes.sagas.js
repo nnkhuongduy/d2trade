@@ -32,7 +32,7 @@ export function* filterHeroAsync({ filterType, heroName, ...action }) {
 
     const filterHero = yield heroesData.filter(hero => hero.localized_name === heroName)[0];
 
-    yield inventory.forEach(item => item.item.tags[4].name === heroName && filteredInventory.push(item.item.id))
+    yield inventory.forEach(item => item.tags[4].name === heroName && filteredInventory.push(item.id))
 
     yield put(filterHeroesFinish(filterType, filterHero, filteredInventory, true))
   }

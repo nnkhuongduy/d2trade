@@ -84,7 +84,7 @@ const steamUserSchema = new mongoose.Schema({}, { strict: false })
 
 const BotItems = mongoose.model("BotItem", itemsSchema);
 const UserItems = mongoose.model("UserItem", itemsSchema);
-const Heroes = mongoose.model("Hero", heroesSchema);
+const Heroes = mongoose.model("Hero", heroesSchema, "Hero");
 const SteamUsers = mongoose.model("SteamUser", steamUserSchema);
 
 passport.serializeUser((user, done) => {

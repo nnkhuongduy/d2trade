@@ -53,7 +53,7 @@ export function* updateRenderedInventoryAsync({ type, inventoryType }) {
 
   const updateArray = yield renderingInventory.slice(0, renderedInventory.length + InventoryActionTypes.RENDERED_INVENTORY_UPDATE_INTERVAL);
 
-  yield put(updateRenderedInventory(inventoryType, updateArray));
+  yield updateArray.length !== renderedInventory.length && put(updateRenderedInventory(inventoryType, updateArray));
 }
 
 export function* setRenderingInventoryAsync({ inventoryType, ...action }) {
@@ -95,7 +95,7 @@ export function* setRenderingInventoryAsync({ inventoryType, ...action }) {
     })
   } else {
     const inventory = yield inventoryType === "bot" ? select(selectBotInventory) : select(selectUserInventory);
-    yield inventory.forEach(item => renderInventory.push(item.item.id));
+    yield inventory.forEach(item => renderInventory.push(item.id));
   }
 
   yield put(setRenderingInventory(inventoryType, renderInventory));

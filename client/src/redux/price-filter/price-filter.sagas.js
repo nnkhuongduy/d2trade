@@ -16,8 +16,8 @@ export function* priceFilterAsync({ filterType, minValue, maxValue, ...action })
   if (!check) {
     if (parseFloat(maxValue) === 0 || maxValue === "") maxValue = 999999;
     yield inventory.forEach(item => {
-      if (parseFloat(item.item.market_price) >= minValue && parseFloat(item.item.market_price) <= maxValue)
-        filterArray.push(item.item.id);
+      if (parseFloat(item.market_price) >= minValue && parseFloat(item.market_price) <= maxValue)
+        filterArray.push(item.id);
     })
   }
 

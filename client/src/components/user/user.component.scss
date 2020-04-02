@@ -6,6 +6,12 @@
   align-items: center;
   position: relative;
 
+  .steam-trade-url {
+    @include hoverState;
+    @include spanHoverEffect;
+    margin-right: 50px;
+  }
+
   .credit-card {
     @include hoverState;
     margin-right: 20px;

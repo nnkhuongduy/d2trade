@@ -18,10 +18,17 @@
   flex-wrap: wrap;
   padding: 1.5%;
   padding-right: 0;
+  overflow-x: hidden;
 
   svg {
     margin: 4% auto;
     color: white;
     opacity: 0.5;
+  }
+
+  .error-message {
+    width: 100%;
+    text-align: center;
+    color: white;
   }
 }

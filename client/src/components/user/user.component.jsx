@@ -36,6 +36,7 @@ const User = ({ user }) => {
 
   return (
     <div className="user-container">
+      <span className="steam-trade-url"><span>Change Steam Trade URL</span></span>
       <Icon icon={creditCardPlus} width={"2em"} height={"2em"} className={"credit-card"} />
       <span className="account-balance">$ {user.accountBalance}</span>
       <img src={user.avatarmedium} alt="avatar" className="avatar" />

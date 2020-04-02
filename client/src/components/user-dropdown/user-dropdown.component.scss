@@ -26,34 +26,15 @@
 
   .option {
     @include hoverState;
+    @include spanHoverEffect;
 
     padding: 10px 15px;
     width: 100%;
     box-sizing: border-box;
 
-    span {
-      position: relative;
-      float: right;
-
-      &:after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 0;
-        transition: width 0.2s ease-in-out;
-      }
-    }
-
     &:hover {
       background-color: $primary-red-pink;
 
-      span {
-        &:after {
-          border: 1px solid black;
-          width: 100%;
-        }
-      }
     }
   }
 }

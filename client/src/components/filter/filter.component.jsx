@@ -6,7 +6,7 @@ import Button from '../button/button.component';
 import Heroes from '../heroes/heroes.component';
 
 import { setHeroesContainer } from '../../redux/heroes/heroes.actions'
-import { filterStart } from '../../redux/price-filter/price-filter.actions'
+import { filterStart, resetPriceFilter } from '../../redux/price-filter/price-filter.actions'
 
 import { selectHeroesContainer } from '../../redux/heroes/heroes.selectors'
 import { selectBotMaxPrice, selectBotMinPrice, selectUserMaxPrice, selectUserMinPrice } from '../../redux/price-filter/price-filter.selectors'
@@ -15,10 +15,15 @@ import './filter.component.scss';
 
 const Filter = ({
   counter, type, setHeroesContainer, heroesContainer, filterStart,
-  botMaxPrice, botMinPrice, userMaxPrice, userMinPrice
+  botMaxPrice, botMinPrice, userMaxPrice, userMinPrice, resetPriceFilter
 }) => {
   const [filterMinValue, setFilterMinValue] = useState(0);
   const [filterMaxValue, setFilterMaxValue] = useState(0);
+  const [applyButtonState, setApplyButtonState] = useState(true);
+
+  useEffect(() => {
+    if (applyButtonState === false) setApplyButtonState(true);
+  }, [filterMinValue, filterMaxValue])
 
   useEffect(() => {
     if (type !== "global")
@@ -52,6 +57,16 @@ const Filter = ({
       filterStart("bot", filterMinValue, filterMaxValue)
       filterStart("user", filterMinValue, filterMaxValue)
     } else filterStart(type, filterMinValue, filterMaxValue)
+    setApplyButtonState(false);
+  }
+
+  const filterCancelHandle = () => {
+    if (type === "global") {
+      filterStart("bot", 0, 0)
+      filterStart("user", 0, 0)
+      setFilterMinValue(0);
+      setFilterMaxValue(0);
+    } else filterStart(type, 0, 0)
   }
 
   return (
@@ -67,7 +82,9 @@ const Filter = ({
           <span>$</span>
           <input className="filter-box filter-max" value={filterMaxValue} onChange={onChangeHandle} />
         </div>
-        <Button classes={["btn-filter", `btn-filter-${type}`]} onClickHandle={filterAppyHandle}>APPLY</Button>
+        {applyButtonState ? <Button classes={["btn-filter", `btn-filter-${type}`]} onClickHandle={filterAppyHandle}>APPLY</Button> :
+          <Button classes={["btn-filter", `btn-filter-${type}`]} onClickHandle={filterCancelHandle}>CANCEL FILTER</Button>
+        }
       </div>
       <Button classes={["btn-filter"]} onClickHandle={heroClickHandle} >HERO</Button>
       {heroesContainer === type && <Heroes type={type} />}
@@ -77,7 +94,8 @@ const Filter = ({
 
 const mapDispatchToProps = dispatch => ({
   setHeroesContainer: type => dispatch(setHeroesContainer(type)),
-  filterStart: (type, minValue, maxValue) => dispatch(filterStart(type, minValue, maxValue))
+  filterStart: (type, minValue, maxValue) => dispatch(filterStart(type, minValue, maxValue)),
+  resetPriceFilter: type => dispatch(resetPriceFilter(type))
 })
 
 const mapStateToProps = createStructuredSelector({

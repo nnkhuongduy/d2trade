@@ -29,3 +29,29 @@ $transition-value: all 0.1s ease-in-out;
     cursor: pointer;
   }
 }
+
+@mixin spanHoverEffect {
+  span {
+    position: relative;
+    float: right;
+
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      transition: width 0.2s ease-in-out;
+    }
+
+  }
+
+  &:hover {
+    span {
+      &:after {
+        border: 1px solid black;
+        width: 100%;
+      }
+    }
+  }
+}

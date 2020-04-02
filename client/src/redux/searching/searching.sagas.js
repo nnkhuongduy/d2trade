@@ -21,8 +21,8 @@ export function* querySearchingAsync({ queryType, query, ...action }) {
 
   if (query !== "") {
     yield inventory.forEach(item => {
-      if (_.lowerCase(item.item.market_hash_name).includes(_.lowerCase(query))) {
-        queryArray.push(item.item.id);
+      if (_.lowerCase(item.market_hash_name).includes(_.lowerCase(query))) {
+        queryArray.push(item.id);
       }
     })
   }

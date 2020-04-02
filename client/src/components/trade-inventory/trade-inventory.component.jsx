@@ -62,7 +62,10 @@ const TradeInventory = ({ mode, type, inventoryState,
   return (
     <div ref={scrollRef} onScroll={onScollHandle} className={`trade-inventory ${mode}`} >
       <div className={`inventory-container ${mode} ${type}`}>
-        {(mode === "steam" && !inventoryState[type].inventory) && <RollingSVG />}
+        {(mode === "steam" && inventoryState[type].isFetching) && <RollingSVG />}
+
+        {(mode === "steam" && !inventoryState[type].isFetching && inventoryState[type].errorMessage !== undefined) &&
+          <div className="error-message">There's an error loading the inventory. Please try again after a while</div>}
 
         {(mode === "steam" && inventoryState[type].inventory) && inventoryState[type].inventory.map(item => renderInventorySlot(item))}
 
