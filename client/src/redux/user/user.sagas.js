@@ -5,7 +5,7 @@ import { UserTypes } from './user.types'
 
 import { logInSuccessful, logInFail } from './user.actions'
 import { updateRenderedInventory, fetchInventorySuccess, setRenderingInventory } from '../inventory/inventory.actions'
-import { refreshUserTempItems } from '../temp-item/temp-item.actions'
+import { refreshTempItems } from '../temp-item/temp-item.actions'
 import { refreshSlotsState } from '../slot-state/slot-state.actions'
 import { refreshQuery } from '../searching/searching.actions'
 import { resetHeroFilter } from '../heroes/heroes.actions'
@@ -32,16 +32,16 @@ export function* fetchUserAsync() {
 }
 
 export function* logOutAsync() {
-  yield axios('/auth/logout');
-
   yield put(fetchInventorySuccess("user", []))
   yield put(updateRenderedInventory("user", []))
   yield put(setRenderingInventory("user", []))
-  yield put(refreshUserTempItems())
+  yield put(refreshTempItems("user"))
   yield put(refreshSlotsState("user"))
   yield put(refreshQuery("user"))
   yield put(resetHeroFilter("user"))
   yield put(resetPriceFilter("user"))
+
+  yield axios('/auth/logout');
 }
 
 export function* fetchUserStart() {

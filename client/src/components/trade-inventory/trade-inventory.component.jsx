@@ -56,7 +56,7 @@ const TradeInventory = ({ mode, type, inventoryState,
   }
 
   const renderInventorySlot = (item) => (
-    <InventorySlot key={item.item.id} item={item.item} mode={mode} type={type}></InventorySlot>
+    <InventorySlot key={item.id} item={item} mode={mode} type={type}></InventorySlot>
   )
 
   return (

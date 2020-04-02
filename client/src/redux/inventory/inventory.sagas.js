@@ -16,27 +16,32 @@ import { selectBotQueryIds, selectUserQueryIds, selectBotSearchingState, selectU
 import { selectBotInventory, selectUserInventory, selectBotRenderedInventory, selectUserRenderedInventory, selectBotRenderingInventory, selectUserRenderingInventory } from './inventory.selectors'
 import { selectBotFilteredState, selectUserFilteredState, selectBotFilteredItems, selectUserFilteredItems } from '../heroes/heroes.selectors'
 import { selectBotPriceFilteredState, selectUserPriceFilteredState, selectBotPriceFilteredIds, selectUserPriceFilteredIds } from '../price-filter/price-filter.selectors'
+import { selectCurrentUser } from '../user/user.selectors'
 
 export function* fetchInventoryAsync({ type, inventoryType }) {
   try {
+    const currentUser = yield select(selectCurrentUser);
     const miniInventory = [];
-    const result = yield inventoryType === "bot" ? axios('/inventory') : axios('/inventory2');
+    const userSteamId = currentUser && currentUser.steamid;
+    const result = yield inventoryType === "bot" ? axios('/inventory/bot') : axios(`/inventory/${userSteamId}`);
 
-    const inventory = yield result.data.map(item => {
-      return ({
-        ...item,
-        item: {
-          ...item.item,
+    if (result.status === 200) {
+      const inventory = yield result.data.map(item => {
+        return ({
+          ...item,
           market_price: (Math.random() * (40 - 0.01) + 0.01).toFixed(2)
-        }
-      })
-    });
+        })
+      });
 
-    yield inventory.forEach(item => miniInventory.push(item.item.id));
+      yield inventory.forEach(item => miniInventory.push(item.id));
 
-    yield put(fetchInventorySuccess(inventoryType, inventory));
-    yield put(setRenderingInventory(inventoryType, miniInventory));
-    yield put(updateRenderedInventoryStart(inventoryType));
+      yield put(fetchInventorySuccess(inventoryType, inventory));
+      yield put(setRenderingInventory(inventoryType, miniInventory));
+      yield put(updateRenderedInventoryStart(inventoryType));
+    } else {
+      yield put(fetchInventoryFailure(inventoryType, result.statusMessage));
+    }
+
   } catch (error) {
     yield put(fetchInventoryFailure(inventoryType, error.message));
   }

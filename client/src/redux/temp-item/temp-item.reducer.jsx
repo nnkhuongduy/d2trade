@@ -1,46 +1,39 @@
 import { TempItemTypes } from './temp-item.types';
 
 const INITIAL_STATE = {
-  botTempItem: [],
-  userTempItem: []
+  tempItem: {
+    bot: [],
+    user: []
+  }
 }
 
 const tempItemReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case TempItemTypes.SET_BOT_TEMP_ITEM:
+    case TempItemTypes.SET_TEMP_ITEM:
       return {
         ...state,
-        botTempItem: [...state.botTempItem, action.payload]
+        tempItem: {
+          ...state.tempItem,
+          [action.tempType]: [...state.tempItem[action.tempType], action.item]
+        }
       }
 
-    case TempItemTypes.UNSET_BOT_TEMP_ITEM:
+    case TempItemTypes.UNSET_TEMP_ITEM:
       return {
         ...state,
-        botTempItem: state.botTempItem.filter(item => item.id !== action.payload.id)
+        tempItem: {
+          ...state.tempItem,
+          [action.tempType]: state.tempItem[action.tempType].filter(item => item.id !== action.item.id)
+        }
       }
 
-    case TempItemTypes.SET_USER_TEMP_ITEM:
+    case TempItemTypes.REFRESH_TEMP_ITEMS:
       return {
         ...state,
-        userTempItem: [...state.userTempItem, action.payload]
-      }
-
-    case TempItemTypes.UNSET_USER_TEMP_ITEM:
-      return {
-        ...state,
-        userTempItem: state.userTempItem.filter(item => item.id !== action.payload.id)
-      }
-
-    case TempItemTypes.REFRESH_BOT_TEMP_ITEMS:
-      return {
-        ...state,
-        botTempItem: []
-      }
-
-    case TempItemTypes.REFRESH_USER_TEMP_ITEMS:
-      return {
-        ...state,
-        userTempItem: []
+        tempItem: {
+          ...state.tempItem,
+          [action.tempType]: []
+        }
       }
 
     default:

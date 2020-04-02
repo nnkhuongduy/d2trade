@@ -71,7 +71,7 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, useFind
 
 const port = 5000;
 const steamInfo = {
-  steamId: '76561198083658783',
+  steamId: process.env.BOT_STEAM_ID,
   appId: 570,
   contextId: 2
 }
@@ -135,32 +135,34 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.listen(port, () => console.log(`Server started on port ${port}`));
 
-app.get('/inventory', (req, res) => {
-  //let inventory = [];
+app.get('/inventory/bot', (req, res) => {
+  // BotItems.find({}, (err, items) => {
+  //   res.json(items);
+  // })
 
-  BotItems.find({}, (err, items) => {
-    res.json(items);
+  manager.getInventoryContents(steamInfo.appId, steamInfo.contextId, true, (err, inventory) => {
+    if (err) {
+      res.statusMessage = "Can't get bot inventory";
+      res.sendStatus(503);
+
+    } else {
+      const itemsOnBlackList = {};
+
+      manager.getOffersContainingItems(inventory, false, (err, sent, received) => {
+        if (err) {
+          res.statusMessage = "Can't get offers containing bot item(s)";
+          res.sendStatus(503);
+        } else {
+          sent.forEach(offer => offer.itemsToGive.forEach(item => itemsOnBlackList[item.id] ? itemsOnBlackList[item.id]++ : itemsOnBlackList[item.id] = 1))
+
+          inventory = inventory.filter(item => !itemsOnBlackList[item.id]);
+
+          res.json(inventory)
+        }
+      })
+
+    }
   })
-
-  // inventoryApi.get(steamInfo.steamId, steamInfo.appId, steamInfo.contextId, true, 10)
-  //   .then(steamRes => {
-  //     JSON.stringify(steamRes.inventory.map(item => {
-  //       const botitem = new BotItems({
-  //         item: item
-  //       })
-  //       console.log("Sucessfully added item to database");
-  //       botitem.save();
-  //     }));
-  //   })
-  //   .then(steamRes => res.json(inventory))
-  //   .catch(err => console.log(err));
-
-  // inventoryApi.get(steamInfo.steamId, steamInfo.appId, steamInfo.contextId, true, 10)
-  //   .then(steamRes => {
-  //     JSON.stringify(steamRes.inventory.map(item => inventory.push(item)));
-  //   })
-  //   .then(steamRes => res.json(inventory))
-  //   .catch(err => console.log(err));
 })
 
 app.get('/itemprice/:id', (req, res) => {
@@ -211,19 +213,46 @@ app.get('/itemprice/:id', (req, res) => {
   handle();
 })
 
-app.get("/inventory2", (req, res) => {
-  UserItems.find({}, (err, items) => {
-    res.json(items);
+app.get("/inventory/:steamid", (req, res) => {
+  // UserItems.find({}, (err, items) => {
+  //   res.json(items);
+  // })
+  const steamId = req.params.steamid
+
+  manager.getUserInventoryContents(steamId, steamInfo.appId, steamInfo.contextId, true, (err, inventory) => {
+    if (err) {
+      res.statusMessage = "Can't get user inventory";
+      res.sendStatus(503);
+
+    } else {
+      const itemsOnBlackList = {};
+
+      manager.getOffersContainingItems(inventory, false, (err, sent, received) => {
+        if (err) {
+          res.statusMessage = "Can't get offers containing user item(s)";
+          res.sendStatus(503);
+        } else {
+          sent.forEach(offer => offer.itemsToReceive.forEach(item => itemsOnBlackList[item.id] ? itemsOnBlackList[item.id]++ : itemsOnBlackList[item.id] = 1))
+
+          inventory = inventory.filter(item => !itemsOnBlackList[item.id]);
+
+          res.json(inventory)
+        }
+      })
+
+    }
   })
 })
 
 app.post("/tradeoffer", (req, res) => {
+  //check balance
+
   manager.getInventoryContents(steamInfo.appId, steamInfo.contextId, true, (err, botInventory) => {
     if (err) {
       console.log(err);
       res.sendStatus(503);
     } else {
-      const offer = manager.createOffer(req.body.userData.steamOfferUrl)
+      const offer = manager.createOffer(req.body.userData.tradeOfferUrl)
       let botItems = [];
       let userItems = [];
 
@@ -235,7 +264,7 @@ app.post("/tradeoffer", (req, res) => {
         })
       })
 
-      manager.getUserInventoryContents(req.body.userData.steamId, steamInfo.appId, steamInfo.contextId, true, (err, userInventory) => {
+      manager.getUserInventoryContents(req.body.userData.steamid, steamInfo.appId, steamInfo.contextId, true, (err, userInventory) => {
         if (err) {
           console.log(err);
           res.sendStatus(503);

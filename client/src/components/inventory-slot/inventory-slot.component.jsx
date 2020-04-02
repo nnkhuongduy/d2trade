@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { createStructuredSelector } from 'reselect';
 
-import { setBotTempItem, unsetBotTempItem, setUserTempItem, unsetUserTempItem } from '../../redux/temp-item/temp-item.actions';
+import { setTempItem, unsetTempItem } from '../../redux/temp-item/temp-item.actions';
 import { toggleSlotState } from '../../redux/slot-state/slot-state.actions';
 import { selectBotSlotStates, selectUserSlotStates } from '../../redux/slot-state/slot-state.selectors';
 import { selectBotRenderedInventory, selectUserRenderedInventory } from '../../redux/inventory/inventory.selectors';
@@ -12,7 +12,7 @@ import './inventory-slot.component.scss';
 
 const InventorySlot = ({
   item, mode, type,
-  setBotTempItem, unsetBotTempItem, setUserTempItem, unsetUserTempItem,
+  setTempItem, unsetTempItem,
   botSlotStates, userSlotStates, toggleSlotState,
   botRenderedInventory, userRenderedInventory,
 }) => {
@@ -63,24 +63,20 @@ const InventorySlot = ({
   // }, [])
 
   const onClickHandle = () => {
-    const tempItem = {
-      id: item.id,
-      item: item
-    }
     if (mode === "steam" && type === "bot" && (botSlotStates[slotId] === false || botSlotStates[slotId] === undefined)) {
-      setBotTempItem(tempItem);
+      setTempItem(type, item);
       toggleSlotState(type, slotId, true)
     }
     if (mode === "steam" && type === "user" && (userSlotStates[slotId] === false || userSlotStates[slotId] === undefined)) {
-      setUserTempItem(tempItem);
+      setTempItem(type, item);
       toggleSlotState(type, slotId, true)
     }
     if ((mode === "bot" && type === "bot") || botSlotStates[slotId] === true) {
-      unsetBotTempItem(tempItem);
+      unsetTempItem(type, item);
       toggleSlotState(type, slotId, false)
     }
     if ((mode === "bot" && type === "user") || userSlotStates[slotId] === true) {
-      unsetUserTempItem(tempItem);
+      unsetTempItem(type, item);
       toggleSlotState(type, slotId, false)
     }
   }
@@ -95,10 +91,8 @@ const InventorySlot = ({
 }
 
 const mapDispatchToProps = dispatch => ({
-  setBotTempItem: item => dispatch(setBotTempItem(item)),
-  unsetBotTempItem: item => dispatch(unsetBotTempItem(item)),
-  setUserTempItem: item => dispatch(setUserTempItem(item)),
-  unsetUserTempItem: item => dispatch(unsetUserTempItem(item)),
+  setTempItem: (type, item) => dispatch(setTempItem(type, item)),
+  unsetTempItem: (type, item) => dispatch(unsetTempItem(type, item)),
   toggleSlotState: (type, id, status) => dispatch(toggleSlotState(type, id, status)),
 })
 
