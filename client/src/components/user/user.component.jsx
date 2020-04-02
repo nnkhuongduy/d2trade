@@ -38,8 +38,8 @@ const User = ({ user }) => {
     <div className="user-container">
       <Icon icon={creditCardPlus} width={"2em"} height={"2em"} className={"credit-card"} />
       <span className="account-balance">$ {user.accountBalance}</span>
-      <img src={user.portraitUrl} alt="avatar" className="avatar" />
-      <span className="username">{user.username}</span>
+      <img src={user.avatarmedium} alt="avatar" className="avatar" />
+      <span className="username">{user.personaname}</span>
       {dropdownState ? <div className="dropdown-arrow" onClick={dropdownHandleOff} ><Icon icon={dropDown} width={"1.5em"} height={"1.5em"} rotate={"180deg"} /></div> :
         <div className="dropdown-arrow" onClick={dropdownHandleOn} ><Icon icon={dropDown} width={"1.5em"} height={"1.5em"} /></div>}
       {dropdownState && <UserDropdown fowardRef={dropdown} />}

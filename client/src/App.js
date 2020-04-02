@@ -9,16 +9,23 @@ import Footer from './components/footer/footer.component';
 import BlackScreen from './components/black-screen/black-screen.component';
 
 import { fetchHeroesStart } from './redux/heroes/heroes.actions'
+import { fetchInventoryStart } from './redux/inventory/inventory.actions'
 
 import { selectBlackScreenState } from './redux/client-states/client-states.selectors';
+import { selectCurrentUser } from './redux/user/user.selectors'
 
 import './App.scss';
 
-const App = ({ blackScreenState, fetchHeroesStart }) => {
+const App = ({ blackScreenState, fetchHeroesStart, fetchInventoryStart, currentUser }) => {
+
   useEffect(() => {
-    fetchHeroesStart()
+    fetchHeroesStart();
+    fetchInventoryStart("bot");
   }, []);
 
+  useEffect(() => {
+    if (currentUser) fetchInventoryStart("user");
+  }, [currentUser])
 
   return (
     <>
@@ -31,11 +38,13 @@ const App = ({ blackScreenState, fetchHeroesStart }) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  fetchHeroesStart: () => dispatch(fetchHeroesStart())
+  fetchHeroesStart: () => dispatch(fetchHeroesStart()),
+  fetchInventoryStart: type => dispatch(fetchInventoryStart(type))
 })
 
 const mapStateToProps = createStructuredSelector({
-  blackScreenState: selectBlackScreenState
+  blackScreenState: selectBlackScreenState,
+  currentUser: selectCurrentUser
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

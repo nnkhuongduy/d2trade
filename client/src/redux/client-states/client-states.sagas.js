@@ -4,17 +4,20 @@ import axios from 'axios';
 import { ClientStatesTypes } from './client-states.types';
 
 import { selectStateTempItem } from '../temp-item/temp-item.selectors';
+import { selectCurrentUser } from '../user/user.selectors'
 
 import { toggleBlackScreen, fetchOfferStatusSuccess, fetchOfferStatusFailure } from '../../redux/client-states/client-states.actions';
 
 export function* fetchOfferStatusAsync() {
   try {
+    const tempItem = yield select(selectStateTempItem);
+    const currentUser = yield select(selectCurrentUser);
+
     let itemObject = {
+      userData: currentUser,
       user: [],
       bot: []
     }
-
-    const tempItem = yield select(selectStateTempItem);
 
     tempItem.userTempItem.forEach(item => {
       itemObject.user.push(item.id);

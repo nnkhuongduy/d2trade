@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
@@ -6,21 +6,11 @@ import TradingCounter from '../trading-counter/trading-counter.component';
 import TradeInventory from '../trade-inventory/trade-inventory.component';
 import SteamInventoryArea from '../steam-inventory-area/steam-inventory-area.component';
 
-import { fetchInventoryStart } from '../../redux/inventory/inventory.actions'
-
 import { selectCurrentUser } from '../../redux/user/user.selectors'
 
 import './trading-area.component.scss';
 
-const TradingArea = ({ type, fetchInventoryStart, currentUser }) => {
-
-  useEffect(() => {
-    fetchInventoryStart(type === "bot" && "bot");
-  }, [])
-
-  useEffect(() => {
-    currentUser && fetchInventoryStart("user");
-  }, [currentUser])
+const TradingArea = ({ type, currentUser }) => {
 
   return (
     <div className="trading-area">
@@ -40,8 +30,4 @@ const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser
 })
 
-const mapDispatchToProps = dispatch => ({
-  fetchInventoryStart: type => dispatch(fetchInventoryStart(type))
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(TradingArea);
+export default connect(mapStateToProps)(TradingArea);

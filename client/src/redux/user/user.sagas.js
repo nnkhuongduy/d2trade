@@ -13,15 +13,27 @@ import { resetPriceFilter } from '../price-filter/price-filter.actions'
 
 export function* fetchUserAsync() {
   try {
-    const result = yield axios("/users");
+    const respone = yield axios('/auth/login/success', {
+      method: "GET",
+      withCredentials: true,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Credentials": true
+      }
+    })
 
-    yield put(logInSuccessful(result.data))
+    if (respone.status === 200)
+      yield put(logInSuccessful(respone.data.user))
+    else put(logInFail(respone.statusText))
   } catch (error) {
     yield put(logInFail(error.message))
   }
 }
 
 export function* logOutAsync() {
+  yield axios('/auth/logout');
+
   yield put(fetchInventorySuccess("user", []))
   yield put(updateRenderedInventory("user", []))
   yield put(setRenderingInventory("user", []))

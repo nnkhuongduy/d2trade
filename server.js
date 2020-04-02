@@ -2,27 +2,45 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const request = require('request');
-const _ = require('lodash');
+const passport = require('passport')
+const SteamStrategy = require('passport-steam').Strategy;
+const cors = require("cors");
+const session = require('express-session')
+const cookieParser = require("cookie-parser");
 
-const InventoryAPI = require('steam-inventory-api-ng');
 const market = require('steam-market-pricing');
 const SteamUser = require('steam-user');
 const SteamTotp = require('steam-totp');
 const SteamCommunity = require('steamcommunity');
 const TradeOfferManager = require('steam-tradeoffer-manager');
-const FS = require('fs');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-const inventoryApi = new InventoryAPI();
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true
+  })
+);
+app.use(session({
+  name: "d2trade sessions",
+  secret: process.env.SESSION_SECRET_KEY,
+  resave: true,
+  saveUninitialized: true,
+  maxAge: 24 * 60 * 60 * 100
+}))
+
+app.use(cookieParser())
+
+const uri = `mongodb+srv://${process.env.MONGODB_ADMIN_USERNAME}:${process.env.MONGODB_ADMIN_PASSWORD}@cluster0-alnrp.mongodb.net/test?retryWrites=true&w=majority`;
 
 const client = new SteamUser();
 const community = new SteamCommunity();
 const manager = new TradeOfferManager({
   "steam": client,
-  "community": community,
+  "domain": "yespubg.com",
   "language": 'en'
 });
 
@@ -49,34 +67,72 @@ community.on("sessionExpired", err => {
   client.webLogOn();
 })
 
-mongoose.connect("mongodb://localhost:27017/botinventoryDB", { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true });
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true }, () => console.log("connected to mongodb atlas"));
 
 const port = 5000;
 const steamInfo = {
-  steamId: '76561198105770372',
-  steamId2: '76561198083658783',
+  steamId: '76561198083658783',
   appId: 570,
   contextId: 2
 }
 
-const botItemsSchema = new mongoose.Schema({
-  item: Object
-})
+const itemsSchema = new mongoose.Schema({}, { strict: false })
 
-const heroesSchema = new mongoose.Schema({
-}, { strict: false })
+const heroesSchema = new mongoose.Schema({}, { strict: false })
 
-const userSchema = new mongoose.Schema({
-  username: String,
-  portraitUrl: String,
-  accountBalance: Number
-})
+const steamUserSchema = new mongoose.Schema({}, { strict: false })
 
-const BotItems = mongoose.model("BotItem", botItemsSchema);
-const UserItems = mongoose.model("UserItem", botItemsSchema);
+const BotItems = mongoose.model("BotItem", itemsSchema);
+const UserItems = mongoose.model("UserItem", itemsSchema);
 const Heroes = mongoose.model("Hero", heroesSchema);
-const Users = mongoose.model("User", userSchema);
+const SteamUsers = mongoose.model("SteamUser", steamUserSchema);
 
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+passport.deserializeUser((id, done) => {
+  SteamUsers.findById(id)
+    .then(user => {
+      done(null, user);
+    })
+    .catch(e => {
+      done(new Error("Failed to deserialize an user"));
+    });
+});
+
+passport.use(new SteamStrategy({
+  returnURL: 'http://localhost:5000/auth/steam/return',
+  realm: 'http://localhost:5000/',
+  apiKey: process.env.STEAM_API_KEY
+}, async (indentifier, profile, done) => {
+  const currentUser = await SteamUsers.findOne({ steamid: profile._json.steamid });
+
+  if (!currentUser) {
+    const newUser = await new SteamUsers({
+      ...profile._json,
+      accountBalance: 0,
+      tradeOfferUrl: "",
+    }).save();
+
+    if (newUser) done(null, newUser);
+  } else {
+    done(null, currentUser);
+  }
+}))
+
+const authCheck = (req, res, next) => {
+  if (!req.user) {
+    res.status(401).json({
+      authenticated: false,
+      message: "user has not been authenticated"
+    });
+  } else {
+    next();
+  }
+};
+
+app.use(passport.initialize());
+app.use(passport.session());
 app.listen(port, () => console.log(`Server started on port ${port}`));
 
 app.get('/inventory', (req, res) => {
@@ -167,7 +223,7 @@ app.post("/tradeoffer", (req, res) => {
       console.log(err);
       res.sendStatus(503);
     } else {
-      const offer = manager.createOffer(steamInfo.steamId2)
+      const offer = manager.createOffer(req.body.userData.steamOfferUrl)
       let botItems = [];
       let userItems = [];
 
@@ -179,7 +235,7 @@ app.post("/tradeoffer", (req, res) => {
         })
       })
 
-      manager.getUserInventoryContents(steamInfo.steamId2, steamInfo.appId, steamInfo.contextId, true, (err, userInventory) => {
+      manager.getUserInventoryContents(req.body.userData.steamId, steamInfo.appId, steamInfo.contextId, true, (err, userInventory) => {
         if (err) {
           console.log(err);
           res.sendStatus(503);
@@ -207,10 +263,10 @@ app.post("/tradeoffer", (req, res) => {
                       console.log(err);
                       res.sendStatus(500);
                     }
+                    console.log("Sent");
+                    res.sendStatus(200);
                   })
                 }
-                console.log("Sent");
-                res.sendStatus(200);
               }
             });
           } else {
@@ -227,6 +283,39 @@ app.get("/heroes", (req, res) => {
   Heroes.find({}, (err, hero) => res.json(hero));
 })
 
-app.get("/users", (req, res) => {
-  Users.findOne({ username: "boybay001" }, (err, user) => res.json(user));
+app.get("/auth/login/success", (req, res) => {
+  if (req.user) {
+    res.json({
+      success: true,
+      message: "user has successfully authenticated",
+      user: req.user,
+      cookies: req.cookies
+    });
+  }
+});
+
+app.get('/auth/login/failed', (req, res) => {
+  res.sendStatus(401).json({
+    sucess: false,
+    message: "user failed to authenticated"
+  })
 })
+
+app.get("/auth/logout", (req, res) => {
+  req.logout();
+  res.redirect('http://localhost:3000/');
+});
+
+
+app.get('/auth/steam', passport.authenticate('steam'))
+
+app.get('/auth/steam/return', passport.authenticate('steam', { failureRedirect: '/auth/login/failed', successRedirect: 'http://localhost:3000/' }));
+
+app.get("/", authCheck, (req, res) => {
+  res.status(200).json({
+    authenticated: true,
+    message: "user successfully authenticated",
+    user: req.user,
+    cookies: req.cookies
+  });
+});
