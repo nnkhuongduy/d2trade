@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import axios from 'axios';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
@@ -21,7 +20,7 @@ const App = ({ blackScreenState, fetchHeroesStart, fetchInventoryStart, currentU
   useEffect(() => {
     fetchHeroesStart();
     fetchInventoryStart("bot");
-  }, []);
+  }, [fetchHeroesStart, fetchInventoryStart]);
 
   useEffect(() => {
     if (currentUser) {
@@ -29,7 +28,7 @@ const App = ({ blackScreenState, fetchHeroesStart, fetchInventoryStart, currentU
       setRenderingInventory("user", []);
       fetchInventoryStart("user");
     }
-  }, [currentUser])
+  }, [currentUser, updateRenderedInventory, setRenderingInventory, fetchInventoryStart])
 
   return (
     <>

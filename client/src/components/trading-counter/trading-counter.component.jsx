@@ -1,5 +1,4 @@
 import React from 'react';
-import { Textfit } from 'react-textfit';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
@@ -17,12 +16,10 @@ const TradingCounter = ({ type, totalPriceBot, totalPriceUser }) => {
     <div className={classValue}>
       <div className="total-money">
         <div className="total-money-content">
-          {/* <Textfit mode="single"> */}
-            $ {type === "bot" ?
+          $ {type === "bot" ?
             totalPriceBot.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) :
             totalPriceUser.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
           }
-          {/* </Textfit> */}
         </div>
       </div>
       <Filter counter={false} type={type} />

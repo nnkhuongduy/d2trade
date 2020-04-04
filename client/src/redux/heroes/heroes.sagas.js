@@ -1,4 +1,4 @@
-import { takeLatest, put, select, all } from 'redux-saga/effects'
+import { takeLatest, put, select } from 'redux-saga/effects'
 import axios from 'axios'
 
 import { fetchHeroesSuccess, fetchHeroesFail, setHeroesContainer, filterHeroesFinish } from './heroes.actions';

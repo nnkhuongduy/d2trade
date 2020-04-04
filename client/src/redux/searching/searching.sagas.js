@@ -3,9 +3,8 @@ import _ from 'lodash';
 
 import { SearchingTypes } from './searching.types'
 
-import { selectBotSearchingQuery, selectUserSearchingQuery } from './searching.selectors'
 import { selectBotInventory, selectUserInventory } from '../inventory/inventory.selectors'
-import { selectFilteredType, selectFilteredItems, selectHeroesData } from '../heroes/heroes.selectors'
+import { selectHeroesData } from '../heroes/heroes.selectors'
 
 import { setQueryItems } from './searching.actions'
 import {

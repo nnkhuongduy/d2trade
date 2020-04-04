@@ -13,9 +13,12 @@ import './navigation.component.scss';
 const Navigation = ({ currentUser, logInStart }) => {
 
   useEffect(() => {
-    if (!currentUser)
-      logInStart();
-  }, [])
+    const checkCurrentUser = () => {
+      if (!currentUser)
+        logInStart();
+    }
+    checkCurrentUser()
+  }, [currentUser, logInStart])
 
   const logInHandle = () => {
     window.open('http://localhost:5000/auth/steam', '_self');
@@ -23,7 +26,7 @@ const Navigation = ({ currentUser, logInStart }) => {
 
   return (
     <div className="navigation">
-      {currentUser ? <User user={currentUser} /> : <div className="log-in" onClick={logInHandle}><img src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_01.png" /></div>}
+      {currentUser ? <User user={currentUser} /> : <div className="log-in" onClick={logInHandle}><img src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_01.png" alt={'Steam log in'} /></div>}
     </div>
   );
 }

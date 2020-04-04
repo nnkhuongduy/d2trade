@@ -16,7 +16,7 @@ const HeroPortrait = ({ hero, filterHeroesStart, type }) => {
 
   return (
     <div className={`hero-portrait`} onClick={filterHandle}>
-      <img src={hero.portrait_url} />
+      <img alt='hero_portrait' src={hero.portrait_url} />
     </div>
   )
 }

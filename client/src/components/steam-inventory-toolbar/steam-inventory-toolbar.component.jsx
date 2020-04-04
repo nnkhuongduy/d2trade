@@ -30,11 +30,11 @@ const SteamInventoryToolbar = ({
 
   useEffect(() => {
     setFilteredState(type === "bot" ? botFilteredState : userFilteredState)
-  }, [botFilteredState, userFilteredState])
+  }, [botFilteredState, userFilteredState, setFilteredState, type])
 
   useEffect(() => {
     setFilteredHero(type === "bot" ? botFilteredHero : userFilteredHero)
-  }, [botFilteredHero, userFilteredHero])
+  }, [botFilteredHero, userFilteredHero, setFilteredHero, type])
 
   const inputChangeHandle = (e) => {
     const value = e.target.value;
@@ -58,8 +58,8 @@ const SteamInventoryToolbar = ({
         <input type="text" value={type === "bot" ? botSearchingQuery : userSearchingQuery} onChange={inputChangeHandle} placeholder="Search" />
       </div>
       <div className="filtered-hero" onClick={filteredHeroClickHandle}>
-        {(filteredState && filteredHero) && <img src={filteredHero.portrait_url} />}
-        <Icon icon={cancelIcon} color="#000000" style={{}} color={"#fff"} />
+        {(filteredState && filteredHero) && <img alt='hero_portrait' src={filteredHero.portrait_url} />}
+        <Icon icon={cancelIcon} color={"#fff"} />
       </div>
       <div className="tool-section">
         <div>

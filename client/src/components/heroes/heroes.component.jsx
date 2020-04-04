@@ -27,7 +27,7 @@ const Heroes = ({ type, heroesRendered, setHeroesContainer, heroSearchingStart }
       document.removeEventListener("mousedown", clickOutsideHandle)
     }
 
-  }, [heroesContainer])
+  }, [heroesContainer, setHeroesContainer])
 
   const componentStyles = {
     top: type === "global" ? "30%" : "0",

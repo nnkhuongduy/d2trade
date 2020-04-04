@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Icon, InlineIcon } from '@iconify/react';
+import { Icon } from '@iconify/react';
 import copyrightIcon from '@iconify/icons-fa-solid/copyright';
 import flagForFlagUsOutlyingIslands from '@iconify/icons-emojione/flag-for-flag-us-outlying-islands';
 import themeLightDark from '@iconify/icons-mdi/theme-light-dark';

@@ -31,12 +31,12 @@ const TradeInventory = ({ mode, type, inventoryState,
   useEffect(() => {
     if (mode === "steam" && type === "bot")
       scrollRef.current.scrollTop = 0;
-  }, [botQueryIds])
+  }, [botQueryIds, mode, type, scrollRef])
 
   useEffect(() => {
     if (mode === "steam" && type === "user")
       scrollRef.current.scrollTop = 0;
-  }, [userQueryIds])
+  }, [userQueryIds, mode, type, scrollRef])
 
   const onScollHandle = () => {
     if (mode === "steam") {
