@@ -1,15 +1,17 @@
-import { takeLatest, put } from 'redux-saga/effects'
+import { takeLatest, put, select } from 'redux-saga/effects'
 import axios from 'axios'
 
 import { UserTypes } from './user.types'
 
-import { logInSuccessful, logInFail } from './user.actions'
+import { logInSuccessful, logInFail, editUserInfoFinish } from './user.actions'
 import { updateRenderedInventory, fetchInventorySuccess, setRenderingInventory } from '../inventory/inventory.actions'
 import { refreshTempItems } from '../temp-item/temp-item.actions'
 import { refreshSlotsState } from '../slot-state/slot-state.actions'
 import { refreshQuery } from '../searching/searching.actions'
 import { resetHeroFilter } from '../heroes/heroes.actions'
 import { resetPriceFilter } from '../price-filter/price-filter.actions'
+
+import { selectCurrentUser } from './user.selectors'
 
 export function* fetchUserAsync() {
   try {
@@ -44,10 +46,43 @@ export function* logOutAsync() {
   yield axios('/auth/logout');
 }
 
+export function* editUserInfoAsync({ infoObj }) {
+  try {
+    const currentUser = yield select(selectCurrentUser)
+
+    const postObj = {
+      info: infoObj,
+      userId: currentUser.steamid
+    }
+
+    const result = yield axios('/edituser', {
+      method: 'POST',
+      data: postObj,
+      withCredentials: true,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Credentials": true
+      }
+    })
+
+    if (result.status === 200) {
+      yield put(editUserInfoFinish(infoObj, true))
+    } else yield put(editUserInfoFinish(null, false))
+  } catch (err) {
+    yield put(editUserInfoFinish(null, false))
+  }
+
+}
+
 export function* fetchUserStart() {
   yield takeLatest(UserTypes.LOG_IN_START, fetchUserAsync)
 }
 
 export function* logOutStart() {
   yield takeLatest(UserTypes.LOG_OUT, logOutAsync)
+}
+
+export function* editUserInfoStart() {
+  yield takeLatest(UserTypes.EDIT_USER_INFO, editUserInfoAsync)
 }

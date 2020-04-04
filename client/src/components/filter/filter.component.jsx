@@ -83,7 +83,7 @@ const Filter = ({
           <input className="filter-box filter-max" value={filterMaxValue} onChange={onChangeHandle} />
         </div>
         {applyButtonState ? <Button classes={["btn-filter", `btn-filter-${type}`]} onClickHandle={filterAppyHandle}>APPLY</Button> :
-          <Button classes={["btn-filter", `btn-filter-${type}`]} onClickHandle={filterCancelHandle}>CANCEL FILTER</Button>
+          <Button classes={["btn-filter", `btn-filter-${type}`]} onClickHandle={filterCancelHandle}>CLEAR FILTER</Button>
         }
       </div>
       <Button classes={["btn-filter"]} onClickHandle={heroClickHandle} >HERO</Button>

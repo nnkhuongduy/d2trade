@@ -1,21 +1,15 @@
 @import '../../assets//styles/_basics.scss';
 
 .navigation {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
+  width: calc(100% - 194px);
+  box-sizing: border-box;
+  padding-left: 50px;
 
   .log-in {
     @include hoverState;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 
-    font-weight: 700;
-  }
-}
-
-.setting {
-  margin-right: 40px;
-
-  &:hover {
-    cursor: pointer;
   }
 }

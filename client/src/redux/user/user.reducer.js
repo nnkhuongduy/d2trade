@@ -3,7 +3,8 @@ import { UserTypes } from './user.types'
 const INITIAL_STATE = {
   isLoggingIn: false,
   user: null,
-  errorMessage: null
+  errorMessage: null,
+  isEditingSuccess: undefined,
 }
 
 export const userReducer = (state = INITIAL_STATE, action) => {
@@ -33,6 +34,21 @@ export const userReducer = (state = INITIAL_STATE, action) => {
         ...state,
         user: null,
         errorMessage: null
+      }
+
+    case UserTypes.EDIT_USER_INFO_FINISH:
+      if (action.infoObj !== null)
+        return {
+          ...state,
+          user: {
+            ...state.user,
+            ...action.infoObj
+          },
+          isEditingSuccess: action.editState
+        }
+      else return {
+        ...state,
+        isEditingSuccess: action.editState
       }
 
     default:

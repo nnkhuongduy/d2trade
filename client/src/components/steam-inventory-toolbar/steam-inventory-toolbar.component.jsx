@@ -4,7 +4,6 @@ import { createStructuredSelector } from 'reselect';
 
 import { Icon } from '@iconify/react';
 import magnifyIcon from '@iconify/icons-mdi/magnify';
-import sortIcon from '@iconify/icons-dashicons/sort';
 import bxRefresh from '@iconify/icons-bx/bx-refresh';
 import cancelIcon from '@iconify/icons-topcoat/cancel';
 
@@ -64,10 +63,7 @@ const SteamInventoryToolbar = ({
       </div>
       <div className="tool-section">
         <div>
-          <Icon icon={sortIcon} width="3em" height="3em" />
-        </div>
-        <div>
-          <Icon icon={bxRefresh} onClick={refreshClickHandle} width="3em" height="3em" />
+          <Icon icon={bxRefresh} onClick={refreshClickHandle} width="2em" height="2em" />
         </div>
       </div>
     </div>

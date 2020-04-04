@@ -35,6 +35,7 @@ app.use(session({
 app.use(cookieParser())
 
 const uri = `mongodb+srv://${process.env.MONGODB_ADMIN_USERNAME}:${process.env.MONGODB_ADMIN_PASSWORD}@cluster0-alnrp.mongodb.net/test?retryWrites=true&w=majority`;
+//const uri = `mongodb://127.0.0.1:27017/`;
 
 const client = new SteamUser();
 const community = new SteamCommunity();
@@ -348,3 +349,22 @@ app.get("/", authCheck, (req, res) => {
     cookies: req.cookies
   });
 });
+
+app.post('/edituser/', (req, res) => {
+  const infoObj = req.body;
+  const userId = infoObj.userId;
+  if (!infoObj || !userId) {
+    res.statusMessage = "Invalid post data";
+    res.sendStatus(501);
+  } else {
+    SteamUsers.findOneAndUpdate({ steamid: userId }, infoObj.info, (err) => {
+      if (err) {
+        console.log(err);
+        res.statusMessage = "Error find user in database";
+        res.sendStatus(501);
+      } else {
+        res.sendStatus(200);
+      }
+    })
+  }
+})

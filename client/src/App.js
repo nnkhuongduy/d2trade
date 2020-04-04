@@ -9,14 +9,14 @@ import Footer from './components/footer/footer.component';
 import BlackScreen from './components/black-screen/black-screen.component';
 
 import { fetchHeroesStart } from './redux/heroes/heroes.actions'
-import { fetchInventoryStart } from './redux/inventory/inventory.actions'
+import { fetchInventoryStart, updateRenderedInventory, setRenderingInventory } from './redux/inventory/inventory.actions'
 
 import { selectBlackScreenState } from './redux/client-states/client-states.selectors';
 import { selectCurrentUser } from './redux/user/user.selectors'
 
 import './App.scss';
 
-const App = ({ blackScreenState, fetchHeroesStart, fetchInventoryStart, currentUser }) => {
+const App = ({ blackScreenState, fetchHeroesStart, fetchInventoryStart, currentUser, updateRenderedInventory, setRenderingInventory }) => {
 
   useEffect(() => {
     fetchHeroesStart();
@@ -24,7 +24,11 @@ const App = ({ blackScreenState, fetchHeroesStart, fetchInventoryStart, currentU
   }, []);
 
   useEffect(() => {
-    if (currentUser) fetchInventoryStart("user");
+    if (currentUser) {
+      updateRenderedInventory("user", []);
+      setRenderingInventory("user", []);
+      fetchInventoryStart("user");
+    }
   }, [currentUser])
 
   return (
@@ -39,12 +43,14 @@ const App = ({ blackScreenState, fetchHeroesStart, fetchInventoryStart, currentU
 
 const mapDispatchToProps = dispatch => ({
   fetchHeroesStart: () => dispatch(fetchHeroesStart()),
-  fetchInventoryStart: type => dispatch(fetchInventoryStart(type))
+  fetchInventoryStart: type => dispatch(fetchInventoryStart(type)),
+  updateRenderedInventory: (type, arr) => dispatch(updateRenderedInventory(type, arr)),
+  setRenderingInventory: (type, arr) => dispatch(setRenderingInventory(type, arr))
 })
 
 const mapStateToProps = createStructuredSelector({
   blackScreenState: selectBlackScreenState,
-  currentUser: selectCurrentUser
+  currentUser: selectCurrentUser,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

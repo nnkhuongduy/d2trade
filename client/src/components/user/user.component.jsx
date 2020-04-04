@@ -5,12 +5,14 @@ import dropDown from '@iconify/icons-fe/drop-down';
 import creditCardPlus from '@iconify/icons-mdi/credit-card-plus';
 
 import UserDropdown from '../user-dropdown/user-dropdown.component'
+import TradeUrl from '../trade-url/trade-url.component'
 
 import './user.component.scss';
 
 const User = ({ user }) => {
   const [dropdownState, setDropdownState] = useState(false);
-  const dropdown = useRef(null)
+
+  const dropdown = useRef(null);
 
   useEffect(() => {
     const clickOutsideHandle = e => {
@@ -36,7 +38,7 @@ const User = ({ user }) => {
 
   return (
     <div className="user-container">
-      <span className="steam-trade-url"><span>Change Steam Trade URL</span></span>
+      <TradeUrl />
       <Icon icon={creditCardPlus} width={"2em"} height={"2em"} className={"credit-card"} />
       <span className="account-balance">$ {user.accountBalance}</span>
       <img src={user.avatarmedium} alt="avatar" className="avatar" />
@@ -47,5 +49,6 @@ const User = ({ user }) => {
     </div>
   )
 }
+
 
 export default User;

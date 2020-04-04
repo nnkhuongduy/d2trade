@@ -2,20 +2,15 @@
 @import '../../assets/styles/_basics.scss';
 
 .user-container {
-  display: flex;
-  align-items: center;
+  display: grid;
   position: relative;
-
-  .steam-trade-url {
-    @include hoverState;
-    @include spanHoverEffect;
-    margin-right: 50px;
-  }
+  width: 100%;
+  grid-template-columns: auto max-content max-content max-content max-content max-content;
+  align-items: center;
 
   .credit-card {
     @include hoverState;
     margin-right: 20px;
-
   }
 
   .account-balance {
@@ -28,7 +23,7 @@
 
   .avatar {
     width: 40px;
-    margin-right: 20px;
+    margin-right: 10px;
     border-radius: 100%;
 
   }
@@ -36,13 +31,12 @@
   .username {
     @include hoverState;
     font-family: $header-font;
-    margin-right: 20px;
+    margin-right: 10px;
 
   }
 
   .dropdown-arrow {
     @include hoverState;
-    margin-right: 20px;
+    margin-right: 10px;
   }
-
 }
