@@ -59,7 +59,7 @@ const SteamInventoryToolbar = ({
       </div>
       <div className="filtered-hero" onClick={filteredHeroClickHandle}>
         {(filteredState && filteredHero) && <img alt='hero_portrait' src={filteredHero.portrait_url} />}
-        <Icon icon={cancelIcon} color={"#fff"} />
+        <Icon icon={cancelIcon} color={"#fff"} style={{}} />
       </div>
       <div className="tool-section">
         <div>

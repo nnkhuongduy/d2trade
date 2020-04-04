@@ -11,17 +11,21 @@ import {
 import { refreshQuery } from '../searching/searching.actions'
 import { resetHeroFilter } from '../heroes/heroes.actions'
 import { resetPriceFilter } from '../price-filter/price-filter.actions'
+import { setItemsImage } from '../items-image/items-image.actions'
 
 import { selectBotQueryIds, selectUserQueryIds, selectBotSearchingState, selectUserSearchingState } from '../searching/searching.selectors'
 import { selectBotInventory, selectUserInventory, selectBotRenderedInventory, selectUserRenderedInventory, selectBotRenderingInventory, selectUserRenderingInventory } from './inventory.selectors'
 import { selectBotFilteredState, selectUserFilteredState, selectBotFilteredItems, selectUserFilteredItems } from '../heroes/heroes.selectors'
 import { selectBotPriceFilteredState, selectUserPriceFilteredState, selectBotPriceFilteredIds, selectUserPriceFilteredIds } from '../price-filter/price-filter.selectors'
 import { selectCurrentUser } from '../user/user.selectors'
+import { selectBotItemsImage, selectUserItemsImage } from '../items-image/items-image.selectors'
 
 export function* fetchInventoryAsync({ type, inventoryType }) {
   try {
     const currentUser = yield select(selectCurrentUser);
+    const itemsImage = yield inventoryType === "bot" ? select(selectBotItemsImage) : select(selectUserItemsImage)
     const miniInventory = [];
+    const imgObj = {};
     const userSteamId = currentUser && currentUser.steamid;
     const result = yield inventoryType === "bot" ? axios('/inventory/bot') : axios(`/inventory/${userSteamId}`);
 
@@ -29,15 +33,27 @@ export function* fetchInventoryAsync({ type, inventoryType }) {
       const inventory = yield result.data.map(item => {
         return ({
           ...item,
-          market_price: (Math.random() * (40 - 0.01) + 0.01).toFixed(2)
+          market_price: item.id !== 'moneyItem' ? (Math.random() * (40 - 0.01) + 0.01).toFixed(2) : 0
         })
       });
 
-      yield inventory.forEach(item => miniInventory.push(item.id));
+      yield inventory.forEach(item => {
+        miniInventory.push(item.id)
+
+        if (!itemsImage || !itemsImage[item.id]) {
+          const itemImg = new Image();
+          itemImg.src = item.id !== 'moneyItem' ? `https://steamcommunity-a.akamaihd.net/economy/image/${item.icon_url}` : item.icon_url
+          itemImg.alt = 'item_image'
+          itemImg.className = 'item-img'
+
+          imgObj[item.id] = itemImg;
+        }
+      });
 
       yield put(fetchInventorySuccess(inventoryType, inventory));
       yield put(setRenderingInventory(inventoryType, miniInventory));
       yield put(updateRenderedInventoryStart(inventoryType));
+      yield put(setItemsImage(inventoryType, imgObj))
     } else {
       yield put(fetchInventoryFailure(inventoryType, result.statusMessage));
     }
@@ -60,6 +76,7 @@ export function* setRenderingInventoryAsync({ inventoryType, ...action }) {
   const isSearching = yield inventoryType === "bot" ? select(selectBotSearchingState) : select(selectUserSearchingState);
   const isHeroFiltering = yield inventoryType === "bot" ? select(selectBotFilteredState) : select(selectUserFilteredState);
   const isPriceFiltering = yield inventoryType === "bot" ? select(selectBotPriceFilteredState) : select(selectUserPriceFilteredState);
+  const inventory = yield inventoryType === "bot" ? select(selectBotInventory) : select(selectUserInventory);
 
   const renderInventory = [];
   const inventoryArr = [];
@@ -94,8 +111,11 @@ export function* setRenderingInventoryAsync({ inventoryType, ...action }) {
       if (renderObj[id] === inventoryCount) renderInventory.push(id);
     })
   } else {
-    const inventory = yield inventoryType === "bot" ? select(selectBotInventory) : select(selectUserInventory);
     yield inventory.forEach(item => renderInventory.push(item.id));
+  }
+
+  if ((isSearching || isHeroFiltering || isPriceFiltering) && renderInventory[0] !== 'moneyItem' && inventoryType === 'user') {
+    renderInventory.unshift(inventory[0].id);
   }
 
   yield put(setRenderingInventory(inventoryType, renderInventory));

@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
+import ItemImage from '../item-image/item-image.component';
+
 import { setTempItem, unsetTempItem } from '../../redux/temp-item/temp-item.actions';
 import { toggleSlotState } from '../../redux/slot-state/slot-state.actions';
+
 import { selectBotSlotStates, selectUserSlotStates } from '../../redux/slot-state/slot-state.selectors';
 import { selectBotRenderedInventory, selectUserRenderedInventory } from '../../redux/inventory/inventory.selectors';
 
@@ -19,13 +22,12 @@ const InventorySlot = ({
 
   const slotId = item.id;
 
-  const steamImageUrl = `https://steamcommunity-a.akamaihd.net/economy/image/${item.icon_url}`;
-
   const itemRarityStyle = {
     backgroundColor: `#${item.tags[1].color}`,
-    color: ((item.tags[1].name === "Common" || item.tags[1].name === "Immortal") ? "black" : "white"),
+    color: ((item.tags[1].name !== "Common" && item.tags[1].name !== "Immortal") ? "white" : "black"),
     filter: mode === "steam" && (type === "bot" ? botSlotStates[slotId] : userSlotStates[slotId]) ? "grayscale(100%) brightness(50%)" : "",
-    display: mode === "steam" ? displayState : "block"
+    display: mode === "steam" ? displayState : "block",
+    fontSize: slotId === 'moneyItem' && '12px'
   }
 
   useEffect(() => {
@@ -59,7 +61,12 @@ const InventorySlot = ({
   return (
     <div className="inventory-slot" style={itemRarityStyle} onClick={onClickHandle}>
       <div mode="single" className="item-price">$ {item.market_price}</div>
-      <img alt='item_image' src={steamImageUrl} className="item-img"></img>
+      <ItemImage type={type} mode={mode} itemId={slotId} imageState={type === "bot" ? botSlotStates[slotId] : userSlotStates[slotId]} />
+      {/* {mode === "steam" && (botSlotStates[slotId] !== true && userSlotStates[slotId] !== true ?
+        <ItemImage type={type} mode={mode} itemId={slotId} /> :
+        <img src={noneItem} alt='item_image' className={'item-none-img'} />)
+      }
+      {mode !== "steam" && <ItemImage type={type} mode={mode} itemId={slotId} />} */}
       <div className="item-rarity" >{item.tags[1].name}</div>
     </div>
   )

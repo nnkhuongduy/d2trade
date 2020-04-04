@@ -10,6 +10,7 @@ import searchingReducer from './searching/searching.reducer';
 import heroesReducer from './heroes/heroes.reducer';
 import priceFilterReducer from './price-filter/price-filter.reducer';
 import userReducer from './user/user.reducer';
+import itemsImageReducer from './items-image/items-image.reducer'
 
 const persistConfig = {
   key: 'root',
@@ -25,7 +26,8 @@ const rootReducer = combineReducers({
   searching: searchingReducer,
   heroes: heroesReducer,
   priceFilter: priceFilterReducer,
-  user: userReducer
+  user: userReducer,
+  itemsImage: itemsImageReducer
 });
 
 export default persistReducer(persistConfig, rootReducer);

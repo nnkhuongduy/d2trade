@@ -218,6 +218,16 @@ app.get("/inventory/:steamid", (req, res) => {
   // UserItems.find({}, (err, items) => {
   //   res.json(items);
   // })
+  const moneyItem = {
+    id: 'moneyItem',
+    icon_url: 'https://img.topbank.vn/2018/05/03/jDFnkIeH/credit-card-f988.jpg',
+    market_hash_name: 'Account Balance',
+    tags: [
+      { color: 'e4ae39' },
+      { color: 'e4ae39', name: "Immortal" }
+    ],
+    market_price: '0',
+  }
   const steamId = req.params.steamid
 
   manager.getUserInventoryContents(steamId, steamInfo.appId, steamInfo.contextId, true, (err, inventory) => {
@@ -236,6 +246,8 @@ app.get("/inventory/:steamid", (req, res) => {
           sent.forEach(offer => offer.itemsToReceive.forEach(item => itemsOnBlackList[item.id] ? itemsOnBlackList[item.id]++ : itemsOnBlackList[item.id] = 1))
 
           inventory = inventory.filter(item => !itemsOnBlackList[item.id]);
+
+          inventory.unshift(moneyItem)
 
           res.json(inventory)
         }
