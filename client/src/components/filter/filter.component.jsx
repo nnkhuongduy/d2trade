@@ -23,7 +23,8 @@ const Filter = ({
 
   useEffect(() => {
     if (applyButtonState === false) setApplyButtonState(true);
-  }, [filterMinValue, filterMaxValue, applyButtonState])
+    // eslint-disable-next-line
+  }, [filterMinValue, filterMaxValue])
 
   useEffect(() => {
     if (type !== "global")

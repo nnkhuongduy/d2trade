@@ -1,14 +1,18 @@
+@import '../../assets/styles/_basics.scss';
+
 .hero-portrait {
+  @include hoverState;
   width: 15%;
   margin: 2.09%;
   position: relative;
+  transition: $transition-value;
 
   img {
     width: 100%;
   }
 
   &:hover {
-    cursor: pointer;
-
+    filter: brightness(120%);
+    transform: scale(1.2);
   }
 }

@@ -1,7 +1,9 @@
 @import '../../assets/styles/_colors.scss';
 @import '../../assets/styles/_fonts.scss';
+@import '../../assets/styles/_basics.scss';
 
 .inventory-slot {
+  @include hoverState;
   width: 17%;
   margin: 1.25%;
   background-color: $neutral-dark-blue;
@@ -11,6 +13,8 @@
   font-size: 0.8rem;
   font-weight: 700;
   user-select: none;
+  overflow: hidden;
+  transition: $transition-value;
 
   .item-price {
     margin: 5px 0;
@@ -26,6 +30,8 @@
   }
 
   &:hover {
-    cursor: pointer;
+    filter: brightness(120%);
+    transform: scale(1.1);
+
   }
 }

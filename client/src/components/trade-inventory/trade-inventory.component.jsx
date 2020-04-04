@@ -59,6 +59,16 @@ const TradeInventory = ({ mode, type, inventoryState,
     <InventorySlot key={item.id} item={item} mode={mode} type={type}></InventorySlot>
   )
 
+  const takeInventoryItem = (type, id) => {
+    let resultItem = {};
+
+    inventoryState[type].inventory.forEach(item => {
+      if (item.id === id) resultItem = item
+    })
+
+    return resultItem;
+  }
+
   return (
     <div ref={scrollRef} onScroll={onScollHandle} className={`trade-inventory ${mode}`} >
       <div className={`inventory-container ${mode} ${type}`}>
@@ -67,7 +77,9 @@ const TradeInventory = ({ mode, type, inventoryState,
         {(mode === "steam" && !inventoryState[type].isFetching && inventoryState[type].errorMessage !== undefined) &&
           <div className="error-message">There's an error loading the inventory. Please try again after a while</div>}
 
-        {(mode === "steam" && inventoryState[type].inventory) && inventoryState[type].inventory.map(item => renderInventorySlot(item))}
+        {/* {(mode === "steam" && inventoryState[type].inventory) && inventoryState[type].inventory.map(item => renderInventorySlot(item))} */}
+        {(mode === "steam" && type === "bot" && botRenderedInventory.length !== 0) && botRenderedInventory.map(id => renderInventorySlot(takeInventoryItem(type, id)))}
+        {(mode === "steam" && type === "user" && userRenderedInventory.length !== 0) && userRenderedInventory.map(id => renderInventorySlot(takeInventoryItem(type, id)))}
 
         {(botTempItem && type === "bot" && mode === "bot") && botTempItem.map(item => renderInventorySlot(item))}
         {(userTempItem && type === "user" && mode === "user") && userTempItem.map(item => renderInventorySlot(item))}
