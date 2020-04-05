@@ -4,6 +4,10 @@ const INITIAL_STATE = {
   tempItem: {
     bot: [],
     user: []
+  },
+  price: {
+    bot: '0.00',
+    user: '0.00'
   }
 }
 
@@ -33,6 +37,15 @@ const tempItemReducer = (state = INITIAL_STATE, action) => {
         tempItem: {
           ...state.tempItem,
           [action.tempType]: []
+        }
+      }
+
+    case TempItemTypes.UPDATE_PRICE:
+      return {
+        ...state,
+        price: {
+          ...state.price,
+          [action.priceType]: action.price
         }
       }
 

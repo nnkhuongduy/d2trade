@@ -7,7 +7,7 @@ import Filter from '../filter/filter.component';
 import './trading-counter.component.scss';
 import Label from '../label/label.component';
 
-import { selectTotalPricesBot, selectTotalPricesUser } from '../../redux/temp-item/temp-item.selectors';
+import { selectBotPrices, selectUserPrices } from '../../redux/temp-item/temp-item.selectors';
 
 const TradingCounter = ({ type, totalPriceBot, totalPriceUser }) => {
   const classValue = type ? `trading-counter ${type}` : "trading-counter";
@@ -17,9 +17,13 @@ const TradingCounter = ({ type, totalPriceBot, totalPriceUser }) => {
       <div className="total-money">
         <div className="total-money-content">
           $ {type === "bot" ?
+            totalPriceBot :
+            totalPriceUser
+          }
+          {/* $ {type === "bot" ?
             totalPriceBot.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) :
             totalPriceUser.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-          }
+          } */}
         </div>
       </div>
       <Filter counter={false} type={type} />
@@ -31,8 +35,8 @@ const TradingCounter = ({ type, totalPriceBot, totalPriceUser }) => {
 }
 
 const mapStateToProps = createStructuredSelector({
-  totalPriceBot: selectTotalPricesBot,
-  totalPriceUser: selectTotalPricesUser
+  totalPriceBot: selectBotPrices,
+  totalPriceUser: selectUserPrices
 })
 
 export default connect(mapStateToProps)(TradingCounter);

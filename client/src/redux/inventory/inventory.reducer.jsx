@@ -77,6 +77,13 @@ const inventoryReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
+    case InventoryActionTypes.SET_BALANCE_ITEM_FINISH:
+      const prevState = {
+        ...state
+      }
+      prevState.user.inventory[0].market_price = action.price;
+      return prevState
+
     default:
       return state
   }

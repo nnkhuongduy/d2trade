@@ -11,6 +11,7 @@ import { toggleBlackScreen, resetOfferStatus } from '../../redux/client-states/c
 import { refreshTempItems } from '../../redux/temp-item/temp-item.actions'
 import { refreshSlotsState } from '../../redux/slot-state/slot-state.actions'
 import { refreshInventory } from '../../redux/inventory/inventory.actions'
+import { logInStart } from '../../redux/user/user.actions'
 
 import { Icon } from '@iconify/react';
 import checkMarkButton from '@iconify/icons-emojione/check-mark-button';
@@ -22,7 +23,8 @@ const ServerStatus = ({
   offerStatus, toggleBlackScreen,
   resetOfferStatus, refreshSlotsState,
   refreshTempItems,
-  refreshInventory
+  refreshInventory,
+  logInStart
 }) => {
   const offerStatusNull = () => (
     <>
@@ -55,6 +57,7 @@ const ServerStatus = ({
       refreshTempItems("user");
       refreshSlotsState("user");
       refreshSlotsState("bot");
+      logInStart();
     }
   }
 
@@ -74,6 +77,7 @@ const mapDispatchToProps = dispatch => ({
   refreshTempItems: type => dispatch(refreshTempItems(type)),
   refreshSlotsState: type => dispatch(refreshSlotsState(type)),
   refreshInventory: type => dispatch(refreshInventory(type)),
+  logInStart: () => dispatch(logInStart())
 })
 
 const mapStateToProps = createStructuredSelector({

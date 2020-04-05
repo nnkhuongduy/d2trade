@@ -6,7 +6,7 @@ import { InventoryActionTypes } from './inventory.types';
 import {
   fetchInventoryStart, fetchInventorySuccess, fetchInventoryFailure,
   updateRenderedInventory, updateRenderedInventoryStart,
-  setRenderingInventory
+  setRenderingInventory, setBalanceItemFinish
 } from './inventory.actions';
 import { refreshQuery } from '../searching/searching.actions'
 import { resetHeroFilter } from '../heroes/heroes.actions'
@@ -19,6 +19,7 @@ import { selectBotFilteredState, selectUserFilteredState, selectBotFilteredItems
 import { selectBotPriceFilteredState, selectUserPriceFilteredState, selectBotPriceFilteredIds, selectUserPriceFilteredIds } from '../price-filter/price-filter.selectors'
 import { selectCurrentUser } from '../user/user.selectors'
 import { selectBotItemsImage, selectUserItemsImage } from '../items-image/items-image.selectors'
+import { selectBotPrices, selectUserPrices } from '../temp-item/temp-item.selectors'
 
 export function* fetchInventoryAsync({ type, inventoryType }) {
   try {
@@ -33,7 +34,7 @@ export function* fetchInventoryAsync({ type, inventoryType }) {
       const inventory = yield result.data.map(item => {
         return ({
           ...item,
-          market_price: item.id !== 'moneyItem' ? (Math.random() * (40 - 0.01) + 0.01).toFixed(2) : 0
+          market_price: item.id !== 'moneyItem' ? (Math.random() * (40 - 0.01) + 0.01).toFixed(2) : "0"
         })
       });
 
@@ -129,6 +130,17 @@ export function* refreshInventoryAsync({ inventoryType, ...action }) {
   yield put(resetPriceFilter(inventoryType))
 }
 
+export function* setBalanceItemAsync() {
+  const botPrice = yield select(selectBotPrices)
+  const userPrice = yield select(selectUserPrices)
+
+  let price = yield parseFloat(botPrice) - parseFloat(userPrice);
+
+  if (price === 0) price = parseFloat(botPrice);
+
+  yield put(setBalanceItemFinish(price >= 0 ? price.toFixed(2) : "0.00"))
+}
+
 export function* fetchInventoryStarting() {
   yield takeEvery(InventoryActionTypes.FETCH_INVENTORY_START, fetchInventoryAsync)
 }
@@ -143,4 +155,8 @@ export function* setRenderingInventoryStart() {
 
 export function* refreshInventoryStart() {
   yield takeLatest(InventoryActionTypes.REFRESH_INVENTORY_START, refreshInventoryAsync)
+}
+
+export function* setBalanceItemStart() {
+  yield takeLatest(InventoryActionTypes.SET_BALANCE_ITEM_START, setBalanceItemAsync)
 }

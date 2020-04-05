@@ -7,6 +7,7 @@ const SteamStrategy = require('passport-steam').Strategy;
 const cors = require("cors");
 const session = require('express-session')
 const cookieParser = require("cookie-parser");
+const axios = require('axios')
 
 const market = require('steam-market-pricing');
 const SteamUser = require('steam-user');
@@ -224,7 +225,7 @@ app.get("/inventory/:steamid", (req, res) => {
     market_hash_name: 'Account Balance',
     tags: [
       { color: 'e4ae39' },
-      { color: 'e4ae39', name: "Immortal" }
+      { color: 'e4ae39', name: "Account Balance" }
     ],
     market_price: '0',
   }
@@ -258,67 +259,111 @@ app.get("/inventory/:steamid", (req, res) => {
 })
 
 app.post("/tradeoffer", (req, res) => {
-  //check balance
+  const reqBotItems = req.body.bot;
+  const reqUserItems = req.body.user;
+  const reqUserData = req.body.userData;
 
-  manager.getInventoryContents(steamInfo.appId, steamInfo.contextId, true, (err, botInventory) => {
-    if (err) {
-      console.log(err);
-      res.sendStatus(503);
-    } else {
-      const offer = manager.createOffer(req.body.userData.tradeOfferUrl)
-      let botItems = [];
-      let userItems = [];
+  //Check database for prices
 
-      req.body.bot.forEach(id => {
-        botInventory.forEach(item => {
-          if (item.id === id) {
-            botItems.push(item);
-          }
-        })
-      })
+  const botTotalPrice = reqBotItems.reduce((accumulator, item) => accumulator + parseFloat(item.market_price), 0);
+  const userTotalPrice = reqUserItems.filter(item => item.id !== "moneyItem").reduce((accumulator, item) => accumulator + parseFloat(item.market_price), 0);
 
-      manager.getUserInventoryContents(req.body.userData.steamid, steamInfo.appId, steamInfo.contextId, true, (err, userInventory) => {
-        if (err) {
-          console.log(err);
-          res.sendStatus(503);
-        } else {
-          req.body.user.forEach(id => {
-            userInventory.forEach(item => {
-              if (item.id === id) {
-                userItems.push(item);
-              }
-            })
-          })
-
-          if (botItems.length === req.body.bot.length && userItems.length === req.body.user.length) {
-            offer.addMyItems(botItems);
-            offer.addTheirItems(userItems);
-            offer.setMessage("Test");
-            offer.send((err, status) => {
-              if (err) {
-                console.log(err);
-                res.sendStatus(500);
-              } else {
-                if (status === "pending") {
-                  community.acceptConfirmationForObject(process.env.STEAM_IDENTITY_SECRET, offer.id, (err) => {
-                    if (err) {
-                      console.log(err);
-                      res.sendStatus(500);
-                    }
-                    console.log("Sent");
-                    res.sendStatus(200);
-                  })
-                }
-              }
-            });
-          } else {
-            console.log("Missing item(s)");
-            res.sendStatus(500);
-          }
-        }
-      })
+  let moneyCheck = false;
+  let moneyItem = {};
+  reqUserItems.forEach(item => {
+    if (item.id === "moneyItem") {
+      moneyCheck = true;
+      moneyItem = item
     }
   })
+
+  if (botTotalPrice >= userTotalPrice) {
+    if (moneyCheck) {
+      moneyCheck = parseFloat(moneyItem.market_price) === parseFloat((botTotalPrice - userTotalPrice).toFixed(2))
+      if (moneyCheck) {
+        SteamUsers.findOneAndUpdate({ steamid: reqUserData.steamid },
+          { accountBalance: parseFloat(reqUserData.accountBalance.toFixed(2)) - parseFloat(moneyItem.market_price) },
+          (err) => {
+            if (err) {
+              moneyCheck = false;
+              console.log(err);
+              res.statusMessage = "Cant find user in database"
+              res.sendStatus(503)
+            } else {
+              console.log("transaction completed!")
+            }
+          })
+      } else res.sendStatus(503);
+    }
+    moneyCheck = true;
+  } else {
+    moneyCheck = false;
+    res.sendStatus(503);
+  }
+
+  if (moneyCheck) {
+    manager.getInventoryContents(steamInfo.appId, steamInfo.contextId, true, (err, botInventory) => {
+      if (err) {
+        console.log(err);
+        res.sendStatus(503);
+      } else {
+        const offer = manager.createOffer(reqUserData.tradeOfferUrl)
+        let botItems = [];
+        let userItems = [];
+
+        reqBotItems.forEach(reqItem => {
+          botInventory.forEach(item => {
+            if (item.id === reqItem.id) {
+              botItems.push(item);
+            }
+          })
+        })
+
+        manager.getUserInventoryContents(reqUserData.steamid, steamInfo.appId, steamInfo.contextId, true, (err, userInventory) => {
+          if (err) {
+            console.log(err);
+            res.sendStatus(503);
+          } else {
+            reqUserItems.filter(item => item.id !== "moneyItem").forEach(reqItem => {
+              userInventory.forEach(item => {
+                if (item.id === reqItem.id) {
+                  userItems.push(item);
+                }
+              })
+            })
+
+            if (botItems.length === reqBotItems.length &&
+              ((moneyCheck === false && userItems.length === reqUserItems.length) || (moneyCheck === true && userItems.length === reqUserItems.length - 1))) {
+              offer.addMyItems(botItems);
+              offer.addTheirItems(userItems);
+              offer.setMessage("Test");
+              offer.send((err, status) => {
+                if (err) {
+                  console.log(err);
+                  res.sendStatus(500);
+                } else {
+                  if (status === "pending") {
+                    community.acceptConfirmationForObject(process.env.STEAM_IDENTITY_SECRET, offer.id, (err) => {
+                      if (err) {
+                        console.log(err);
+                        res.sendStatus(500);
+                      } else {
+                        console.log("Sent");
+                        res.sendStatus(200)
+                      }
+                    })
+                  }
+                }
+              });
+            } else {
+              console.log("Missing item(s)");
+              res.sendStatus(500);
+            }
+          }
+        })
+      }
+    })
+  }
 })
 
 app.get("/heroes", (req, res) => {
@@ -372,10 +417,10 @@ app.post('/edituser/', (req, res) => {
     SteamUsers.findOneAndUpdate({ steamid: userId }, infoObj.info, (err) => {
       if (err) {
         console.log(err);
-        res.statusMessage = "Error find user in database";
-        res.sendStatus(501);
+        res.statusMessage = "Cant find user in database"
+        res.sendStatus(503)
       } else {
-        res.sendStatus(200);
+        res.sendStatus(200)
       }
     })
   }

@@ -6,14 +6,12 @@ export const selectBotTempItem = createSelector([selectTempItemState], stateTemp
 
 export const selectUserTempItem = createSelector([selectTempItemState], stateTempItem => stateTempItem.tempItem.user);
 
-export const selectTotalPricesBot = createSelector([selectBotTempItem], items => (
-  items.reduce((accumulator, item) => (accumulator + parseFloat(item.market_price)), 0)
-))
+export const selectBotPrices = createSelector([selectTempItemState], state => state.price.bot)
 
-export const selectTotalPricesUser = createSelector([selectUserTempItem], items => (
-  items.reduce((accumulator, item) => (accumulator + parseFloat(item.market_price)), 0)
-))
+export const selectUserPrices = createSelector([selectTempItemState], state => state.price.user)
 
-export const selectTradeButtonState = createSelector([selectTotalPricesBot, selectTotalPricesUser], (botPrices, userPrices) => (
-  userPrices >= botPrices && userPrices !== 0
-))
+export const selectTradeButtonState = createSelector([selectBotPrices, selectUserPrices], (botPrices, userPrices) => {
+  botPrices = parseFloat(botPrices)
+  userPrices = parseFloat(userPrices)
+  return (userPrices >= botPrices && userPrices !== 0)
+})

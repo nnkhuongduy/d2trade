@@ -19,12 +19,13 @@ const InventorySlot = ({
   botRenderedInventory, userRenderedInventory,
 }) => {
   const [displayState, setDisplayState] = useState("block");
+  const [activeState, setActiveState] = useState(true);
 
   const slotId = item.id;
 
   const itemRarityStyle = {
     backgroundColor: `#${item.tags[1].color}`,
-    color: ((item.tags[1].name !== "Common" && item.tags[1].name !== "Immortal") ? "white" : "black"),
+    color: ((item.tags[1].name !== "Common" && item.tags[1].name !== "Immortal" && item.tags[1].name !== "Account Balance") ? "white" : "black"),
     filter: mode === "steam" && (type === "bot" ? botSlotStates[slotId] : userSlotStates[slotId]) ? "grayscale(100%) brightness(50%)" : "",
     display: mode === "steam" ? displayState : "block",
     fontSize: slotId === 'moneyItem' && '12px'
@@ -56,10 +57,12 @@ const InventorySlot = ({
       unsetTempItem(type, item);
       toggleSlotState(type, slotId, false)
     }
+
+    setActiveState(state => !state);
   }
 
   return (
-    <div className="inventory-slot" style={itemRarityStyle} onClick={onClickHandle}>
+    <div className={`inventory-slot ${activeState ? 'activated' : 'deactivated'}`} style={itemRarityStyle} onClick={onClickHandle}>
       <div mode="single" className="item-price">$ {item.market_price}</div>
       <ItemImage type={type} mode={mode} itemId={slotId} imageState={type === "bot" ? botSlotStates[slotId] : userSlotStates[slotId]} />
       {/* {mode === "steam" && (botSlotStates[slotId] !== true && userSlotStates[slotId] !== true ?

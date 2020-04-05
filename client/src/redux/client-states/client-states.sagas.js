@@ -21,10 +21,10 @@ export function* fetchOfferStatusAsync() {
     }
 
     yield userTempItem.forEach(item => {
-      postObject.user.push(item.id);
+      postObject.user.push(item);
     });
     yield botTempItem.forEach(item => {
-      postObject.bot.push(item.id);
+      postObject.bot.push(item);
     })
 
     yield put(toggleBlackScreen());

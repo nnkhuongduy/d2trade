@@ -25,9 +25,13 @@
     overflow-x: hidden;
   }
 
-  &:hover {
-    filter: brightness(120%);
-    transform: scale(1.1);
+  &.activated {
 
+    &:hover {
+      filter: brightness(120%);
+      transform: scale(1.1);
+
+    }
   }
+
 }
