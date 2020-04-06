@@ -133,6 +133,58 @@ const authCheck = (req, res, next) => {
   }
 };
 
+const TransactionFunc = (reqUserData, moneyCheck, moneyItem, type, callback) => {
+  let updateObj = {};
+  let isCallback = false;
+
+  if (type === "transaction")
+    updateObj = { accountBalance: parseFloat((parseFloat(reqUserData.accountBalance.toFixed(2)) - parseFloat(moneyItem.market_price)).toFixed(2)) }
+  if (type === "refund")
+    updateObj = { accountBalance: parseFloat((parseFloat(reqUserData.accountBalance.toFixed(2)) + parseFloat(moneyItem.market_price)).toFixed(2)) }
+  if (callback && typeof callback === 'function') isCallback = true;
+
+  if (moneyCheck && updateObj.accountBalance !== undefined)
+    SteamUsers.findOneAndUpdate({ steamid: reqUserData.steamid }, updateObj, (err) => {
+      if (err) {
+        console.log(err);
+        isCallback && callback(false)
+      } else {
+        console.log(type === 'transaction' ? 'transaction completed!' : "refund completed!")
+        isCallback && callback(true)
+      }
+    })
+  else isCallback && callback(false)
+}
+
+const sendOffer = (offer, botItems, userItems, callback) => {
+  let isCallback = false
+  if (callback && typeof callback === 'function') isCallback = true;
+
+  offer.addMyItems(botItems);
+  offer.addTheirItems(userItems);
+  offer.setMessage("Test");
+
+  offer.send((err, status) => {
+    if (err) {
+      console.log(err);
+      isCallback && callback(500)
+
+    } else {
+      if (status === "pending") {
+        community.acceptConfirmationForObject(process.env.STEAM_IDENTITY_SECRET, offer.id, (err) => {
+          if (err) {
+            console.log(err);
+            isCallback && callback(500)
+          } else {
+            console.log("Sent");
+            isCallback && callback(200)
+          }
+        })
+      }
+    }
+  });
+}
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.listen(port, () => console.log(`Server started on port ${port}`));
@@ -259,6 +311,7 @@ app.get("/inventory/:steamid", (req, res) => {
 })
 
 app.post("/tradeoffer", (req, res) => {
+  console.log("received")
   const reqBotItems = req.body.bot;
   const reqUserItems = req.body.user;
   const reqUserData = req.body.userData;
@@ -266,8 +319,10 @@ app.post("/tradeoffer", (req, res) => {
   //Check database for prices
 
   const botTotalPrice = reqBotItems.reduce((accumulator, item) => accumulator + parseFloat(item.market_price), 0);
-  const userTotalPrice = reqUserItems.filter(item => item.id !== "moneyItem").reduce((accumulator, item) => accumulator + parseFloat(item.market_price), 0);
+  const userTotalPrice = reqUserItems.reduce((accumulator, item) => accumulator + parseFloat(item.market_price), 0);
+  const userTotalPriceWithoutMoney = reqUserItems.filter(item => item.id !== "moneyItem").reduce((accumulator, item) => accumulator + parseFloat(item.market_price), 0);
 
+  let balanceCheck = false;
   let moneyCheck = false;
   let moneyItem = {};
   reqUserItems.forEach(item => {
@@ -277,31 +332,14 @@ app.post("/tradeoffer", (req, res) => {
     }
   })
 
-  if (botTotalPrice >= userTotalPrice) {
-    if (moneyCheck) {
-      moneyCheck = parseFloat(moneyItem.market_price) === parseFloat((botTotalPrice - userTotalPrice).toFixed(2))
-      if (moneyCheck) {
-        SteamUsers.findOneAndUpdate({ steamid: reqUserData.steamid },
-          { accountBalance: parseFloat(reqUserData.accountBalance.toFixed(2)) - parseFloat(moneyItem.market_price) },
-          (err) => {
-            if (err) {
-              moneyCheck = false;
-              console.log(err);
-              res.statusMessage = "Cant find user in database"
-              res.sendStatus(503)
-            } else {
-              console.log("transaction completed!")
-            }
-          })
-      } else res.sendStatus(503);
-    }
-    moneyCheck = true;
+  if (botTotalPrice <= userTotalPrice) {
+    balanceCheck = true;
   } else {
-    moneyCheck = false;
+    balanceCheck = false;
     res.sendStatus(503);
   }
 
-  if (moneyCheck) {
+  if (balanceCheck) {
     manager.getInventoryContents(steamInfo.appId, steamInfo.contextId, true, (err, botInventory) => {
       if (err) {
         console.log(err);
@@ -334,27 +372,25 @@ app.post("/tradeoffer", (req, res) => {
 
             if (botItems.length === reqBotItems.length &&
               ((moneyCheck === false && userItems.length === reqUserItems.length) || (moneyCheck === true && userItems.length === reqUserItems.length - 1))) {
-              offer.addMyItems(botItems);
-              offer.addTheirItems(userItems);
-              offer.setMessage("Test");
-              offer.send((err, status) => {
-                if (err) {
-                  console.log(err);
-                  res.sendStatus(500);
-                } else {
-                  if (status === "pending") {
-                    community.acceptConfirmationForObject(process.env.STEAM_IDENTITY_SECRET, offer.id, (err) => {
-                      if (err) {
-                        console.log(err);
-                        res.sendStatus(500);
-                      } else {
-                        console.log("Sent");
-                        res.sendStatus(200)
+              if (moneyCheck) {
+                moneyCheck = parseFloat(moneyItem.market_price) === parseFloat((botTotalPrice - userTotalPriceWithoutMoney).toFixed(2))
+                TransactionFunc(reqUserData, moneyCheck, moneyItem, 'transaction', (status) => {
+                  if (!status) res.sendStatus(503);
+                  else {
+                    sendOffer(offer, botItems, userItems, (status) => {
+                      if (status === 200) res.sendStatus(status)
+                      else {
+                        TransactionFunc(reqUserData, moneyCheck, moneyItem, 'refund', (status) => {
+                          if (!status) {
+                            console.log("error refund! need to fix database!")
+                            res.sendStatus(500)
+                          } else res.sendStatus(503)
+                        })
                       }
                     })
                   }
-                }
-              });
+                })
+              } else sendOffer(offer, botItems, userItems, (status) => res.sendStatus(status))
             } else {
               console.log("Missing item(s)");
               res.sendStatus(500);

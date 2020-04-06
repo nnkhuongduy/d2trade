@@ -5,10 +5,13 @@ import { updatePrice, unsetTempItem } from './temp-item.actions'
 import { toggleSlotState } from '../slot-state/slot-state.actions'
 
 import { selectBotTempItem, selectUserTempItem } from './temp-item.selectors'
+import { selectUserInventory } from '../inventory/inventory.selectors'
 
 import { TempItemTypes } from './temp-item.types'
 
 export function* checkBalance({ tempType, item, type }) {
+  const userInventory = yield select(selectUserInventory)
+
   const botItems = yield select(selectBotTempItem);
   const userItems = yield select(selectUserTempItem);
 
@@ -39,8 +42,8 @@ export function* checkBalance({ tempType, item, type }) {
   // console.log(`botTotalPrice: ${botTotalPrice}`)
   // console.log(`userTotalPrice: ${userTotalPrice}`)
   // console.log(`diff: ${diff}`)
-
-  yield put(setBalanceItemFinish(diff >= 0 ? diff.toFixed(2) : "0.00"))
+  if (userInventory !== null)
+    yield put(setBalanceItemFinish(diff >= 0 ? diff.toFixed(2) : "0.00"))
 }
 
 export function* tempItemSaga() {

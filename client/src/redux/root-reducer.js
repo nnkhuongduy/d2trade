@@ -15,7 +15,7 @@ import itemsImageReducer from './items-image/items-image.reducer'
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['user']
+  whitelist: []
 }
 
 const rootReducer = combineReducers({

@@ -35,6 +35,7 @@ const inventoryReducer = (state = INITIAL_STATE, action) => {
           ...state[action.inventoryType],
           isFetching: false,
           inventory: action.inventory,
+          errorMessage: undefined,
         }
       }
 

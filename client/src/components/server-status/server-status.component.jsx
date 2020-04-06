@@ -51,12 +51,12 @@ const ServerStatus = ({
     toggleBlackScreen();
     resetOfferStatus();
     if (offerStatus === true) {
-      refreshInventory("bot");
-      refreshInventory("user");
       refreshTempItems("bot");
       refreshTempItems("user");
       refreshSlotsState("user");
       refreshSlotsState("bot");
+      refreshInventory("bot");
+      refreshInventory("user");
       logInStart();
     }
   }

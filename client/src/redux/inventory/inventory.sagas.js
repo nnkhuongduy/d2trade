@@ -28,7 +28,7 @@ export function* fetchInventoryAsync({ type, inventoryType }) {
     const miniInventory = [];
     const imgObj = {};
     const userSteamId = currentUser && currentUser.steamid;
-    const result = yield inventoryType === "bot" ? axios('/inventory/bot') : axios(`/inventory/${userSteamId}`);
+    const result = yield inventoryType === "bot" ? axios('/inventory/bot') : (userSteamId && axios(`/inventory/${userSteamId}`));
 
     if (result.status === 200) {
       const inventory = yield result.data.map(item => {
@@ -49,12 +49,12 @@ export function* fetchInventoryAsync({ type, inventoryType }) {
 
           imgObj[item.id] = itemImg;
         }
-      });
+      })
 
+      yield put(setItemsImage(inventoryType, imgObj))
       yield put(fetchInventorySuccess(inventoryType, inventory));
       yield put(setRenderingInventory(inventoryType, miniInventory));
       yield put(updateRenderedInventoryStart(inventoryType));
-      yield put(setItemsImage(inventoryType, imgObj))
     } else {
       yield put(fetchInventoryFailure(inventoryType, result.statusMessage));
     }
