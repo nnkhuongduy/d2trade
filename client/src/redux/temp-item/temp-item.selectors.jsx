@@ -6,12 +6,19 @@ export const selectBotTempItem = createSelector([selectTempItemState], stateTemp
 
 export const selectUserTempItem = createSelector([selectTempItemState], stateTempItem => stateTempItem.tempItem.user);
 
-export const selectBotPrices = createSelector([selectTempItemState], state => state.price.bot)
+export const selectBotPricesUSD = createSelector([selectTempItemState], state => state.priceUSD.bot)
 
-export const selectUserPrices = createSelector([selectTempItemState], state => state.price.user)
+export const selectUserPricesUSD = createSelector([selectTempItemState], state => state.priceUSD.user)
 
-export const selectTradeButtonState = createSelector([selectBotPrices, selectUserPrices], (botPrices, userPrices) => {
-  botPrices = parseFloat(botPrices)
-  userPrices = parseFloat(userPrices)
-  return (userPrices >= botPrices && userPrices !== 0)
-})
+export const selectBotPricesVND = createSelector([selectTempItemState], state => state.priceVND.bot)
+
+export const selectUserPricesVND = createSelector([selectTempItemState], state => state.priceVND.user)
+
+export const selectTradeButtonState = createSelector([selectBotPricesUSD, selectUserPricesUSD, selectBotPricesVND, selectUserPricesVND],
+  (botPricesUSD, userPricesUSD, botPricesVND, userPricesVND) => {
+    botPricesUSD = parseFloat(botPricesUSD)
+    userPricesUSD = parseFloat(userPricesUSD)
+    botPricesVND = parseInt(botPricesVND)
+    userPricesVND = parseInt(userPricesVND)
+    return (userPricesUSD >= botPricesUSD && userPricesVND >= botPricesVND && userPricesUSD !== 0 && userPricesVND !== 0)
+  })

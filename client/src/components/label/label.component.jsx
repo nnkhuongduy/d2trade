@@ -2,10 +2,10 @@ import React from 'react';
 
 import './label.component.scss';
 
-const Label = (props) => {
+const Label = ({ type, children }) => {
   return (
-    <div className="label">
-      {props.children}
+    <div className={`label ${type}`}>
+      {children}
     </div>
   )
 }

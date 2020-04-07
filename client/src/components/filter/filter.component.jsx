@@ -10,16 +10,18 @@ import { filterStart } from '../../redux/price-filter/price-filter.actions'
 
 import { selectHeroesContainer } from '../../redux/heroes/heroes.selectors'
 import { selectBotMaxPrice, selectBotMinPrice, selectUserMaxPrice, selectUserMinPrice } from '../../redux/price-filter/price-filter.selectors'
+import { selectCurrencyState } from '../../redux/currency/currency.selectors'
 
 import './filter.component.scss';
 
 const Filter = ({
   counter, type, setHeroesContainer, heroesContainer, filterStart,
-  botMaxPrice, botMinPrice, userMaxPrice, userMinPrice,
+  botMaxPrice, botMinPrice, userMaxPrice, userMinPrice, currencyState
 }) => {
   const [filterMinValue, setFilterMinValue] = useState(0);
   const [filterMaxValue, setFilterMaxValue] = useState(0);
   const [applyButtonState, setApplyButtonState] = useState(true);
+  const [filterState, setfilterState] = useState(false);
 
   useEffect(() => {
     if (applyButtonState === false) setApplyButtonState(true);
@@ -70,26 +72,36 @@ const Filter = ({
     } else filterStart(type, 0, 0)
   }
 
+  const filterStyles = {
+    top: type !== 'global' && '50%',
+    left: type !== "bot" && 'calc(100% + 10px)',
+    right: type === "bot" && 'calc(100% + 10px)',
+    transform: `translateY(${type === 'global' ? '0' : '-50%'})`
+  }
+
   return (
-    <div className={`filter ${counter && 'filter-counter'}`}>
-      <div className="filter-box-container">
-        <div className={`filter-label ${type}`}>From</div>
-        <div className="filter-input-container">
-          <span>$</span>
-          <input className="filter-box filter-min" value={filterMinValue} onChange={onChangeHandle} />
+    <>
+      <Button classes={['btn-filter-state', `${type}`]} onClickHandle={() => setfilterState(state => !state)}>TOGGLE FILTER</Button>
+      {filterState && <div className={`filter ${counter ? 'filter-counter' : ''}`} style={filterStyles}>
+        <div className="filter-box-container">
+          <div className={`filter-label`}>From</div>
+          <div className="filter-input-container">
+            <span>{currencyState === "usd" ? '$' : 'VND'}</span>
+            <input className="filter-box filter-min" value={filterMinValue} onChange={onChangeHandle} />
+          </div>
+          <div className={`filter-label`}>To</div>
+          <div className="filter-input-container">
+            <span>{currencyState === "usd" ? '$' : 'VND'}</span>
+            <input className="filter-box filter-max" value={filterMaxValue} onChange={onChangeHandle} />
+          </div>
+          {applyButtonState ? <Button classes={["btn-filter", `btn-filter-${type}`]} onClickHandle={filterAppyHandle}>APPLY</Button> :
+            <Button classes={["btn-filter", `btn-filter-${type}`]} onClickHandle={filterCancelHandle}>CLEAR FILTER</Button>
+          }
         </div>
-        <div className={`filter-label ${type}`}>To</div>
-        <div className="filter-input-container">
-          <span>$</span>
-          <input className="filter-box filter-max" value={filterMaxValue} onChange={onChangeHandle} />
-        </div>
-        {applyButtonState ? <Button classes={["btn-filter", `btn-filter-${type}`]} onClickHandle={filterAppyHandle}>APPLY</Button> :
-          <Button classes={["btn-filter", `btn-filter-${type}`]} onClickHandle={filterCancelHandle}>CLEAR FILTER</Button>
-        }
-      </div>
-      <Button classes={["btn-filter"]} onClickHandle={heroClickHandle} >HERO</Button>
-      {heroesContainer === type && <Heroes type={type} />}
-    </div>
+        <Button classes={["btn-filter"]} onClickHandle={heroClickHandle} >HERO</Button>
+        {heroesContainer === type && <Heroes type={type} />}
+      </div>}
+    </>
   )
 }
 
@@ -103,7 +115,8 @@ const mapStateToProps = createStructuredSelector({
   botMaxPrice: selectBotMaxPrice,
   botMinPrice: selectBotMinPrice,
   userMaxPrice: selectUserMaxPrice,
-  userMinPrice: selectUserMinPrice
+  userMinPrice: selectUserMinPrice,
+  currencyState: selectCurrencyState
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Filter);

@@ -11,4 +11,9 @@
   color: white;
   font-family: $header-font;
   font-weight: 700;
+
+  &.global {
+    position: absolute;
+    bottom: 0;
+  }
 }

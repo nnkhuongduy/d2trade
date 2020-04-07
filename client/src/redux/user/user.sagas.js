@@ -15,13 +15,6 @@ import { selectCurrentUser } from './user.selectors'
 
 export function* fetchUserAsync() {
   try {
-    // yield put(refreshInventory("bot"));
-    // yield put(refreshInventory("user"));
-    // yield put(refreshTempItems("bot"));
-    // yield put(refreshTempItems("user"));
-    // yield put(refreshSlotsState("user"));
-    // yield put(refreshSlotsState("bot"));
-
     const respone = yield axios('/auth/login/success', {
       method: "GET",
       withCredentials: true,
@@ -38,7 +31,6 @@ export function* fetchUserAsync() {
   } catch (error) {
     yield put(logInFail(error.message))
   }
-
 }
 
 export function* logOutAsync() {

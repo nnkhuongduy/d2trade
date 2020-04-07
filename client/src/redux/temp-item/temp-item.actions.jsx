@@ -17,8 +17,9 @@ export const refreshTempItems = tempType => ({
   tempType: tempType
 })
 
-export const updatePrice = (priceType, price) => ({
+export const updatePrice = (priceType, priceVND, priceUSD) => ({
   type: TempItemTypes.UPDATE_PRICE,
   priceType: priceType,
-  price: price
+  priceVND: priceVND,
+  priceUSD: priceUSD
 })

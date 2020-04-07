@@ -9,6 +9,7 @@ import { toggleSlotState } from '../../redux/slot-state/slot-state.actions';
 
 import { selectBotSlotStates, selectUserSlotStates } from '../../redux/slot-state/slot-state.selectors';
 import { selectBotRenderedInventory, selectUserRenderedInventory } from '../../redux/inventory/inventory.selectors';
+import { selectCurrencyState } from '../../redux/currency/currency.selectors'
 
 import './inventory-slot.component.scss';
 
@@ -17,6 +18,7 @@ const InventorySlot = ({
   setTempItem, unsetTempItem,
   botSlotStates, userSlotStates, toggleSlotState,
   botRenderedInventory, userRenderedInventory,
+  currencyState
 }) => {
   const [displayState, setDisplayState] = useState("block");
   const [activeState, setActiveState] = useState(true);
@@ -28,7 +30,7 @@ const InventorySlot = ({
     color: ((item.tags[1].name !== "Common" && item.tags[1].name !== "Immortal" && item.tags[1].name !== "Account Balance") ? "white" : "black"),
     filter: mode === "steam" && (type === "bot" ? botSlotStates[slotId] : userSlotStates[slotId]) ? "grayscale(100%) brightness(50%)" : "",
     display: mode === "steam" ? displayState : "block",
-    fontSize: slotId === 'moneyItem' && '12px'
+    fontSize: slotId === 'moneyItem' && '10px',
   }
 
   useEffect(() => {
@@ -63,7 +65,7 @@ const InventorySlot = ({
 
   return (
     <div className={`inventory-slot ${activeState ? 'activated' : 'deactivated'}`} style={itemRarityStyle} onClick={onClickHandle}>
-      <div mode="single" className="item-price">$ {item.market_price}</div>
+      <div mode="single" className="item-price">{currencyState === "usd" ? (item.id !== 'moneyItem' ? `$ ${item.market_price}` : `${item.vnd_price} VND`) : `${item.vnd_price} VND`}</div>
       <ItemImage type={type} mode={mode} itemId={slotId} imageState={type === "bot" ? botSlotStates[slotId] : userSlotStates[slotId]} />
       {/* {mode === "steam" && (botSlotStates[slotId] !== true && userSlotStates[slotId] !== true ?
         <ItemImage type={type} mode={mode} itemId={slotId} /> :
@@ -86,6 +88,7 @@ const mapStateToProps = createStructuredSelector({
   userSlotStates: selectUserSlotStates,
   botRenderedInventory: selectBotRenderedInventory,
   userRenderedInventory: selectUserRenderedInventory,
+  currencyState: selectCurrencyState
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(InventorySlot);

@@ -79,15 +79,17 @@ const steamInfo = {
 }
 
 const itemsSchema = new mongoose.Schema({}, { strict: false })
-
 const heroesSchema = new mongoose.Schema({}, { strict: false })
-
 const steamUserSchema = new mongoose.Schema({}, { strict: false })
+const siteSettingSchema = new mongoose.Schema({
+  currencyRate: Number
+})
 
 const BotItems = mongoose.model("BotItem", itemsSchema);
 const UserItems = mongoose.model("UserItem", itemsSchema);
 const Heroes = mongoose.model("Hero", heroesSchema, "Hero");
 const SteamUsers = mongoose.model("SteamUser", steamUserSchema);
+const SiteSettings = mongoose.model("SiteSettings", siteSettingSchema, "SiteSettings");
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -138,9 +140,9 @@ const TransactionFunc = (reqUserData, moneyCheck, moneyItem, type, callback) => 
   let isCallback = false;
 
   if (type === "transaction")
-    updateObj = { accountBalance: parseFloat((parseFloat(reqUserData.accountBalance.toFixed(2)) - parseFloat(moneyItem.market_price)).toFixed(2)) }
+    updateObj = { accountBalance: reqUserData.accountBalance - parseInt(moneyItem.vnd_price.replace(/,/g, '')) }
   if (type === "refund")
-    updateObj = { accountBalance: parseFloat((parseFloat(reqUserData.accountBalance.toFixed(2)) + parseFloat(moneyItem.market_price)).toFixed(2)) }
+    updateObj = { accountBalance: reqUserData.accountBalance + parseInt(moneyItem.vnd_price.replace(/,/g, '')) }
   if (callback && typeof callback === 'function') isCallback = true;
 
   if (moneyCheck && updateObj.accountBalance !== undefined)
@@ -211,10 +213,19 @@ app.get('/inventory/bot', (req, res) => {
 
           inventory = inventory.filter(item => !itemsOnBlackList[item.id]);
 
-          res.json(inventory)
+          SiteSettings.findById(process.env.MONGODB_CURRENCY_RATE_ID, (err, rate) => {
+            if (!err) {
+              inventory.forEach(item => {
+                const randPrice = (Math.random() * (10 - 0.01) + 0.01).toFixed(2)
+                item.market_price = item.id !== 'moneyItem' ? randPrice : "0.00";
+                item.vnd_price = Math.round((parseFloat(randPrice) * rate.currencyRate * 1000)).toLocaleString();
+              })
+
+              res.json(inventory)
+            } else res.sendStatus(503)
+          })
         }
       })
-
     }
   })
 })
@@ -302,7 +313,17 @@ app.get("/inventory/:steamid", (req, res) => {
 
           inventory.unshift(moneyItem)
 
-          res.json(inventory)
+          SiteSettings.findById(process.env.MONGODB_CURRENCY_RATE_ID, (err, rate) => {
+            if (!err) {
+              inventory.forEach(item => {
+                const randPrice = (Math.random() * (10 - 0.01) + 0.01).toFixed(2)
+                item.market_price = item.id !== 'moneyItem' ? randPrice : "0.00";
+                item.vnd_price = item.id !== 'moneyItem' ? Math.round((parseFloat(randPrice) * rate.currencyRate * 1000)).toLocaleString() : '0';
+              })
+
+              res.json(inventory)
+            } else res.sendStatus(503)
+          })
         }
       })
 
@@ -311,16 +332,24 @@ app.get("/inventory/:steamid", (req, res) => {
 })
 
 app.post("/tradeoffer", (req, res) => {
-  console.log("received")
   const reqBotItems = req.body.bot;
-  const reqUserItems = req.body.user;
+  let reqUserItems = req.body.user;
   const reqUserData = req.body.userData;
+
+  reqUserItems = reqUserItems.filter(item => item.market_price !== "0.00" || item.vnd_price !== "0");
 
   //Check database for prices
 
-  const botTotalPrice = reqBotItems.reduce((accumulator, item) => accumulator + parseFloat(item.market_price), 0);
-  const userTotalPrice = reqUserItems.reduce((accumulator, item) => accumulator + parseFloat(item.market_price), 0);
-  const userTotalPriceWithoutMoney = reqUserItems.filter(item => item.id !== "moneyItem").reduce((accumulator, item) => accumulator + parseFloat(item.market_price), 0);
+  const botTotalPriceUSD = parseFloat((reqBotItems.reduce((accumulator, item) => accumulator + parseFloat(item.market_price), 0)).toFixed(2));
+  const userTotalPriceUSD = parseFloat((reqUserItems.reduce((accumulator, item) => accumulator + parseFloat(item.market_price), 0)).toFixed(2));
+  const userTotalPriceUSDWithoutMoney = parseFloat(
+    (reqUserItems.filter(item => item.id !== "moneyItem").reduce((accumulator, item) => accumulator + parseFloat(item.market_price), 0)).toFixed(2)
+  );
+
+  const botTotalPriceVND = reqBotItems.reduce((accumulator, item) => accumulator + parseInt(item.vnd_price.replace(/,/g, "")), 0);
+  const userTotalPriceVND = reqUserItems.reduce((accumulator, item) => accumulator + parseInt(item.vnd_price.replace(/,/g, "")), 0);
+  const userTotalPriceVNDWithoutMoney = reqUserItems.filter(item =>
+    item.id !== "moneyItem").reduce((accumulator, item) => accumulator + parseInt(item.vnd_price.replace(/,/g, "")), 0);
 
   let balanceCheck = false;
   let moneyCheck = false;
@@ -332,10 +361,17 @@ app.post("/tradeoffer", (req, res) => {
     }
   })
 
-  if (botTotalPrice <= userTotalPrice) {
+  if (botTotalPriceUSD <= userTotalPriceUSD && botTotalPriceVND <= userTotalPriceVND) {
     balanceCheck = true;
   } else {
     balanceCheck = false;
+    console.log("unbalance prices error")
+    console.log(`botTotalPriceUSD: ${botTotalPriceUSD}`)
+    console.log(`userTotalPriceUSD: ${userTotalPriceUSD}`)
+    console.log(`botTotalPriceVND: ${botTotalPriceVND}`)
+    console.log(`userTotalPriceVND: ${userTotalPriceVND}`)
+    console.log(`userTotalPriceUSDWithoutMoney: ${userTotalPriceUSDWithoutMoney}`)
+    console.log(`userTotalPriceVNDWithoutMoney: ${userTotalPriceVNDWithoutMoney}`)
     res.sendStatus(503);
   }
 
@@ -373,9 +409,13 @@ app.post("/tradeoffer", (req, res) => {
             if (botItems.length === reqBotItems.length &&
               ((moneyCheck === false && userItems.length === reqUserItems.length) || (moneyCheck === true && userItems.length === reqUserItems.length - 1))) {
               if (moneyCheck) {
-                moneyCheck = parseFloat(moneyItem.market_price) === parseFloat((botTotalPrice - userTotalPriceWithoutMoney).toFixed(2))
+                moneyCheck = parseFloat(moneyItem.market_price) === parseFloat((botTotalPriceUSD - userTotalPriceUSDWithoutMoney).toFixed(2)) &&
+                  parseInt(moneyItem.vnd_price.replace(/,/g, '')) === botTotalPriceVND - userTotalPriceVNDWithoutMoney
                 TransactionFunc(reqUserData, moneyCheck, moneyItem, 'transaction', (status) => {
-                  if (!status) res.sendStatus(503);
+                  if (!status) {
+                    console.log("transaction failed")
+                    res.sendStatus(503);
+                  }
                   else {
                     sendOffer(offer, botItems, userItems, (status) => {
                       if (status === 200) res.sendStatus(status)
@@ -384,7 +424,10 @@ app.post("/tradeoffer", (req, res) => {
                           if (!status) {
                             console.log("error refund! need to fix database!")
                             res.sendStatus(500)
-                          } else res.sendStatus(503)
+                          } else {
+                            console.log("refund error")
+                            res.sendStatus(503)
+                          }
                         })
                       }
                     })
@@ -460,4 +503,14 @@ app.post('/edituser/', (req, res) => {
       }
     })
   }
+})
+
+app.get('/currency/rate', (req, res) => {
+  SiteSettings.findById(process.env.MONGODB_CURRENCY_RATE_ID, (err, result) => {
+    if (!err) {
+      res.json(result);
+    } else {
+      res.sendStatus(500);
+    }
+  })
 })

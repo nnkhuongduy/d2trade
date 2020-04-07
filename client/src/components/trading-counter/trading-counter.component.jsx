@@ -7,18 +7,19 @@ import Filter from '../filter/filter.component';
 import './trading-counter.component.scss';
 import Label from '../label/label.component';
 
-import { selectBotPrices, selectUserPrices } from '../../redux/temp-item/temp-item.selectors';
+import { selectBotPricesUSD, selectUserPricesUSD, selectBotPricesVND, selectUserPricesVND } from '../../redux/temp-item/temp-item.selectors';
+import { selectCurrencyState } from '../../redux/currency/currency.selectors'
 
-const TradingCounter = ({ type, totalPriceBot, totalPriceUser }) => {
+const TradingCounter = ({ type, totalPriceBotUSD, totalPriceUserUSD, totalPriceBotVND, totalPriceUserVND, currencyState }) => {
   const classValue = type ? `trading-counter ${type}` : "trading-counter";
 
   return (
     <div className={classValue}>
       <div className="total-money">
         <div className="total-money-content">
-          $ {type === "bot" ?
-            totalPriceBot :
-            totalPriceUser
+          {type === "bot" ?
+            (currencyState === "vnd" ? `${totalPriceBotVND} VND` : `$ ${totalPriceBotUSD}`) :
+            (currencyState === "vnd" ? `${totalPriceUserVND} VND` : `$ ${totalPriceUserUSD}`)
           }
           {/* $ {type === "bot" ?
             totalPriceBot.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) :
@@ -35,8 +36,11 @@ const TradingCounter = ({ type, totalPriceBot, totalPriceUser }) => {
 }
 
 const mapStateToProps = createStructuredSelector({
-  totalPriceBot: selectBotPrices,
-  totalPriceUser: selectUserPrices
+  totalPriceBotUSD: selectBotPricesUSD,
+  totalPriceUserUSD: selectUserPricesUSD,
+  totalPriceBotVND: selectBotPricesVND,
+  totalPriceUserVND: selectUserPricesVND,
+  currencyState: selectCurrencyState
 })
 
 export default connect(mapStateToProps)(TradingCounter);

@@ -1,5 +1,6 @@
 @import '../../assets/styles/_colors.scss';
 @import '../../assets/styles/_basics.scss';
+@import '../../assets/styles/_fonts.scss';
 
 .trading-handle {
   width: 16%;
@@ -28,7 +29,15 @@
     background-color: $primary-gray-pink;
     height: 75%;
     border-radius: $border-radius-value;
+    position: relative;
     display: flex;
     flex-direction: column;
+    align-items: center;
+  }
+
+  .currency-state {
+    color: white;
+    font-family: $header-font;
+    font-weight: 700;
   }
 }

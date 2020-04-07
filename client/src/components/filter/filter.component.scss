@@ -4,12 +4,13 @@
 .filter {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
-  width: 90%;
-  height: 100%;
-  margin: 0 auto;
-  position: relative;
+  width: 15vw;
+  position: absolute;
+  background-color: $neutral-dark-blue;
+  border-radius: $border-radius-value;
+  z-index: 1;
 
   .filter-box-container {
     display: flex;
@@ -20,6 +21,7 @@
 
     .filter-label {
       color: white;
+      margin: 10px 0;
 
       &.user,
       &.bot {
@@ -35,6 +37,8 @@
     .filter-input-container {
       display: flex;
       align-items: center;
+      flex-direction: column;
+      justify-content: center;
 
       span {
         color: white;
@@ -49,17 +53,6 @@
         width: 80%;
         text-align: center;
       }
-    }
-
-  }
-
-  &.filter-counter {
-    justify-content: unset;
-    width: 90%;
-    padding: 5%;
-
-    .btn {
-      margin-top: 20px;
     }
   }
 }

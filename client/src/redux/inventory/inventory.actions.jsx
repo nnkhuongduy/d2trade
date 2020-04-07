@@ -44,11 +44,8 @@ export const refreshInventory = inventoryType => ({
   inventoryType: inventoryType
 })
 
-export const setBalanceItem = () => ({
-  type: InventoryActionTypes.SET_BALANCE_ITEM_START
-})
-
-export const setBalanceItemFinish = (price) => ({
-  type: InventoryActionTypes.SET_BALANCE_ITEM_FINISH,
-  price: price
+export const setBalanceItem = (priceVND, priceUSD) => ({
+  type: InventoryActionTypes.SET_BALANCE_ITEM,
+  priceVND: priceVND,
+  priceUSD: priceUSD
 })

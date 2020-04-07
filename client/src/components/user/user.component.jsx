@@ -40,7 +40,7 @@ const User = ({ user }) => {
     <div className="user-container">
       <TradeUrl />
       <Icon icon={creditCardPlus} width={"2em"} height={"2em"} className={"credit-card"} />
-      <span className="account-balance">$ {user.accountBalance}</span>
+      <span className="account-balance">{parseInt(user.accountBalance).toLocaleString()} VND</span>
       <img src={user.avatarmedium} alt="avatar" className="avatar" />
       <span className="username">{user.personaname}</span>
       {dropdownState ? <div className="dropdown-arrow" onClick={dropdownHandleOff} ><Icon icon={dropDown} width={"1.5em"} height={"1.5em"} rotate={"180deg"} /></div> :

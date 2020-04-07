@@ -11,11 +11,12 @@ import heroesReducer from './heroes/heroes.reducer';
 import priceFilterReducer from './price-filter/price-filter.reducer';
 import userReducer from './user/user.reducer';
 import itemsImageReducer from './items-image/items-image.reducer'
+import currencyReducer from './currency/currency.reducer'
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: []
+  whitelist: ['user']
 }
 
 const rootReducer = combineReducers({
@@ -27,7 +28,8 @@ const rootReducer = combineReducers({
   heroes: heroesReducer,
   priceFilter: priceFilterReducer,
   user: userReducer,
-  itemsImage: itemsImageReducer
+  itemsImage: itemsImageReducer,
+  currency: currencyReducer
 });
 
 export default persistReducer(persistConfig, rootReducer);
