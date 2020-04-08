@@ -1,0 +1,62 @@
+@import '../../assets/styles/_basics.scss';
+
+@mixin hoverCancel {
+  &:hover {
+    svg {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}
+
+.tool-bar-filter {
+  margin-left: 35%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 60%;
+
+  .filtered-hero {
+    @include hoverState;
+    @include hoverCancel;
+    width: auto;
+    height: 100%;
+    position: relative;
+
+    &:hover {
+      cursor: pointer;
+
+      img {
+        filter: brightness(50%);
+      }
+    }
+
+    img {
+      width: auto;
+      height: 100%;
+      transition: $transition-value;
+    }
+  }
+
+  .filtered-rarity {
+    @include hoverCancel;
+    position: relative;
+
+    &:hover {
+      .rarity-filter {
+        filter: brightness(50%);
+      }
+    }
+  }
+
+  svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, -50%);
+    transition: $transition-value;
+  }
+}

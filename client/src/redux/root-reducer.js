@@ -12,6 +12,7 @@ import priceFilterReducer from './price-filter/price-filter.reducer';
 import userReducer from './user/user.reducer';
 import itemsImageReducer from './items-image/items-image.reducer'
 import currencyReducer from './currency/currency.reducer'
+import rarityFilterReducer from './rarity-filter/rarity-filter.reducer'
 
 const persistConfig = {
   key: 'root',
@@ -29,7 +30,8 @@ const rootReducer = combineReducers({
   priceFilter: priceFilterReducer,
   user: userReducer,
   itemsImage: itemsImageReducer,
-  currency: currencyReducer
+  currency: currencyReducer,
+  rarityFilter: rarityFilterReducer
 });
 
 export default persistReducer(persistConfig, rootReducer);

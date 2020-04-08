@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
 import { Icon } from '@iconify/react';
 import magnifyIcon from '@iconify/icons-mdi/magnify';
 import bxRefresh from '@iconify/icons-bx/bx-refresh';
-import cancelIcon from '@iconify/icons-topcoat/cancel';
+
+import ToolBarFilter from '../tool-bar-filter/tool-bar-filter.component'
 
 import { selectBotSearchingQuery, selectUserSearchingQuery } from '../../redux/searching/searching.selectors'
-import { selectBotFilteredHero, selectUserFilteredHero, selectBotFilteredState, selectUserFilteredState } from '../../redux/heroes/heroes.selectors'
 
 import { setQueryItemsStart } from '../../redux/searching/searching.actions';
 import { refreshInventory } from '../../redux/inventory/inventory.actions'
-import { filterHeroesStart } from '../../redux/heroes/heroes.actions'
 
 import './steam-inventory-toolbar.component.scss';
 
@@ -21,20 +20,8 @@ const SteamInventoryToolbar = ({
   botSearchingQuery, userSearchingQuery,
   setQueryItemsStart,
   refreshInventory,
-  botFilteredHero, userFilteredHero,
-  botFilteredState, userFilteredState,
-  filterHeroesStart
 }) => {
-  const [filteredState, setFilteredState] = useState();
-  const [filteredHero, setFilteredHero] = useState();
-
-  useEffect(() => {
-    setFilteredState(type === "bot" ? botFilteredState : userFilteredState)
-  }, [botFilteredState, userFilteredState, setFilteredState, type])
-
-  useEffect(() => {
-    setFilteredHero(type === "bot" ? botFilteredHero : userFilteredHero)
-  }, [botFilteredHero, userFilteredHero, setFilteredHero, type])
+  const [searchbarActiveState, setSearchbarActiveState] = useState(false)
 
   const inputChangeHandle = (e) => {
     const value = e.target.value;
@@ -45,22 +32,22 @@ const SteamInventoryToolbar = ({
     refreshInventory(type);
   }
 
-  const filteredHeroClickHandle = () => {
-    filterHeroesStart(type, filteredHero.localized_name)
-  }
-
   return (
     <div className="steam-inven-toolbar">
-      <div className="searchbar">
+      <div className={`searchbar ${searchbarActiveState ? 'active' : ''}`}>
         <div>
           <Icon icon={magnifyIcon} width="1.5em" height="1.5em" />
         </div>
-        <input type="text" value={type === "bot" ? botSearchingQuery : userSearchingQuery} onChange={inputChangeHandle} placeholder="Search" />
+        <input
+          type="text"
+          value={type === "bot" ? botSearchingQuery : userSearchingQuery}
+          onChange={inputChangeHandle}
+          placeholder="Search"
+          onSelect={() => setSearchbarActiveState(true)}
+          onBlur={() => setSearchbarActiveState(false)}
+        />
       </div>
-      <div className="filtered-hero" onClick={filteredHeroClickHandle}>
-        {(filteredState && filteredHero) && <img alt='hero_portrait' src={filteredHero.portrait_url} />}
-        <Icon icon={cancelIcon} color={"#fff"} style={{}} />
-      </div>
+      <ToolBarFilter type={type} />
       <div className="tool-section">
         <div>
           <Icon icon={bxRefresh} onClick={refreshClickHandle} width="2em" height="2em" />
@@ -73,16 +60,11 @@ const SteamInventoryToolbar = ({
 const mapDispatchToProps = dispatch => ({
   setQueryItemsStart: (type, query) => dispatch(setQueryItemsStart(type, query)),
   refreshInventory: type => dispatch(refreshInventory(type)),
-  filterHeroesStart: (heroName, filterType) => dispatch(filterHeroesStart(heroName, filterType))
 })
 
 const mapStateToProps = createStructuredSelector({
   botSearchingQuery: selectBotSearchingQuery,
   userSearchingQuery: selectUserSearchingQuery,
-  botFilteredHero: selectBotFilteredHero,
-  userFilteredHero: selectUserFilteredHero,
-  botFilteredState: selectBotFilteredState,
-  userFilteredState: selectUserFilteredState
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(SteamInventoryToolbar);

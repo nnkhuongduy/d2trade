@@ -19,6 +19,7 @@ import { selectBotFilteredState, selectUserFilteredState, selectBotFilteredItems
 import { selectBotPriceFilteredState, selectUserPriceFilteredState, selectBotPriceFilteredIds, selectUserPriceFilteredIds } from '../price-filter/price-filter.selectors'
 import { selectCurrentUser } from '../user/user.selectors'
 import { selectBotItemsImage, selectUserItemsImage } from '../items-image/items-image.selectors'
+import { selectBotRarityFilteredIds, selectBotRarityFilteredState, selectUserRarityFilteredIds, selectUserRarityFilteredState } from '../rarity-filter/rarity-filter.selectors'
 
 export function* fetchInventoryAsync({ type, inventoryType }) {
   try {
@@ -71,6 +72,7 @@ export function* setRenderingInventoryAsync({ inventoryType, ...action }) {
   const isSearching = yield inventoryType === "bot" ? select(selectBotSearchingState) : select(selectUserSearchingState);
   const isHeroFiltering = yield inventoryType === "bot" ? select(selectBotFilteredState) : select(selectUserFilteredState);
   const isPriceFiltering = yield inventoryType === "bot" ? select(selectBotPriceFilteredState) : select(selectUserPriceFilteredState);
+  const isRarityFiltering = yield inventoryType === "bot" ? select(selectBotRarityFilteredState) : select(selectUserRarityFilteredState);
   const inventory = yield inventoryType === "bot" ? select(selectBotInventory) : select(selectUserInventory);
 
   const renderInventory = [];
@@ -96,6 +98,12 @@ export function* setRenderingInventoryAsync({ inventoryType, ...action }) {
     yield inventoryArr.push(filterPriceInventory);
     yield inventoryCount++;
   }
+  if (isRarityFiltering) {
+    const filterRarityInventory = yield inventoryType === "bot" ? select(selectBotRarityFilteredIds) : select(selectUserRarityFilteredIds);
+
+    yield inventoryArr.push(filterRarityInventory);
+    yield inventoryCount++;
+  }
 
   if (inventoryCount !== 0) {
     yield inventoryArr.forEach(inventory => inventory.forEach(id => renderObj[id] ? renderObj[id]++ : renderObj[id] = 1));
@@ -109,7 +117,7 @@ export function* setRenderingInventoryAsync({ inventoryType, ...action }) {
     yield inventory.forEach(item => renderInventory.push(item.id));
   }
 
-  if ((isSearching || isHeroFiltering || isPriceFiltering) && renderInventory[0] !== 'moneyItem' && inventoryType === 'user') {
+  if ((isSearching || isHeroFiltering || isPriceFiltering || isRarityFiltering) && renderInventory[0] !== 'moneyItem' && inventoryType === 'user') {
     renderInventory.unshift(inventory[0].id);
   }
 

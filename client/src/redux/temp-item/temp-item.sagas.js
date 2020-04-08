@@ -32,11 +32,9 @@ export function* checkBalance({ item, ...action }) {
   // console.log(`userTotalPriceWithoutMoneyVND: ${userTotalPriceWithoutMoneyVND}`)
 
 
-  let moneyItem = {};
   let flag = false;
   userItems.forEach(item => {
     if (item.id === "moneyItem") {
-      moneyItem = item
       flag = true
     }
   })

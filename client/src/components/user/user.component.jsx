@@ -39,7 +39,7 @@ const User = ({ user }) => {
   return (
     <div className="user-container">
       <TradeUrl />
-      <Icon icon={creditCardPlus} width={"2em"} height={"2em"} className={"credit-card"} />
+      <Icon icon={creditCardPlus} width={"1.5em"} height={"1.5em"} className={"credit-card"} />
       <span className="account-balance">{parseInt(user.accountBalance).toLocaleString()} VND</span>
       <img src={user.avatarmedium} alt="avatar" className="avatar" />
       <span className="username">{user.personaname}</span>

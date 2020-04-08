@@ -13,6 +13,7 @@ import { priceFilterStart } from './price-filter/price-filter.sagas'
 import { fetchUserStart, logOutStart, editUserInfoStart } from './user/user.sagas'
 import { tempItemSaga } from './temp-item/temp-item.sagas'
 import { fetchCurrencyRateStart } from './currency/currency.sagas'
+import { rarityFilterStart } from './rarity-filter/rarity-filter.sagas'
 
 export default function* rootSaga() {
   yield all([
@@ -30,6 +31,7 @@ export default function* rootSaga() {
     call(logOutStart),
     call(editUserInfoStart),
     call(tempItemSaga),
-    call(fetchCurrencyRateStart)
+    call(fetchCurrencyRateStart),
+    call(rarityFilterStart)
   ]);
 }

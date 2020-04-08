@@ -4,11 +4,14 @@ import { createStructuredSelector } from 'reselect'
 
 import Button from '../button/button.component';
 import Heroes from '../heroes/heroes.component';
+import RarityFilterBox from '../rarity-filter-box/rarity-filter-box.component'
 
 import { setHeroesContainer } from '../../redux/heroes/heroes.actions'
 import { filterStart } from '../../redux/price-filter/price-filter.actions'
+import { setRarityContainer } from '../../redux/rarity-filter/rarity-filter.actions'
 
 import { selectHeroesContainer } from '../../redux/heroes/heroes.selectors'
+import { selectRarityContainer } from '../../redux/rarity-filter/rarity-filter.selectors'
 import { selectBotMaxPrice, selectBotMinPrice, selectUserMaxPrice, selectUserMinPrice } from '../../redux/price-filter/price-filter.selectors'
 import { selectCurrencyState } from '../../redux/currency/currency.selectors'
 
@@ -16,7 +19,8 @@ import './filter.component.scss';
 
 const Filter = ({
   counter, type, setHeroesContainer, heroesContainer, filterStart,
-  botMaxPrice, botMinPrice, userMaxPrice, userMinPrice, currencyState
+  botMaxPrice, botMinPrice, userMaxPrice, userMinPrice, currencyState,
+  rarityContainer, setRarityContainer
 }) => {
   const [filterMinValue, setFilterMinValue] = useState(0);
   const [filterMaxValue, setFilterMaxValue] = useState(0);
@@ -40,10 +44,22 @@ const Filter = ({
 
   type = type === undefined ? "global" : type;
 
+  const filterButtonStyles = {
+    backgroundColor: filterState === true ? '#F58599' : ''
+  }
+
   const heroClickHandle = () => {
     if (heroesContainer === type)
       setHeroesContainer(null);
     else setHeroesContainer(type);
+    setRarityContainer(null)
+  }
+
+  const rarityClickHande = () => {
+    if (rarityContainer === type)
+      setRarityContainer(null);
+    else setRarityContainer(type);
+    setHeroesContainer(null)
   }
 
   const onChangeHandle = e => {
@@ -81,7 +97,13 @@ const Filter = ({
 
   return (
     <>
-      <Button classes={['btn-filter-state', `${type}`]} onClickHandle={() => setfilterState(state => !state)}>TOGGLE FILTER</Button>
+      <Button
+        classes={['btn-filter-state', `${type}`]}
+        onClickHandle={() => setfilterState(state => !state)}
+        styles={filterButtonStyles}
+      >
+        {`TOGGLE FILTER ${filterState ? 'OFF' : 'ON'}`}
+      </Button>
       {filterState && <div className={`filter ${counter ? 'filter-counter' : ''}`} style={filterStyles}>
         <div className="filter-box-container">
           <div className={`filter-label`}>From</div>
@@ -100,6 +122,8 @@ const Filter = ({
         </div>
         <Button classes={["btn-filter"]} onClickHandle={heroClickHandle} >HERO</Button>
         {heroesContainer === type && <Heroes type={type} />}
+        <Button classes={['btn-filter']} onClickHandle={rarityClickHande}>RARITY</Button>
+        {rarityContainer === type && <RarityFilterBox type={type} />}
       </div>}
     </>
   )
@@ -108,6 +132,7 @@ const Filter = ({
 const mapDispatchToProps = dispatch => ({
   setHeroesContainer: type => dispatch(setHeroesContainer(type)),
   filterStart: (type, minValue, maxValue) => dispatch(filterStart(type, minValue, maxValue)),
+  setRarityContainer: type => dispatch(setRarityContainer(type))
 })
 
 const mapStateToProps = createStructuredSelector({
@@ -116,7 +141,8 @@ const mapStateToProps = createStructuredSelector({
   botMinPrice: selectBotMinPrice,
   userMaxPrice: selectUserMaxPrice,
   userMinPrice: selectUserMinPrice,
-  currencyState: selectCurrencyState
+  currencyState: selectCurrencyState,
+  rarityContainer: selectRarityContainer
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Filter);
