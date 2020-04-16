@@ -20,11 +20,25 @@ export function* fetchOfferStatusAsync() {
       bot: []
     }
 
+    const itemObj = {};
+
     yield userTempItem.forEach(item => {
-      postObject.user.push(item);
+      itemObj = {
+        id: item.id,
+        market_price: item.market_price,
+        vnd_price: item.vnd_price
+      }
+
+      postObject.user.push(itemObj);
     });
     yield botTempItem.forEach(item => {
-      postObject.bot.push(item);
+      itemObj = {
+        id: item.id,
+        market_price: item.market_price,
+        vnd_price: item.vnd_price
+      }
+
+      postObject.bot.push(itemObj);
     })
 
     yield put(toggleBlackScreen());

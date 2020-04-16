@@ -1,6 +1,5 @@
 const CONFIGS = require('./server/configs/configs')
 const app = require('./server/configs/express-setup')
-const manager = require('./server/configs/steam-setup/steam-manager')
 const getInventory = require('./server/services/get-inventory')
 const getHeroes = require('./server/services/get-heroes')
 const editUser = require('./server/services/edit-user')
