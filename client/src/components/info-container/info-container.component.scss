@@ -1,0 +1,35 @@
+@import '../../assets/styles/_colors.scss';
+@import '../../assets/styles/_basics.scss';
+
+.info-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr 6fr;
+  margin: 10px 0;
+  position: relative;
+  width: 95%;
+
+  .info {
+    font-size: 0.9rem;
+  }
+
+  a {
+    text-decoration: underline;
+    transition: $transition-value;
+
+    &:hover {
+      color: $primary-red-pink;
+    }
+  }
+
+  .icon-edit {
+    @include hoverState;
+    position: absolute;
+    right: -3%;
+    transition: $transition-value;
+
+    &:hover {
+      color: $primary-red-pink;
+    }
+  }
+
+}

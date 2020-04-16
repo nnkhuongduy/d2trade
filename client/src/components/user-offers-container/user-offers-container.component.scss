@@ -1,0 +1,18 @@
+@import '../../assets/styles/_basics.scss';
+
+.user-offers-container {
+
+  .refresh-button {
+    @include hoverState;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 25%;
+    transition: $transition-value;
+
+    &:hover {
+      opacity: 1;
+
+    }
+  }
+}

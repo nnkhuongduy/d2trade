@@ -6,8 +6,12 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px $margin-horizontal-value;
-  height: 50px;
+  height: 6vh;
   background-color: $primary-red-pink;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  box-sizing: border-box;
 
   .footer-nav {
     width: 40%;

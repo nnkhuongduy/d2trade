@@ -14,6 +14,20 @@ export const logInFail = errorMessage => ({
   errorMessage: errorMessage
 })
 
+export const fetchOffersStart = () => ({
+  type: UserTypes.FETCH_OFFERS_START
+})
+
+export const fetchOffersSuccessful = offersData => ({
+  type: UserTypes.FETCH_OFFERS_SUCCESSFUL,
+  offers: offersData
+})
+
+export const fetchOffersFailed = errorMessage => ({
+  type: UserTypes.FETCH_OFFERS_FAILED,
+  errorMessage: errorMessage
+})
+
 export const logOut = () => ({
   type: UserTypes.LOG_OUT,
 })

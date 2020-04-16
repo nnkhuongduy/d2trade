@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Icon } from '@iconify/react';
 import copyrightIcon from '@iconify/icons-fa-solid/copyright';
-import flagForFlagUsOutlyingIslands from '@iconify/icons-emojione/flag-for-flag-us-outlying-islands';
 import themeLightDark from '@iconify/icons-mdi/theme-light-dark';
 import steamIcon from '@iconify/icons-cib/steam';
 import twitterCircleFilled from '@iconify/icons-ant-design/twitter-circle-filled';
@@ -23,7 +22,6 @@ const Footer = () => (
       <a href="/">FAQ</a>
     </div>
     <div className="footer-setting">
-      <Icon icon={flagForFlagUsOutlyingIslands} width="2em" height="2em" />
       <Icon icon={themeLightDark} width="2em" height="2em" />
     </div>
     <div className="footer-socials">

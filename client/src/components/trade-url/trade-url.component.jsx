@@ -77,9 +77,9 @@ const TradeUrl = ({ currentUser, editUserInfo, userEditingState, editUserInfoFin
           }
         </>
       }
-      {!tradeOfferUrlInputState &&
+      {!tradeOfferUrlInputState && !currentUser.tradeOfferUrl &&
         <span className={tradeOfferUrlState ? 'span-animation' : ''} onClick={() => setTradeOfferUrlState(true)} onAnimationEnd={() => setTradeOfferUrlInputState(true)}>
-          Change Steam Trade URL
+          Update Steam Trade URL
         </span>
       }
     </div>

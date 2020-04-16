@@ -31,7 +31,7 @@ const RarityFilterBox = ({ type, rarityContainer, setRarityContainer, ...props }
       document.removeEventListener("mousedown", clickOutsideHandle)
     }
 
-  }, [])
+  }, [setRarityContainer])
 
   return (
     <div ref={rarityContainerRef} className="rarity-filter-box" style={componentStyles}>

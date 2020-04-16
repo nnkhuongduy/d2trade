@@ -10,7 +10,7 @@ import { fetchOfferStatusStart } from './client-states/client-states.sagas';
 import { querySearchingStart, heroSearchingStart } from './searching/searching.sagas'
 import { fetchHeroesStart, filterHeroStart } from './heroes/heroes.sagas'
 import { priceFilterStart } from './price-filter/price-filter.sagas'
-import { fetchUserStart, logOutStart, editUserInfoStart } from './user/user.sagas'
+import { userRootSaga } from './user/user.sagas'
 import { tempItemSaga } from './temp-item/temp-item.sagas'
 import { fetchCurrencyRateStart } from './currency/currency.sagas'
 import { rarityFilterStart } from './rarity-filter/rarity-filter.sagas'
@@ -27,11 +27,9 @@ export default function* rootSaga() {
     call(filterHeroStart),
     call(setRenderingInventoryStart),
     call(priceFilterStart),
-    call(fetchUserStart),
-    call(logOutStart),
-    call(editUserInfoStart),
     call(tempItemSaga),
     call(fetchCurrencyRateStart),
-    call(rarityFilterStart)
+    call(rarityFilterStart),
+    call(userRootSaga)
   ]);
 }

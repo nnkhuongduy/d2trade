@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom'
 
 import { Icon } from '@iconify/react';
 import dropDown from '@iconify/icons-fe/drop-down';
@@ -42,7 +43,9 @@ const User = ({ user }) => {
       <Icon icon={creditCardPlus} width={"1.5em"} height={"1.5em"} className={"credit-card"} />
       <span className="account-balance">{parseInt(user.accountBalance).toLocaleString()} VND</span>
       <img src={user.avatarmedium} alt="avatar" className="avatar" />
-      <span className="username">{user.personaname}</span>
+      <Link to={'/user/profile'}>
+        <span className="username">{user.personaname}</span>
+      </Link>
       {dropdownState ? <div className="dropdown-arrow" onClick={dropdownHandleOff} ><Icon icon={dropDown} width={"1.5em"} height={"1.5em"} rotate={"180deg"} /></div> :
         <div className="dropdown-arrow" onClick={dropdownHandleOn} ><Icon icon={dropDown} width={"1.5em"} height={"1.5em"} /></div>}
       {dropdownState && <UserDropdown fowardRef={dropdown} />}

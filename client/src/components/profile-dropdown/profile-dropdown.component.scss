@@ -1,0 +1,62 @@
+@import '../../assets/styles/_basics.scss';
+@import '../../assets/styles/_colors.scss';
+@import '../../assets/styles/_fonts.scss';
+
+.dropdown-container {
+  @include hoverState;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.25);
+  padding: 15px;
+  margin-bottom: 20px;
+  font-family: $header-font;
+  position: relative;
+  transition: $transition-value;
+
+  &:hover {
+    background-color: $primary-bright-pink;
+  }
+
+  &.active {
+    background-color: $primary-bright-pink;
+    z-index: 2;
+
+  }
+}
+
+.dropdown-info {
+  @include scrollBar;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.25);
+  padding: 0px;
+  padding-top: 0px;
+  margin-bottom: 20px;
+  font-family: $header-font;
+  margin-top: 0px;
+  max-height: 0;
+  opacity: 0;
+  transition: $transition-value;
+  z-index: 1;
+  position: relative;
+  animation: dropdownInfoAni 0.25s ease-in-out forwards;
+  overflow-y: auto;
+
+  @keyframes dropdownInfoAni {
+    50% {
+      margin-top: -40px;
+      max-height: 50vh;
+      padding: 15px;
+      padding-top: 50px;
+      opacity: 0;
+    }
+
+    100% {
+      margin-top: -40px;
+      max-height: 50vh;
+      padding: 15px;
+      padding-top: 50px;
+      opacity: 1;
+    }
+  }
+}

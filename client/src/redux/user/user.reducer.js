@@ -2,7 +2,9 @@ import { UserTypes } from './user.types'
 
 const INITIAL_STATE = {
   isLoggingIn: false,
+  isFetchingOffers: false,
   user: null,
+  offers: null,
   errorMessage: null,
   isEditingSuccess: undefined,
 }
@@ -26,6 +28,26 @@ export const userReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isLoggingIn: false,
+        errorMessage: action.errorMessage
+      }
+
+    case UserTypes.FETCH_OFFERS_START:
+      return {
+        ...state,
+        isFetchingOffers: true
+      }
+
+    case UserTypes.FETCH_OFFERS_SUCCESSFUL:
+      return {
+        ...state,
+        isFetchingOffers: false,
+        offers: action.offers
+      }
+
+    case UserTypes.FETCH_OFFERS_FAILED:
+      return {
+        ...state,
+        isFetchingOffers: false,
         errorMessage: action.errorMessage
       }
 

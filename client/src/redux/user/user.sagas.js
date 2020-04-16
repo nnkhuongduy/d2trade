@@ -1,9 +1,9 @@
-import { takeLatest, put, select } from 'redux-saga/effects'
+import { takeLatest, put, select, all } from 'redux-saga/effects'
 import axios from 'axios'
 
 import { UserTypes } from './user.types'
 
-import { logInSuccessful, logInFail, editUserInfoFinish } from './user.actions'
+import { logInSuccessful, logInFail, editUserInfoFinish, fetchOffersSuccessful, fetchOffersFailed } from './user.actions'
 import { updateRenderedInventory, fetchInventorySuccess, setRenderingInventory, refreshInventory } from '../inventory/inventory.actions'
 import { refreshTempItems } from '../temp-item/temp-item.actions'
 import { refreshSlotsState } from '../slot-state/slot-state.actions'
@@ -73,17 +73,33 @@ export function* editUserInfoAsync({ infoObj }) {
   } catch (err) {
     yield put(editUserInfoFinish(null, false))
   }
-
 }
 
-export function* fetchUserStart() {
-  yield takeLatest(UserTypes.LOG_IN_START, fetchUserAsync)
+export function* fetchOffersAsync() {
+  try {
+    const user = yield select(selectCurrentUser);
+
+    const result = yield axios(`/users/${user.steamid}/offers`, {
+      method: "GET",
+      withCredentials: true,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Credentials": true
+      }
+    })
+    if (result.status === 200) yield put(fetchOffersSuccessful(result.data))
+    else yield put(fetchOffersFailed(result.message))
+  } catch (err) {
+    yield put(fetchOffersFailed(err.message))
+  }
 }
 
-export function* logOutStart() {
-  yield takeLatest(UserTypes.LOG_OUT, logOutAsync)
-}
-
-export function* editUserInfoStart() {
-  yield takeLatest(UserTypes.EDIT_USER_INFO, editUserInfoAsync)
+export function* userRootSaga() {
+  yield all([
+    takeLatest(UserTypes.LOG_IN_START, fetchUserAsync),
+    takeLatest(UserTypes.LOG_OUT, logOutAsync),
+    takeLatest(UserTypes.EDIT_USER_INFO, editUserInfoAsync),
+    takeLatest(UserTypes.FETCH_OFFERS_START, fetchOffersAsync)
+  ])
 }

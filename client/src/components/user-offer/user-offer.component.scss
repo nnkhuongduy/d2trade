@@ -1,0 +1,52 @@
+@import '../../assets/styles/_colors.scss';
+
+.user-offers {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr 1fr 1fr;
+  gap: 20px;
+  font-size: 0.8rem;
+  position: relative;
+  text-align: center;
+  margin-bottom: 25px;
+
+  &.offer-list {
+    background-color: $neutral-dark-pink;
+    color: white;
+    padding: 10px 0;
+  }
+
+  &.user-offer {
+    &::after {
+      content: '';
+      border: 0.5px solid black;
+      position: absolute;
+      bottom: -15px;
+      width: 100%;
+    }
+  }
+
+  .pics-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+    gap: 5px;
+
+    .item-pic {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+  }
+
+  .offer-status {
+
+    .status-circle {
+      display: block;
+      width: 10px;
+      height: 10px;
+      border-radius: 100%;
+      margin: 0 auto 5px;
+    }
+  }
+}

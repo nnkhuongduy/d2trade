@@ -69,6 +69,18 @@ community.on("sessionExpired", err => {
   client.webLogOn();
 })
 
+manager.on('sentOfferChanged', (offer, oldState) => {
+  SteamOffers.findOneAndUpdate({ offer_id: offer.id }, { status: TradeOfferManager.ETradeOfferState[offer.state] }, (err) => {
+    if (!err) {
+      console.log("Successfully update offer state in db!")
+    } else {
+      console.log(err);
+    }
+  })
+
+  console.log(`Offer #${offer.id} changed: ${TradeOfferManager.ETradeOfferState[oldState]} -> ${TradeOfferManager.ETradeOfferState[offer.state]}`);
+})
+
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true }, () => console.log("connected to mongodb atlas"));
 
 const port = 5000;
@@ -78,18 +90,32 @@ const steamInfo = {
   contextId: 2
 }
 
-const itemsSchema = new mongoose.Schema({}, { strict: false })
 const heroesSchema = new mongoose.Schema({}, { strict: false })
 const steamUserSchema = new mongoose.Schema({}, { strict: false })
 const siteSettingSchema = new mongoose.Schema({
   currencyRate: Number
 })
+const steamOffersSchema = new mongoose.Schema({
+  offer_index: Number,
+  offer_id: String,
+  user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'SteamUser' },
+  steam_id: String,
+  date: { type: Date, default: Date.now, expires: 24 * 60 * 60 },
+  bot_items: [{
+    id: String,
+    image_url: String
+  }],
+  user_items: [{
+    id: String,
+    image_url: String
+  }],
+  status: String,
+})
 
-const BotItems = mongoose.model("BotItem", itemsSchema);
-const UserItems = mongoose.model("UserItem", itemsSchema);
 const Heroes = mongoose.model("Hero", heroesSchema, "Hero");
-const SteamUsers = mongoose.model("SteamUser", steamUserSchema);
+const SteamUsers = mongoose.model("SteamUser", steamUserSchema, "SteamUsers");
 const SiteSettings = mongoose.model("SiteSettings", siteSettingSchema, "SiteSettings");
+const SteamOffers = mongoose.model("SteamOffers", steamOffersSchema, "SteamOffers");
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -113,7 +139,10 @@ passport.use(new SteamStrategy({
 
   if (!currentUser) {
     const newUser = await new SteamUsers({
-      ...profile._json,
+      steamid: profile._json.steamid,
+      personaname: profile._json.personaname,
+      profileurl: profile._json.profileurl,
+      avatar: profile._json.avatar,
       accountBalance: 0,
       tradeOfferUrl: "",
     }).save();
@@ -158,7 +187,7 @@ const TransactionFunc = (reqUserData, moneyCheck, moneyItem, type, callback) => 
   else isCallback && callback(false)
 }
 
-const sendOffer = (offer, botItems, userItems, callback) => {
+const sendOffer = (offer, user, botItems, userItems, callback) => {
   let isCallback = false
   if (callback && typeof callback === 'function') isCallback = true;
 
@@ -166,25 +195,68 @@ const sendOffer = (offer, botItems, userItems, callback) => {
   offer.addTheirItems(userItems);
   offer.setMessage("Test");
 
-  offer.send((err, status) => {
+  SteamOffers.estimatedDocumentCount((err, count) => {
     if (err) {
       console.log(err);
       isCallback && callback(500)
-
     } else {
-      if (status === "pending") {
-        community.acceptConfirmationForObject(process.env.STEAM_IDENTITY_SECRET, offer.id, (err) => {
-          if (err) {
-            console.log(err);
-            isCallback && callback(500)
-          } else {
-            console.log("Sent");
-            isCallback && callback(200)
-          }
-        })
-      }
+      const offerBotItems = [];
+      const offerUserItems = [];
+
+      botItems.forEach(item => {
+        const obj = {
+          id: item.id,
+          image_url: `https://steamcommunity-a.akamaihd.net/economy/image/${item.icon_url}`
+        }
+
+        offerBotItems.push(obj);
+      })
+      userItems.forEach(item => {
+        const obj = {
+          id: item.id,
+          image_url: `https://steamcommunity-a.akamaihd.net/economy/image/${item.icon_url}`
+        }
+
+        offerUserItems.push(obj);
+      })
+
+      const newOffer = SteamOffers({
+        offer_index: count + 1,
+        user_id: user._id,
+        steam_id: user.steamid,
+        bot_items: offerBotItems,
+        user_items: offerUserItems,
+        status: "Created",
+      })
+
+      newOffer.save((err) => {
+        if (err) console.log(err);
+        else
+          offer.send((err, status) => {
+            if (err) {
+              console.log(err);
+              isCallback && callback(500)
+            } else {
+              if (status === "pending") {
+                community.acceptConfirmationForObject(process.env.STEAM_IDENTITY_SECRET, offer.id, (err) => {
+                  if (err) {
+                    console.log(err);
+                    isCallback && callback(500)
+                  } else
+                    SteamOffers.findOneAndUpdate({ offer_index: count + 1 }, { offer_id: offer.id }, (err) => {
+                      if (err) console.log(err);
+                      else {
+                        console.log("Sent");
+                        isCallback && callback(200);
+                      }
+                    })
+                })
+              }
+            }
+          });
+      })
     }
-  });
+  })
 }
 
 app.use(passport.initialize());
@@ -206,6 +278,7 @@ app.get('/inventory/bot', (req, res) => {
 
       manager.getOffersContainingItems(inventory, false, (err, sent, received) => {
         if (err) {
+          console.log(err)
           res.statusMessage = "Can't get offers containing bot item(s)";
           res.sendStatus(503);
         } else {
@@ -417,7 +490,7 @@ app.post("/tradeoffer", (req, res) => {
                     res.sendStatus(503);
                   }
                   else {
-                    sendOffer(offer, botItems, userItems, (status) => {
+                    sendOffer(offer, reqUserData, botItems, userItems, (status) => {
                       if (status === 200) res.sendStatus(status)
                       else {
                         TransactionFunc(reqUserData, moneyCheck, moneyItem, 'refund', (status) => {
@@ -433,7 +506,7 @@ app.post("/tradeoffer", (req, res) => {
                     })
                   }
                 })
-              } else sendOffer(offer, botItems, userItems, (status) => res.sendStatus(status))
+              } else sendOffer(offer, reqUserData, botItems, userItems, (status) => res.sendStatus(status))
             } else {
               console.log("Missing item(s)");
               res.sendStatus(500);
@@ -510,6 +583,27 @@ app.get('/currency/rate', (req, res) => {
     if (!err) {
       res.json(result);
     } else {
+      res.sendStatus(500);
+    }
+  })
+})
+
+app.get('/users/offers', authCheck, (req, res) => {
+  const steamId = req.user.steamid;
+
+  SteamOffers.find({ steam_id: steamId }, (err, offers) => {
+    if (!err) res.json(offers)
+    else console.log(err)
+  })
+})
+
+app.get('/users/:steamid/offers', (req, res) => {
+  const steamId = req.params.steamid;
+
+  SteamOffers.find({ steam_id: steamId }).sort({ offer_id: -1 }).exec((err, offers) => {
+    if (!err) res.json(offers)
+    else {
+      console.log(err);
       res.sendStatus(500);
     }
   })
