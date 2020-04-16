@@ -43,6 +43,7 @@ export function* logOutAsync() {
   yield put(resetHeroFilter("user"))
   yield put(resetPriceFilter("user"))
   yield put(refreshInventory("bot"));
+  yield put(fetchOffersSuccessful(null))
 
   yield axios('/auth/logout');
 }

@@ -5,8 +5,7 @@
   .refresh-button {
     @include hoverState;
     position: relative;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 95%;
     opacity: 25%;
     transition: $transition-value;
 
