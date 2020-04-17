@@ -20,11 +20,12 @@ export function* fetchOfferStatusAsync() {
       bot: []
     }
 
-    const itemObj = {};
+    let itemObj = {};
 
     yield userTempItem.forEach(item => {
       itemObj = {
         id: item.id,
+        icon_url: item.icon_url,
         market_price: item.market_price,
         vnd_price: item.vnd_price
       }
@@ -34,8 +35,9 @@ export function* fetchOfferStatusAsync() {
     yield botTempItem.forEach(item => {
       itemObj = {
         id: item.id,
+        icon_url: item.icon_url,
         market_price: item.market_price,
-        vnd_price: item.vnd_price
+        vnd_price: item.vnd_price,
       }
 
       postObject.bot.push(itemObj);
@@ -44,6 +46,7 @@ export function* fetchOfferStatusAsync() {
     yield put(toggleBlackScreen());
 
     if (postObject.user.length > 0 || postObject.bot.length > 0) {
+      console.log(postObject);
       const result = yield axios.post("/tradeoffer", postObject)
       if (result) {
         yield put(fetchOfferStatusSuccess(true))

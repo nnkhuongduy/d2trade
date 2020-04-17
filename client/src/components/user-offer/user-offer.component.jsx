@@ -4,6 +4,7 @@ import './user-offer.component.scss'
 
 const UserOffer = ({ offer, ...props }) => {
   let circleColor = '';
+  const iconSource = 'https://steamcommunity-a.akamaihd.net/economy/image/'
 
   if (offer && offer.status === "Accepted") circleColor = "#007f00"
   else if (offer && (offer.status === "Active" || offer.status === "CreatedNeedsConfirmation" || offer.status === "Created")) circleColor = "#E5D712"
@@ -13,6 +14,10 @@ const UserOffer = ({ offer, ...props }) => {
     backgroundColor: circleColor
   }
 
+  const generateIconSource = (item) => (
+    item.id !== 'moneyItem' ? iconSource + item.icon_url : item.icon_url
+  )
+
   if (offer) {
     return (
       <div className={'user-offers user-offer'}>
@@ -21,12 +26,12 @@ const UserOffer = ({ offer, ...props }) => {
         </div>
         <div className={'user-items'}>
           <div className={'pics-container'}>
-            {offer.user_items && offer.user_items.map(item => <img key={item.id} src={item.image_url} className={'item-pic'} alt={'item_image'} />)}
+            {offer.user_items && offer.user_items.map(item => <img key={item.id} src={generateIconSource(item)} className={'item-pic'} alt={'item_image'} />)}
           </div>
         </div>
         <div className={'bot-items'}>
           <div className={'pics-container'}>
-            {offer.bot_items && offer.bot_items.map(item => <img key={item.id} src={item.image_url} className={'item-pic'} alt={'item_image'} />)}
+            {offer.bot_items && offer.bot_items.map(item => <img key={item.id} src={generateIconSource(item)} className={'item-pic'} alt={'item_image'} />)}
           </div>
         </div>
         <div className={'offer-date'}>

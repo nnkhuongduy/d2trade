@@ -2,6 +2,7 @@ const TradeOfferManager = require('steam-tradeoffer-manager');
 
 const client = require('./steam-client')
 const community = require('./steam-community')
+const SteamOffers = require('../../models/offer-model')
 
 const manager = new TradeOfferManager({
   "steam": client,
