@@ -9,7 +9,6 @@ const createOffer = require('./server/services/create-offer')
 const checkValidOffer = require('./server/services/check-valid-offer')
 const userTransaction = require('./server/services/user-transaction')
 const createDBOffer = require('./server/services/create-db-offer')
-const updateDBOffer = require('./server/services/update-db-offer')
 const sendOffer = require('./server/services/send-offer')
 
 const errorsHandler = (err, res, statusCode) => {
@@ -98,16 +97,18 @@ app.post("/tradeoffer", async (req, res) => {
 
   let isTransactionFinished = false;
   let isError = false;
-  let moneyItem = null;
+  let userBalance = null;
 
   try {
     const items = await checkValidOffer(reqBotItems, reqUserItems, reqUserData)
-    moneyItem = items.moneyItem
+    userBalance = items.moneyItem && parseInt(items.moneyItem.vnd_price.replace(/,/g, ''))
     console.log("Successfully checking valid offer!")
 
-    if (moneyItem) await userTransaction(reqUserData, items.moneyItem, "transaction")
-    isTransactionFinished = true;
-    console.log("Transaction complete!")
+    if (userBalance !== null) {
+      await userTransaction(reqUserData.steamid, userBalance)
+      isTransactionFinished = true;
+      console.log("Transaction complete!")
+    }
 
     let offer = await createOffer(items.bot, items.user, reqUserData);
     console.log("Created Steam Offer!")
@@ -123,8 +124,11 @@ app.post("/tradeoffer", async (req, res) => {
     isError = true;
     errorsHandler(err, res, 500)
   } finally {
+    console.log("finally staged")
+    console.log(`isTransactionFinished: ${isTransactionFinished}`)
+    console.log(`isError: ${isError}`)
     if (isTransactionFinished && isError)
-      await userTransaction(reqUserData, moneyItem, "refund")
+      await userTransaction(reqUserData.steamid, -Math.abs(userBalance))
         .then(() => console.log("Successfully refunded!"))
         .catch(() => console.log(`REFUND FAILED! USER'S ID: ${reqUserData.steamid}`))
   }
