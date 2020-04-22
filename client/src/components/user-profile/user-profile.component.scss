@@ -2,10 +2,11 @@
 @import '../../assets/styles/_fonts.scss';
 
 .profile-section {
-  margin: 5% 10%;
+  margin: 8vh 10%;
   display: grid;
   grid-template-columns: 1fr 3fr;
   gap: 20px;
+  min-height: 70vh;
 
   .info-section {
     width: 100%;

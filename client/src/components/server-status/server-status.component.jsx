@@ -7,10 +7,7 @@ import { ReactComponent as SpinnerSVG } from '../../assets/svg/spinner.svg';
 
 import { selectOfferStatus } from '../../redux/client-states/client-states.selectors';
 
-import { toggleBlackScreen, resetOfferStatus } from '../../redux/client-states/client-states.actions';
-import { refreshTempItems } from '../../redux/temp-item/temp-item.actions'
-import { refreshSlotsState } from '../../redux/slot-state/slot-state.actions'
-import { refreshInventory } from '../../redux/inventory/inventory.actions'
+import { toggleBlackScreen, resetOfferStatus, resetClientState } from '../../redux/client-states/client-states.actions';
 import { logInStart } from '../../redux/user/user.actions'
 
 import { Icon } from '@iconify/react';
@@ -21,9 +18,8 @@ import './server-status.component.scss';
 
 const ServerStatus = ({
   offerStatus, toggleBlackScreen,
-  resetOfferStatus, refreshSlotsState,
-  refreshTempItems,
-  refreshInventory,
+  resetOfferStatus,
+  resetClientState,
   logInStart
 }) => {
   const offerStatusNull = () => (
@@ -51,12 +47,7 @@ const ServerStatus = ({
     toggleBlackScreen();
     resetOfferStatus();
     if (offerStatus === true) {
-      refreshTempItems("bot");
-      refreshTempItems("user");
-      refreshSlotsState("user");
-      refreshSlotsState("bot");
-      refreshInventory("bot");
-      refreshInventory("user");
+      resetClientState();
       logInStart();
     }
   }
@@ -74,9 +65,7 @@ const ServerStatus = ({
 const mapDispatchToProps = dispatch => ({
   toggleBlackScreen: () => dispatch(toggleBlackScreen()),
   resetOfferStatus: () => dispatch(resetOfferStatus()),
-  refreshTempItems: type => dispatch(refreshTempItems(type)),
-  refreshSlotsState: type => dispatch(refreshSlotsState(type)),
-  refreshInventory: type => dispatch(refreshInventory(type)),
+  resetClientState: () => dispatch(resetClientState()),
   logInStart: () => dispatch(logInStart())
 })
 

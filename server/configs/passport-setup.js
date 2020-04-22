@@ -28,7 +28,7 @@ passport.use(new SteamStrategy({
       steamid: profile._json.steamid,
       personaname: profile._json.personaname,
       profileurl: profile._json.profileurl,
-      avatar: profile._json.avatar,
+      avatar: profile._json.avatarfull,
       accountBalance: 0,
       tradeOfferUrl: "",
     }).save();

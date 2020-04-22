@@ -13,7 +13,7 @@ const ItemImage = ({ type, mode, botItemsImage, userItemsImage, itemId, imageSta
 
   useEffect(() => {
 
-    if (containerRef.current && (botItemsImage !== null && userItemsImage !== null) && (botItemsImage[itemId] || userItemsImage[itemId])) {
+    if (containerRef.current && ((type === "bot" && botItemsImage !== null && botItemsImage[itemId]) || (type === "user" && userItemsImage !== null && userItemsImage[itemId]))) {
       if (mode === "steam" && imageState !== true)
         containerRef.current.appendChild(type === 'bot' ? botItemsImage[itemId] : userItemsImage[itemId])
       if (mode !== "steam" && imageState === true)

@@ -2,12 +2,34 @@
 
 .user-offers-container {
 
+  .container-options {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+  }
+
   .refresh-button {
     @include hoverState;
-    position: relative;
-    left: 95%;
     opacity: 25%;
     transition: $transition-value;
+    margin: 0 10px;
+
+    &:hover {
+      opacity: 1;
+
+    }
+  }
+
+  .currency-button {
+    @include hoverState;
+    opacity: 25%;
+    transition: $transition-value;
+    display: inline-block;
+    margin: 0 10px;
+    display: flex;
+    align-items: center;
 
     &:hover {
       opacity: 1;

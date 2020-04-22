@@ -39,7 +39,13 @@ const App = ({
       setRenderingInventory("user", []);
       fetchInventoryStart("user");
     }
-  }, [currentUser, updateRenderedInventory, setRenderingInventory, fetchInventoryStart])
+    // eslint-disable-next-line
+  }, [currentUser])
+
+  useEffect(() => {
+    logInStart();
+    // eslint-disable-next-line
+  }, [])
 
   return (
     <>

@@ -19,7 +19,7 @@ const errorsHandler = (err, res, statusCode) => {
 app.get('/inventory/bot', (req, res) => {
   getInventory(CONFIGS.STEAM_INFO.STEAM_BOT_ID)
     .then(inventory => res.json(inventory))
-    .catch((err) => errorsHandler(err, res))
+    .catch((err) => errorsHandler(err, res, 500))
 })
 
 app.get("/inventory/:steamid", async (req, res) => {
@@ -105,18 +105,18 @@ app.post("/tradeoffer", async (req, res) => {
     console.log("Successfully checking valid offer!")
 
     if (userBalance !== null) {
-      await userTransaction(reqUserData.steamid, userBalance)
+      await userTransaction(reqUserData.steamid, -Math.abs(userBalance))
       isTransactionFinished = true;
       console.log("Transaction complete!")
     }
 
-    let offer = await createOffer(items.bot, items.user, reqUserData);
+    let offer = await createOffer(items.bot, items.user, reqUserData, userBalance);
     console.log("Created Steam Offer!")
 
     offer = await sendOffer(offer);
     console.log("Successfully send Steam Offer!")
 
-    await createDBOffer(reqBotItems, reqUserItems, reqUserData, offer.id)
+    await createDBOffer(reqBotItems, reqUserItems, reqUserData, offer.id, userBalance)
     console.log("Created DB Offer!")
 
     res.sendStatus(200)
@@ -124,11 +124,8 @@ app.post("/tradeoffer", async (req, res) => {
     isError = true;
     errorsHandler(err, res, 500)
   } finally {
-    console.log("finally staged")
-    console.log(`isTransactionFinished: ${isTransactionFinished}`)
-    console.log(`isError: ${isError}`)
     if (isTransactionFinished && isError)
-      await userTransaction(reqUserData.steamid, -Math.abs(userBalance))
+      await userTransaction(reqUserData.steamid, userBalance)
         .then(() => console.log("Successfully refunded!"))
         .catch(() => console.log(`REFUND FAILED! USER'S ID: ${reqUserData.steamid}`))
   }

@@ -1,4 +1,4 @@
-import { takeLatest, select, put } from 'redux-saga/effects';
+import { takeLatest, select, put, all } from 'redux-saga/effects';
 import axios from 'axios';
 
 import { ClientStatesTypes } from './client-states.types';
@@ -6,7 +6,10 @@ import { ClientStatesTypes } from './client-states.types';
 import { selectBotTempItem, selectUserTempItem } from '../temp-item/temp-item.selectors';
 import { selectCurrentUser } from '../user/user.selectors'
 
-import { toggleBlackScreen, fetchOfferStatusSuccess, fetchOfferStatusFailure } from '../../redux/client-states/client-states.actions';
+import { toggleBlackScreen, fetchOfferStatusSuccess, fetchOfferStatusFailure, resetOfferStatus } from '../client-states/client-states.actions';
+import { refreshInventory } from '../inventory/inventory.actions'
+import { refreshSlotsState } from '../slot-state/slot-state.actions'
+import { refreshTempItems, updatePrice } from '../temp-item/temp-item.actions'
 
 export function* fetchOfferStatusAsync() {
   try {
@@ -46,7 +49,6 @@ export function* fetchOfferStatusAsync() {
     yield put(toggleBlackScreen());
 
     if (postObject.user.length > 0 || postObject.bot.length > 0) {
-      console.log(postObject);
       const result = yield axios.post("/tradeoffer", postObject)
       if (result) {
         yield put(fetchOfferStatusSuccess(true))
@@ -60,6 +62,21 @@ export function* fetchOfferStatusAsync() {
   }
 }
 
-export function* fetchOfferStatusStart() {
-  yield takeLatest(ClientStatesTypes.FETCH_OFFER_STATUS_START, fetchOfferStatusAsync)
+export function* resetClientStateAsync() {
+  yield put(resetOfferStatus());
+  yield put(refreshInventory("bot"));
+  yield put(refreshInventory("user"));
+  yield put(refreshSlotsState('bot'))
+  yield put(refreshSlotsState('user'))
+  yield put(refreshTempItems('bot'))
+  yield put(refreshTempItems('user'))
+  yield put(updatePrice('bot', '0', '0'))
+  yield put(updatePrice('user', '0', '0'))
+}
+
+export function* clientStateRootSaga() {
+  yield all([
+    takeLatest(ClientStatesTypes.FETCH_OFFER_STATUS_START, fetchOfferStatusAsync),
+    takeLatest(ClientStatesTypes.RESET_CLIENT_STATE, resetClientStateAsync),
+  ])
 }

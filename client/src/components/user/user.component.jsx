@@ -42,7 +42,7 @@ const User = ({ user }) => {
       <TradeUrl />
       <Icon icon={creditCardPlus} width={"1.5em"} height={"1.5em"} className={"credit-card"} />
       <span className="account-balance">{parseInt(user.accountBalance).toLocaleString()} VND</span>
-      <img src={user.avatarmedium} alt="avatar" className="avatar" />
+      <img src={user.avatar} alt="avatar" className="avatar" />
       <Link to={'/user/profile'}>
         <span className="username">{user.personaname}</span>
       </Link>

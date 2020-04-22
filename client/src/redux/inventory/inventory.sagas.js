@@ -129,9 +129,9 @@ export function* setRenderingInventoryAsync({ inventoryType, ...action }) {
 export function* refreshInventoryAsync({ inventoryType, ...action }) {
   yield put(refreshQuery(inventoryType));
   yield put(resetHeroFilter(inventoryType))
-  yield put(fetchInventoryStart(inventoryType));
   yield put(resetPriceFilter(inventoryType));
   yield put(resetRarityFilter(inventoryType))
+  yield put(fetchInventoryStart(inventoryType));
 }
 
 export function* fetchInventoryStarting() {

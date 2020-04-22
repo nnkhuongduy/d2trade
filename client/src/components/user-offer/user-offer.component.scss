@@ -3,7 +3,7 @@
 .user-offers {
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr 2fr 2fr 1fr 1fr;
+  grid-template-columns: 1fr 2fr 0.5fr 2fr 1fr 1fr 1fr;
   gap: 20px;
   font-size: 0.8rem;
   position: relative;
@@ -14,6 +14,7 @@
     background-color: $neutral-dark-pink;
     color: white;
     padding: 10px 0;
+    align-items: center;
   }
 
   &.user-offer {
@@ -26,16 +27,41 @@
     }
   }
 
-  .pics-container {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
-    gap: 5px;
+  .offer-id {
+    span {
+      word-break: break-all;
+    }
+  }
 
-    .item-pic {
-      display: block;
-      width: 65px;
-      height: auto;
+  .items-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+
+    .pics-container {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+      gap: 5px;
+
+      .item-pic {
+        display: block;
+        width: 65px;
+        height: auto;
+      }
+    }
+
+    .price-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 10px 0;
+
+      span {
+        margin: 5px;
+        font-size: 0.8rem;
+      }
     }
   }
 
@@ -47,6 +73,16 @@
       height: 10px;
       border-radius: 100%;
       margin: 0 auto 5px;
+    }
+  }
+
+  .compare-arrow {
+    align-self: center;
+  }
+
+  .user-balance {
+    &.negative {
+      color: red;
     }
   }
 }

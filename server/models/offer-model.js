@@ -5,6 +5,7 @@ const steamOffersSchema = new Schema({
   offer_id: String,
   steam_id: String,
   date: { type: Date, default: Date.now, expires: 3 * 30 * 24 * 60 * 60 },
+  user_balance: Number,
   bot_items: [{
     id: String,
     icon_url: String,

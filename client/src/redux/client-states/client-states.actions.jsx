@@ -21,3 +21,7 @@ export const fetchOfferStatusFailure = status => ({
 export const resetOfferStatus = () => ({
   type: ClientStatesTypes.RESET_OFFER_STATUS
 })
+
+export const resetClientState = () => ({
+  type: ClientStatesTypes.RESET_CLIENT_STATE
+})

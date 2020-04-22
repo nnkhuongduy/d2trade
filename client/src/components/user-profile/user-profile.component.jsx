@@ -18,7 +18,7 @@ const UserProfile = ({ currentUser, ...props }) => {
   return (
     <div className={'profile-section'}>
       <div className={'info-section'}>
-        <img className={'profile-pic'} alt={'user_profile'} src={currentUser.avatarfull} />
+        <img className={'profile-pic'} alt={'user_profile'} src={currentUser.avatar} />
         <h1>
           {currentUser.personaname}
           <span className={`check-container ${currentUser.tradeOfferUrl ? 'green' : 'red'}`}>
