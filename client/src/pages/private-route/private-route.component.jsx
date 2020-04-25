@@ -3,17 +3,15 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect'
 import { Route, Redirect } from 'react-router-dom'
 
-import UserProfile from '../user-profile/user-profile.component';
-
 import { selectCurrentUser } from '../../redux/user/user.selectors'
 
-const PrivateRoute = ({ currentUser, ...props }) => {
+const PrivateRoute = ({ currentUser, component: Component, ...props }) => {
 
   return (
     <Route
       {...props}
-      render={() =>
-        currentUser !== null ? <UserProfile /> : <Redirect to={'/'} />
+      render={props =>
+        currentUser !== null ? <Component {...props} /> : <Redirect to={'/'} />
       }
     />
   )

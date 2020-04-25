@@ -1,10 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
+import { Link } from 'react-router-dom'
 
 import { Icon } from 'react-icons-kit'
 import { ic_check_circle } from 'react-icons-kit/md/ic_check_circle'
 import { ic_cancel } from 'react-icons-kit/md/ic_cancel'
+import { plus } from 'react-icons-kit/icomoon/plus'
 
 import ProfileDropDown from '../profile-dropdown/profile-dropdown.component'
 import InfoContainer from '../info-container/info-container.component'
@@ -26,7 +28,15 @@ const UserProfile = ({ currentUser, ...props }) => {
           </span>
         </h1>
 
-        <div className={'account-balance'}><span>Balance:</span><p>{parseInt(currentUser.accountBalance).toLocaleString()} VND</p></div>
+        <div className={'account-balance'}>
+          <span>Balance:</span>
+          <p>
+            {parseInt(currentUser.accountBalance).toLocaleString()} VND
+            <Link to={'/user/transaction'}>
+              <Icon icon={plus} className={'plus'} />
+            </Link>
+          </p>
+        </div>
       </div>
       <div className={'detail-section'}>
         <ProfileDropDown title={"USER'S INFORMATION"}>

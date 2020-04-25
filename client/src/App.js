@@ -4,11 +4,13 @@ import { createStructuredSelector } from 'reselect';
 import { Switch, Route } from 'react-router-dom';
 
 import Header from './components/header/header.component';
-import BodyContainer from './components/body-container/body-container.component';
+import TradePage from './pages/trade-page/trade-page.component'
 import Footer from './components/footer/footer.component';
 import BlackScreen from './components/black-screen/black-screen.component';
-import PrivateRoute from './components/private-route/private-route.component';
-import UnknownPage from './components/unknown-page/unknown-page.component'
+import PrivateRoute from './pages/private-route/private-route.component';
+import UnknownPage from './pages/unknown-page/unknown-page.component'
+import UserProfilePage from './pages/user-profile-page/user-profile-page.component'
+import TransactionPage from './pages/transaction-page/transaction-page.component'
 
 import { fetchHeroesStart } from './redux/heroes/heroes.actions'
 import { fetchInventoryStart, updateRenderedInventory, setRenderingInventory } from './redux/inventory/inventory.actions'
@@ -52,8 +54,9 @@ const App = ({
       {blackScreenState && <BlackScreen />}
       <Header />
       <Switch>
-        <Route exact path='/' component={BodyContainer} />
-        <Route exact path='/user/profile' component={PrivateRoute} />
+        <Route exact path='/' component={TradePage} />
+        <PrivateRoute exact path='/user/profile' component={UserProfilePage} />
+        <PrivateRoute exact path='/user/transaction' component={TransactionPage} />
         <Route path='*' component={UnknownPage} />
       </Switch>
       <Footer />

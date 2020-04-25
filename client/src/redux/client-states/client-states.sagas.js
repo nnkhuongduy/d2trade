@@ -7,9 +7,10 @@ import { selectBotTempItem, selectUserTempItem } from '../temp-item/temp-item.se
 import { selectCurrentUser } from '../user/user.selectors'
 
 import { toggleBlackScreen, fetchOfferStatusSuccess, fetchOfferStatusFailure, resetOfferStatus } from '../client-states/client-states.actions';
-import { refreshInventory } from '../inventory/inventory.actions'
+import { refreshInventory, fetchInventoryStart } from '../inventory/inventory.actions'
 import { refreshSlotsState } from '../slot-state/slot-state.actions'
 import { refreshTempItems, updatePrice } from '../temp-item/temp-item.actions'
+import { logInStart } from '../user/user.actions'
 
 export function* fetchOfferStatusAsync() {
   try {
@@ -72,6 +73,8 @@ export function* resetClientStateAsync() {
   yield put(refreshTempItems('user'))
   yield put(updatePrice('bot', '0', '0'))
   yield put(updatePrice('user', '0', '0'))
+  yield put(fetchInventoryStart("bot"))
+  yield put(logInStart());
 }
 
 export function* clientStateRootSaga() {

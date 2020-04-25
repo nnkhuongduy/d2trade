@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom'
 
-import { Icon } from '@iconify/react';
-import dropDown from '@iconify/icons-fe/drop-down';
-import creditCardPlus from '@iconify/icons-mdi/credit-card-plus';
+import { Icon } from 'react-icons-kit';
+import { plus } from 'react-icons-kit/icomoon/plus'
+import { ic_keyboard_arrow_down } from 'react-icons-kit/md/ic_keyboard_arrow_down'
+import { ic_keyboard_arrow_up } from 'react-icons-kit/md/ic_keyboard_arrow_up'
 
 import UserDropdown from '../user-dropdown/user-dropdown.component'
 import TradeUrl from '../trade-url/trade-url.component'
@@ -40,14 +41,16 @@ const User = ({ user }) => {
   return (
     <div className="user-container">
       <TradeUrl />
-      <Icon icon={creditCardPlus} width={"1.5em"} height={"1.5em"} className={"credit-card"} />
+      <Link to={'/user/transaction'}>
+        <Icon icon={plus} className={"credit-card"} />
+      </Link>
       <span className="account-balance">{parseInt(user.accountBalance).toLocaleString()} VND</span>
       <img src={user.avatar} alt="avatar" className="avatar" />
       <Link to={'/user/profile'}>
         <span className="username">{user.personaname}</span>
       </Link>
-      {dropdownState ? <div className="dropdown-arrow" onClick={dropdownHandleOff} ><Icon icon={dropDown} width={"1.5em"} height={"1.5em"} rotate={"180deg"} /></div> :
-        <div className="dropdown-arrow" onClick={dropdownHandleOn} ><Icon icon={dropDown} width={"1.5em"} height={"1.5em"} /></div>}
+      {dropdownState ? <div className="dropdown-arrow" onClick={dropdownHandleOff} ><Icon icon={ic_keyboard_arrow_up} size={32} /></div> :
+        <div className="dropdown-arrow" onClick={dropdownHandleOn} ><Icon icon={ic_keyboard_arrow_down} size={32} /></div>}
       {dropdownState && <UserDropdown fowardRef={dropdown} />}
     </div>
   )

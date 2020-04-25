@@ -48,7 +48,6 @@ const ServerStatus = ({
     resetOfferStatus();
     if (offerStatus === true) {
       resetClientState();
-      logInStart();
     }
   }
 

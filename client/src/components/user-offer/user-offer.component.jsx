@@ -28,7 +28,7 @@ const UserOffer = ({ offer, currencyState, ...props }) => {
   )
 
   useEffect(() => {
-    if (offer && offer.user_items && offer.status !== 'Declined') {
+    if (offer && offer.user_items) {
       offer.user_items.forEach(item => {
         if (item.id === 'moneyItem')
           setUserBalance(parseInt(item.vnd_price.replace(/,/g, '')))
@@ -66,7 +66,7 @@ const UserOffer = ({ offer, currencyState, ...props }) => {
         <div className={'offer-date'}>
           {offer.date.slice(0, 10)}
         </div>
-        <div className={`user-balance ${userBalance !== 0 ? 'negative' : ''}`}>
+        <div className={`user-balance ${userBalance !== 0 ? (offer.status === 'Declined' ? 'gray' : 'negative') : ''}`}>
           {(userBalance !== 0 ? -Math.abs(userBalance) : userBalance).toLocaleString()}
         </div>
         <div className={'offer-status'}>

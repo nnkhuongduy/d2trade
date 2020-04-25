@@ -1,5 +1,6 @@
 @import '../../assets/styles/_colors.scss';
 @import '../../assets/styles/_fonts.scss';
+@import '../../assets/styles/_basics.scss';
 
 .profile-section {
   margin: 8vh 10%;
@@ -43,7 +44,16 @@
         padding: 10px 20px;
         background-color: $primary-red-pink;
         font-family: $header-font;
+        position: relative;
+
+        .plus {
+          @include hoverState;
+          position: absolute;
+          right: 0;
+          transform: translateX(150%);
+        }
       }
+
     }
   }
 
