@@ -8,7 +8,7 @@ import { ic_check_circle } from 'react-icons-kit/md/ic_check_circle'
 import { ic_cancel } from 'react-icons-kit/md/ic_cancel'
 import { plus } from 'react-icons-kit/icomoon/plus'
 
-import ProfileDropDown from '../profile-dropdown/profile-dropdown.component'
+import DropdownBar from '../dropdown-bar/dropdown-bar.component'
 import InfoContainer from '../info-container/info-container.component'
 import UserOffersContainer from '../user-offers-container/user-offers-container.component'
 
@@ -39,16 +39,16 @@ const UserProfile = ({ currentUser, ...props }) => {
         </div>
       </div>
       <div className={'detail-section'}>
-        <ProfileDropDown title={"USER'S INFORMATION"}>
+        <DropdownBar title={"USER'S INFORMATION"}>
           <InfoContainer info={'Steam Name'} detail={currentUser.personaname} />
           <InfoContainer info={'SteamID'} detail={currentUser.steamid} />
           <InfoContainer info={'Profile Link'} detail={currentUser.profileurl} isLink={true} />
           <InfoContainer info={'Account Balance'} detail={parseInt(currentUser.accountBalance).toLocaleString()} isBalance={true} />
           <InfoContainer info={'Steam Trade Offer URL'} detail={currentUser.tradeOfferUrl} isLink={true} isEditable={true} />
-        </ProfileDropDown>
-        <ProfileDropDown title={"TRADE HISTORY"} >
+        </DropdownBar>
+        <DropdownBar title={"TRADE HISTORY"} >
           <UserOffersContainer />
-        </ProfileDropDown>
+        </DropdownBar>
       </div>
     </div>
   )

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
-import './profile-dropdown.component.scss'
+import './dropdown-bar.component.scss'
 
-const ProfileDropDown = ({ children, title, ...props }) => {
+const DropdownBar = ({ children, title, ...props }) => {
   const [dropdownState, setDropdownState] = useState(false);
 
   return (
@@ -17,4 +17,4 @@ const ProfileDropDown = ({ children, title, ...props }) => {
   )
 }
 
-export default ProfileDropDown;
+export default DropdownBar;
