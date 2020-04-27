@@ -20,7 +20,7 @@ const InfoContainer = ({ editUserInfo, info, detail, isLink, isEditable, confirm
       <span className={'info'}>{info}</span>
       <span className={'separative-colon'}> : </span>
       {!editState && (isLink ? <a href={detail} target="_blank" rel="noopener noreferrer">{detail}</a> : <span className={'info-detail'}>{detail}</span>)}
-      {editState && <input className={'trade-url-input info-detail'} type="number" onChange={e => setValueState(e.target.value)} />}
+      {editState && <input className={'trade-url-input info-detail'} type="number" onChange={e => setValueState(e.target.value)} placeholder={detail} />}
       {isEditable && (!editState ?
         <Icon icon={ic_mode_edit} className={'icon-edit'} onClick={() => setEditState(true)} /> :
         <Icon icon={ic_check} className={'icon-edit'} onClick={checkHandle} />)

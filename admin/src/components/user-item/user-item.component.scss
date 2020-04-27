@@ -41,4 +41,16 @@
       color: $bright-blue;
     }
   }
+
+  .user-actions {
+    .hover {
+      padding: 5px;
+      border-radius: 100%;
+      transition: $transition-value;
+
+      &:hover {
+        background-color: $white-blue;
+      }
+    }
+  }
 }

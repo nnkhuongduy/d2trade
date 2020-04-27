@@ -33,7 +33,7 @@ const UserItem = ({ user, location, ...props }) => {
           {user.accountBalance.toLocaleString()} VND
         </div>
         <div className={'user-actions'}>
-          <Link to={location => `${location.pathname}/${user.steamid}`}><Icon icon={ic_account_box} size={24} /></Link>
+          <Link to={location => `${location.pathname}/${user.steamid}`}><Icon icon={ic_account_box} size={24} className={'hover'} /></Link>
         </div>
       </div>
     )

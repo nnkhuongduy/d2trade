@@ -9,14 +9,14 @@ import { ic_mode_edit } from 'react-icons-kit/md/ic_mode_edit'
 import DropdownBar from '../dropdown-bar/dropdown-bar.component'
 import InfoContainer from '../info-container/info-container.component'
 
-import { editBalanceStart } from '../../redux/users/users.actions'
+import { pushOverlay } from '../../redux/overlay/overlay.actions'
 
 import './user-profile.component.scss'
 
-const UserProfile = ({ editBalanceStart, user, ...props }) => {
+const UserProfile = ({ pushOverlay, user, ...props }) => {
   const confirmEditFunc = value => {
     if (value !== "")
-      editBalanceStart(user.steamid, value);
+      pushOverlay({ type: "CONFIRMATION", data: { steam_id: user.steamid, value: value }, exec_code: 'EDIT_BALANCE' });
   }
 
   return (
@@ -50,7 +50,7 @@ const UserProfile = ({ editBalanceStart, user, ...props }) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  editBalanceStart: (steamId, value) => dispatch(editBalanceStart(steamId, value))
+  pushOverlay: overlayObj => dispatch(pushOverlay(overlayObj))
 })
 
 export default connect(null, mapDispatchToProps)(UserProfile)
