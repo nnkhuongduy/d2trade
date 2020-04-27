@@ -1,0 +1,20 @@
+@import './assets/styles/basics';
+
+.page-container {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  gap: 20px;
+
+  .menu-content {
+    position: relative;
+    display: grid;
+    grid-template-rows: 10vh 85vh 5vh;
+    margin-right: $horizontal-margin-value;
+
+    .page-content {
+      overflow: auto;
+      height: 100%;
+    }
+  }
+
+}

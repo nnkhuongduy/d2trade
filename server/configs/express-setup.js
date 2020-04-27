@@ -5,8 +5,9 @@ const session = require('express-session')
 const cookieParser = require("cookie-parser");
 const passport = require('passport');
 
-const passportSetup = require('./passport-setup')
+require('./passport-setup')
 const authRoutes = require('../routes/auth-routes')
+const adminRoutes = require('../routes/admin-routes')
 
 const app = express();
 
@@ -32,5 +33,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/auth', authRoutes);
+app.use('/admin', adminRoutes);
 
 module.exports = app;

@@ -1,0 +1,18 @@
+@import '../../assets/styles/basics';
+
+.users-page {
+  .toolbar {
+    margin: 10px 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    .tool {
+      margin: 0 5px;
+
+      &.hover {
+        @include hoverState;
+      }
+    }
+  }
+}

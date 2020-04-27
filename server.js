@@ -10,16 +10,12 @@ const checkValidOffer = require('./server/services/check-valid-offer')
 const userTransaction = require('./server/services/user-transaction')
 const createDBOffer = require('./server/services/create-db-offer')
 const sendOffer = require('./server/services/send-offer')
-
-const errorsHandler = (err, res, statusCode) => {
-  console.log(err);
-  res.sendStatus(statusCode)
-}
+const errorHandler = require('./server/services/error-handler')
 
 app.get('/inventory/bot', (req, res) => {
   getInventory(CONFIGS.STEAM_INFO.STEAM_BOT_ID)
     .then(inventory => res.json(inventory))
-    .catch((err) => errorsHandler(err, res, 500))
+    .catch((err) => errorHandler(err, res, 500))
 })
 
 app.get("/inventory/:steamid", async (req, res) => {
@@ -44,7 +40,7 @@ app.get("/inventory/:steamid", async (req, res) => {
     res.json(inventory)
 
   } catch (err) {
-    errorsHandler(err, res, 500)
+    errorHandler(err, res, 500)
 
   }
 })
@@ -52,7 +48,29 @@ app.get("/inventory/:steamid", async (req, res) => {
 app.get("/heroes", (req, res) => {
   getHeroes()
     .then((heroes) => res.json(heroes))
-    .catch((err) => errorsHandler(err, res, 500))
+    .catch((err) => errorHandler(err, res, 500))
+})
+
+app.get('/currency/rate', (req, res) => {
+  getCurrencyRate()
+    .then(rate => res.json(rate))
+    .catch(err => errorHandler(err, res, 500))
+})
+
+// app.get('/users/offers', authCheck, (req, res) => {
+//   const steamId = req.user.steamid;
+
+//   getUserOffers(steamId)
+//     .then(offers => res.json(offers))
+//     .catch(err => errorHandler(err, res))
+// })
+
+app.get('/users/:steamid/offers', (req, res) => {
+  const steamId = req.params.steamid;
+
+  getUserOffers(steamId)
+    .then(offers => res.json(offers))
+    .catch(err => errorHandler(err, res, 500))
 })
 
 app.post('/edituser/', (req, res) => {
@@ -64,30 +82,8 @@ app.post('/edituser/', (req, res) => {
   } else {
     editUser(userId, infoObj.info)
       .then(() => res.sendStatus(200))
-      .catch(err => errorsHandler(err, res, 500))
+      .catch(err => errorHandler(err, res, 500))
   }
-})
-
-app.get('/currency/rate', (req, res) => {
-  getCurrencyRate()
-    .then(rate => res.json(rate))
-    .catch(err => errorsHandler(err, res, 500))
-})
-
-// app.get('/users/offers', authCheck, (req, res) => {
-//   const steamId = req.user.steamid;
-
-//   getUserOffers(steamId)
-//     .then(offers => res.json(offers))
-//     .catch(err => errorsHandler(err, res))
-// })
-
-app.get('/users/:steamid/offers', (req, res) => {
-  const steamId = req.params.steamid;
-
-  getUserOffers(steamId)
-    .then(offers => res.json(offers))
-    .catch(err => errorsHandler(err, res, 500))
 })
 
 app.post("/tradeoffer", async (req, res) => {
@@ -122,7 +118,7 @@ app.post("/tradeoffer", async (req, res) => {
     res.sendStatus(200)
   } catch (err) {
     isError = true;
-    errorsHandler(err, res, 500)
+    errorHandler(err, res, 500)
   } finally {
     if (isTransactionFinished && isError)
       await userTransaction(reqUserData.steamid, userBalance)

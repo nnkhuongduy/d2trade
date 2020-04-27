@@ -1,0 +1,57 @@
+@import '../../assets/styles/colors';
+@import '../../assets/styles/basics';
+
+.profile-section {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 20px;
+
+  .info-section {
+    width: 100%;
+    height: max-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: $shadow-value;
+    box-sizing: border-box;
+    padding: 20px;
+
+    h2 {
+      text-align: center;
+    }
+
+    .profile-pic {
+      border-radius: 100%;
+    }
+
+    .account-balance {
+      text-align: center;
+
+      p {
+        box-sizing: border-box;
+        padding: 10px 20px;
+        background-color: $white-blue;
+        position: relative;
+
+        .plus {
+          @include hoverState;
+          position: absolute;
+          right: 0;
+          transform: translateX(150%);
+        }
+
+        .edit {
+          @include hoverState;
+          position: absolute;
+          right: 0;
+          transform: translateX(300%);
+        }
+      }
+
+    }
+  }
+
+  .detail-section {
+    width: auto;
+  }
+}

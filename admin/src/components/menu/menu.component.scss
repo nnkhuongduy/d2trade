@@ -1,0 +1,59 @@
+@import '../../assets/styles/colors';
+@import '../../assets/styles/basics';
+
+.menu {
+  position: relative;
+  background-color: $bright-blue;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  height: 100vh;
+
+  .logo {
+    margin-top: $vertical-margin-value;
+  }
+
+  .line {
+    margin: 20px 0;
+    border: 0.5px solid white;
+    width: 80%;
+  }
+
+  .nav-link {
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 0;
+    width: 60%;
+    border-radius: $border-radius-value;
+    font-size: 0.9rem;
+    transition: $transition-value;
+
+    &.actived {
+      font-weight: 700;
+      background-color: $dark-blue;
+    }
+
+    &:hover {
+      background-color: $dark-blue;
+    }
+
+    i {
+      margin: 0 5px;
+    }
+
+    span {
+      margin: 0 5px;
+    }
+  }
+
+  .background {
+    pointer-events: none;
+    position: absolute;
+    height: 100%;
+    opacity: 0.1;
+  }
+}

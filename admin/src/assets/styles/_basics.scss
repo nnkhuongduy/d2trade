@@ -1,0 +1,36 @@
+$horizontal-margin-value: 3%;
+$vertical-margin-value: 20px;
+$border-radius-value: 20px;
+$transition-value: all 0.1s ease-in-out;
+$shadow-value: 3px 3px 5px 0px rgba(0, 0, 0, 0.15);
+
+@mixin hoverState {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+@mixin spanHoverEffect {
+  span {
+    position: relative;
+
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      transition: width 0.2s ease-in-out;
+    }
+
+  }
+
+  &:hover {
+    span {
+      &:after {
+        border: 1px solid black;
+        width: 100%;
+      }
+    }
+  }
+}

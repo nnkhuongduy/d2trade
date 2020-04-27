@@ -1,0 +1,57 @@
+@import '../../assets/styles/basics';
+@import '../../assets/styles/colors';
+
+.dropdown-container {
+  @include hoverState;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: $shadow-value;
+  padding: 15px;
+  margin-bottom: 20px;
+  position: relative;
+  transition: $transition-value;
+
+  &:hover {
+    background-color: $white-blue;
+  }
+
+  &.active {
+    background-color: $white-blue;
+    z-index: 2;
+
+  }
+}
+
+.dropdown-info {
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: $shadow-value;
+  padding: 0px;
+  padding-top: 0px;
+  margin-bottom: 20px;
+  margin-top: 0px;
+  max-height: 0;
+  opacity: 0;
+  transition: $transition-value;
+  z-index: 1;
+  animation: dropdownInfoAni 0.25s ease-in-out forwards;
+  overflow-y: auto;
+
+  @keyframes dropdownInfoAni {
+    50% {
+      margin-top: -40px;
+      max-height: 50vh;
+      padding: 15px;
+      padding-top: 50px;
+      opacity: 0;
+    }
+
+    100% {
+      margin-top: -40px;
+      max-height: 50vh;
+      padding: 15px;
+      padding-top: 50px;
+      opacity: 1;
+    }
+  }
+}

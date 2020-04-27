@@ -1,0 +1,37 @@
+@import '../../assets/styles/colors';
+@import '../../assets/styles/basics';
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h3 {
+    margin: 0;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+
+    i {
+      margin: 0 10px;
+    }
+
+    .hover {
+      @include hoverState;
+      padding: 8px;
+      border-radius: 100%;
+      transition: $transition-value;
+
+      &:hover {
+        background-color: $gray;
+      }
+    }
+
+    span {
+      font-size: 0.9rem;
+    }
+  }
+
+}

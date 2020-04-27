@@ -1,0 +1,18 @@
+@import '../../assets/styles/colors';
+@import '../../assets/styles/basics';
+
+.footer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  .copyright {
+    display: flex;
+    align-items: center;
+
+    i {
+      position: relative;
+      top: -1.5px;
+    }
+  }
+}

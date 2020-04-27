@@ -1,0 +1,21 @@
+@import '../../assets/styles/basics';
+@import '../../assets/styles/colors';
+
+.search-bar {
+
+  .search-input {
+    width: 200px;
+    border: none;
+    box-shadow: $shadow-value;
+    padding: 10px 15px;
+    border-radius: $border-radius-value;
+    border: 1.5px solid rgba(0, 0, 0, 0);
+    transition: $transition-value;
+    margin: 0 10px;
+
+    &:focus {
+      outline: none;
+      border: 1.5px solid $white-blue;
+    }
+  }
+}

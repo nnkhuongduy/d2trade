@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "server": "nodemon server.js",
-    "client": "npm start --prefix client",
+    "client": "concurrently \"npm start --prefix client\" \"npm start --prefix admin\"",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "",
