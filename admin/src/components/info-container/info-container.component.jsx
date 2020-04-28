@@ -14,7 +14,8 @@ const InfoContainer = ({ editUserInfo, info, detail, isLink, isEditable, confirm
 
   const checkHandle = () => {
     setEditState(false)
-    confirmEditFunc(valueState.replace(/,/g, ''));
+    if (!(valueState.replace(/,/g, '') === "" || valueState.replace(/,/g, '') === "-"))
+      confirmEditFunc(parseInt(valueState.replace(/,/g, '')));
   }
 
   const changeHandle = e => {

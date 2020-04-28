@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { popOverlayStart, updateLastStack } from '../../redux/overlay/overlay.actions'
+import { popOverlayStart, updateLastStack } from '../../../redux/overlay/overlay.actions'
 
 import './confirmation-buttons.component.scss'
 

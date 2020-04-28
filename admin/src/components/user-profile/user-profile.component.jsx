@@ -3,11 +3,11 @@ import { connect } from 'react-redux'
 
 import { Icon } from 'react-icons-kit'
 import { ic_check_circle } from 'react-icons-kit/md/ic_check_circle'
-import { plus } from 'react-icons-kit/icomoon/plus'
-import { ic_mode_edit } from 'react-icons-kit/md/ic_mode_edit'
 
 import DropdownBar from '../dropdown-bar/dropdown-bar.component'
 import InfoContainer from '../info-container/info-container.component'
+import SetBalanceButton from '../buttons/set-balance-button/set-balance-button.component'
+import ModifyBalanceButton from '../buttons/modify-balance-button/modify-balance-button.component'
 
 import { pushOverlay } from '../../redux/overlay/overlay.actions'
 
@@ -15,12 +15,7 @@ import './user-profile.component.scss'
 
 const UserProfile = ({ pushOverlay, user, ...props }) => {
   const confirmEditFunc = value => {
-    if (value !== "")
-      pushOverlay({ type: "CONFIRMATION", data: { user: user, value: value }, exec_code: 'SET_BALANCE' });
-  }
-
-  const editClickHandle = () => {
-    pushOverlay({ type: "SETTING_BALANCE", data: { user: user }, exec_code: 'CONFIRMATION_SET_BALANCE' })
+    pushOverlay({ type: "CONFIRMATION", data: { user: user, value: value, type: "SET" }, exec_code: 'SET_BALANCE' });
   }
 
   return (
@@ -35,8 +30,8 @@ const UserProfile = ({ pushOverlay, user, ...props }) => {
           <span>Balance:</span>
           <p>
             {user.accountBalance.toLocaleString()} VND
-            <Icon icon={plus} className={'plus'} />
-            <Icon icon={ic_mode_edit} className={'edit'} onClick={editClickHandle} />
+            <SetBalanceButton user={user} className={'edit'} />
+            <ModifyBalanceButton user={user} className={'plus'} />
           </p>
         </div>
       </div>

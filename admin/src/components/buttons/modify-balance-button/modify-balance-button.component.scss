@@ -1,0 +1,10 @@
+@import '../../../assets/styles/basics';
+
+.plus {
+  @include hoverState;
+  @include hoverEffect;
+  position: absolute;
+  top: 5px;
+  right: -35px;
+  padding: 4px 8px 8px;
+}

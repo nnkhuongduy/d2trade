@@ -45,11 +45,13 @@
   .user-actions {
     .hover {
       padding: 5px;
+      margin: 0 5px;
       border-radius: 100%;
       transition: $transition-value;
 
       &:hover {
-        background-color: $white-blue;
+        cursor: pointer;
+        background-color: rgba($color: $white-blue, $alpha: 0.5);
       }
     }
   }

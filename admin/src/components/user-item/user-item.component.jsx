@@ -6,6 +6,9 @@ import { ic_check_circle } from 'react-icons-kit/md/ic_check_circle'
 import { ic_launch } from 'react-icons-kit/md/ic_launch'
 import { ic_account_box } from 'react-icons-kit/md/ic_account_box'
 
+import SetBalanceButton from '../buttons/set-balance-button/set-balance-button.component'
+import ModifyBalanceButton from '../buttons/modify-balance-button/modify-balance-button.component'
+
 import './user-item.component.scss'
 
 const UserItem = ({ user, location, ...props }) => {
@@ -34,6 +37,8 @@ const UserItem = ({ user, location, ...props }) => {
         </div>
         <div className={'user-actions'}>
           <Link to={location => `${location.pathname}/${user.steamid}`}><Icon icon={ic_account_box} size={24} className={'hover'} /></Link>
+          <ModifyBalanceButton user={user} className={'hover'} size={16} />
+          <SetBalanceButton user={user} className={'hover'} size={18} />
         </div>
       </div>
     )

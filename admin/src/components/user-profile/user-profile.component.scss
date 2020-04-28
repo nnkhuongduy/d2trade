@@ -32,22 +32,25 @@
         padding: 10px 20px;
         background-color: $white-blue;
         position: relative;
-
-        .plus {
-          @include hoverState;
-          position: absolute;
-          right: 0;
-          transform: translateX(150%);
-        }
-
-        .edit {
-          @include hoverState;
-          position: absolute;
-          right: 0;
-          transform: translateX(300%);
-        }
       }
 
+      .plus {
+        @include hoverState;
+        @include hoverEffect;
+        position: absolute;
+        right: -35px;
+        top: 5px;
+        padding: 8px;
+      }
+
+      .edit {
+        @include hoverState;
+        @include hoverEffect;
+        position: absolute;
+        right: -70px;
+        top: 5px;
+        padding: 8px;
+      }
     }
   }
 

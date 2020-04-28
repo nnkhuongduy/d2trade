@@ -11,9 +11,7 @@ adminRouter.get("/users", (req, res) => {
 
 adminRouter.post("/user/balance/edit", (req, res) => {
   const steamId = req.body.steamId
-  const updateObj = {
-    accountBalance: req.body.value
-  };
+  let updateObj = {};
 
   if (req.body.type === "SET")
     updateObj = { accountBalance: req.body.value }

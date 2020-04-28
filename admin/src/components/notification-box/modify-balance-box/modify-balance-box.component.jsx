@@ -3,18 +3,18 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
 import { Icon } from 'react-icons-kit'
-import { ic_arrow_forward } from 'react-icons-kit/md/ic_arrow_forward'
+import { ic_add } from 'react-icons-kit/md/ic_add'
 import { ic_launch } from 'react-icons-kit/md/ic_launch'
 
-import { balanceInputFilter } from '../../helpers/balance-input-filter'
+import { balanceInputFilter } from '../../../helpers/balance-input-filter'
 
-import ConfirmationButtons from '../confirmation-buttons/confirmation-buttons.component'
+import ConfirmationButtons from '../../buttons/confirmation-buttons/confirmation-buttons.component'
 
-import { selectOverlayLastStack } from '../../redux/overlay/overlay.selectors'
+import { selectOverlayLastStack } from './../../../redux/overlay/overlay.selectors'
 
-import './set-balance-box.component.scss'
+import './modify-balance-box.component.scss'
 
-const SetBalanceBox = ({ overlayLastStack, ...props }) => {
+const ModifyBalanceBox = ({ overlayLastStack, ...props }) => {
   const [value, setValue] = useState("")
   const [stack, setStack] = useState(undefined)
 
@@ -52,7 +52,7 @@ const SetBalanceBox = ({ overlayLastStack, ...props }) => {
       </a>
       <div className={'balance-section'}>
         <span className={'user-balance'}>{user.accountBalance.toLocaleString()} VND</span>
-        <Icon className={'arrow'} icon={ic_arrow_forward} />
+        <Icon className={'add'} icon={ic_add} />
         <input className={'balance-input'} onChange={changeHandler} value={value} /><span>VND</span>
       </div>
       <ConfirmationButtons stack={stack} />
@@ -64,4 +64,4 @@ const mapStateToProps = createStructuredSelector({
   overlayLastStack: selectOverlayLastStack
 })
 
-export default connect(mapStateToProps)(SetBalanceBox)
+export default connect(mapStateToProps)(ModifyBalanceBox)

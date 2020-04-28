@@ -2,8 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
-import ConfirmationBox from '../confirmation-box/confirmation-box.component'
-import SetBalanceBox from '../set-balance-box/set-balance-box.component'
+import ConfirmationBox from '../notification-box/confirmation-box/confirmation-box.component'
+import SetBalanceBox from '../notification-box/set-balance-box/set-balance-box.component'
+import ModifyBalanceBox from '../notification-box/modify-balance-box/modify-balance-box.component'
 
 import { selectOverlayLastStack } from '../../redux/overlay/overlay.selectors'
 
@@ -13,6 +14,7 @@ const Overlay = ({ overlayLastStack }) => (
   <div className={`overlay ${overlayLastStack !== undefined ? 'activated' : ''}`}>
     {overlayLastStack && overlayLastStack.type === "CONFIRMATION" && <ConfirmationBox />}
     {overlayLastStack && overlayLastStack.type === "SETTING_BALANCE" && <SetBalanceBox />}
+    {overlayLastStack && overlayLastStack.type === "MODIFYING_BALANCE" && <ModifyBalanceBox />}
   </div>
 )
 

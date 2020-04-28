@@ -10,13 +10,13 @@ import { OverlayTypes } from './overlay.types'
 export function* overlayPopAsync({ decision, ...action }) {
   const lastStack = yield select(selectOverlayLastStack)
   const currentStack = yield select(selectOverlayStack)
-  const newStack = [...currentStack]
+  let newStack = [...currentStack]
 
   if (decision)
     switch (lastStack.exec_code) {
       case 'SET_BALANCE':
-        yield put(setBalance(lastStack.data.user.steamid, lastStack.data.value, "SET"))
-        yield newStack.pop();
+        yield put(setBalance(lastStack.data.user.steamid, lastStack.data.value, lastStack.data.type))
+        newStack = [];
         break;
 
       case 'CONFIRMATION_SET_BALANCE':

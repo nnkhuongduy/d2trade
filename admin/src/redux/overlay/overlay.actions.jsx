@@ -15,6 +15,10 @@ export const popOverlayFinish = stacks => ({
   stacks: stacks
 })
 
+export const clearOverlay = () => ({
+  type: OverlayTypes.OVERLAY_CLEAR
+})
+
 export const updateLastStack = stack => ({
   type: OverlayTypes.UPDATE_LAST_STACK_START,
   stack: stack,

@@ -1,5 +1,5 @@
-@import '../../assets/styles/colors';
-@import '../../assets/styles/basics';
+@import '../../../assets/styles/colors';
+@import '../../../assets/styles/basics';
 
 .confirmation-buttons {
   position: absolute;
@@ -18,10 +18,12 @@
 
     &.cancel {
       border-right: 2px solid rgba($color: $bright-blue, $alpha: 0.5);
+      color: red;
     }
 
     &.accept {
       background-color: lightgreen;
+      color: green;
 
       &:hover {
         filter: brightness(120%)

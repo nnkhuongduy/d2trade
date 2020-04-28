@@ -29,7 +29,7 @@ export function* setBalanceAsync({ steamId, value, actionType, ...action }) {
   try {
     const postObj = {
       steamId: steamId,
-      value: parseInt(value),
+      value: value,
       type: actionType
     }
 

@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import ConfirmationButtons from '../confirmation-buttons/confirmation-buttons.component'
+import ConfirmationButtons from '../../buttons/confirmation-buttons/confirmation-buttons.component'
 
-import { popOverlayStart } from '../../redux/overlay/overlay.actions'
+import { popOverlayStart } from '../../../redux/overlay/overlay.actions'
 
 import './confirmation-box.component.scss'
 

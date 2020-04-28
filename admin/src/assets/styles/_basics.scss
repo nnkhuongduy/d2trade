@@ -10,6 +10,18 @@ $shadow-value: 3px 3px 5px 0px rgba(0, 0, 0, 0.15);
   }
 }
 
+@mixin hoverEffect {
+  padding: 10px;
+  border-radius: 100%;
+  transition: $transition-value;
+  box-sizing: border-box;
+
+  &:hover {
+    cursor: pointer;
+    background-color: rgba($color: royalblue, $alpha: 0.5);
+  }
+}
+
 @mixin spanHoverEffect {
   span {
     position: relative;
