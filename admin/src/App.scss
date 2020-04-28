@@ -1,4 +1,5 @@
 @import './assets/styles/basics';
+@import './assets/styles/colors';
 
 .page-container {
   display: grid;
@@ -16,5 +17,15 @@
       height: 100%;
     }
   }
+}
 
+.balance-input {
+  border: none;
+  border-bottom: 1px solid rgba($color: black, $alpha: 0.25);
+  transition: $transition-value;
+
+  &:focus {
+    outline: none;
+    border-bottom: 1px solid rgba($color: $bright-blue, $alpha: 1.0);
+  }
 }

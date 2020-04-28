@@ -15,14 +15,10 @@ adminRouter.post("/user/balance/edit", (req, res) => {
     accountBalance: req.body.value
   };
 
-  editUser(steamId, updateObj)
-    .then(() => res.sendStatus(200))
-    .catch(err => errorHandler(err))
-})
-
-adminRouter.post("/user/balance/modify", (req, res) => {
-  const steamId = req.body.steamId
-  const updateObj = { $inc: { accountBalance: req.body.value } }
+  if (req.body.type === "SET")
+    updateObj = { accountBalance: req.body.value }
+  if (req.body.type === "MODIFY")
+    updateObj = { $inc: { accountBalance: req.body.value } }
 
   editUser(steamId, updateObj)
     .then(() => res.sendStatus(200))

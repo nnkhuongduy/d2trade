@@ -4,8 +4,7 @@ const INITIAL_STATE = {
   users: null,
   isFetching: false,
   errorMessage: null,
-  isBalanceEditing: false,
-  isBalanceModifying: false,
+  isBalanceSetting: false,
 }
 
 export const usersReducer = (state = INITIAL_STATE, action) => {
@@ -34,45 +33,24 @@ export const usersReducer = (state = INITIAL_STATE, action) => {
         errorMessage: action.message
       }
 
-    case UsersTypes.EDIT_BALANCE_START:
+    case UsersTypes.SET_BALANCE_START:
       return {
         ...state,
-        isBalanceEditing: true,
+        isBalanceSetting: true,
         errorMessage: null
       }
 
-    case UsersTypes.EDIT_BALANCE_SUCCESS:
+    case UsersTypes.SET_BALANCE_SUCCESS:
       return {
         ...state,
-        isBalanceEditing: false,
+        isBalanceSetting: false,
         errorMessage: null
       }
 
-    case UsersTypes.EDIT_BALANCE_FAIL:
+    case UsersTypes.SET_BALANCE_FAIL:
       return {
         ...state,
-        isBalanceEditing: false,
-        errorMessage: action.message
-      }
-
-    case UsersTypes.MODIFY_BALANCE_START:
-      return {
-        ...state,
-        isBalanceModifying: true,
-        errorMessage: null
-      }
-
-    case UsersTypes.MODIFY_BALANCE_SUCCESS:
-      return {
-        ...state,
-        isBalanceModifying: false,
-        errorMessage: null
-      }
-
-    case UsersTypes.MODIFY_BALANCE_FAIL:
-      return {
-        ...state,
-        isBalanceModifying: false,
+        isBalanceSetting: false,
         errorMessage: action.message
       }
 

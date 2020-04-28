@@ -16,7 +16,11 @@ import './user-profile.component.scss'
 const UserProfile = ({ pushOverlay, user, ...props }) => {
   const confirmEditFunc = value => {
     if (value !== "")
-      pushOverlay({ type: "CONFIRMATION", data: { steam_id: user.steamid, value: value }, exec_code: 'EDIT_BALANCE' });
+      pushOverlay({ type: "CONFIRMATION", data: { user: user, value: value }, exec_code: 'SET_BALANCE' });
+  }
+
+  const editClickHandle = () => {
+    pushOverlay({ type: "SETTING_BALANCE", data: { user: user }, exec_code: 'CONFIRMATION_SET_BALANCE' })
   }
 
   return (
@@ -32,7 +36,7 @@ const UserProfile = ({ pushOverlay, user, ...props }) => {
           <p>
             {user.accountBalance.toLocaleString()} VND
             <Icon icon={plus} className={'plus'} />
-            <Icon icon={ic_mode_edit} className={'edit'} />
+            <Icon icon={ic_mode_edit} className={'edit'} onClick={editClickHandle} />
           </p>
         </div>
       </div>

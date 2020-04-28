@@ -10,6 +10,17 @@ export const popOverlayStart = decision => ({
   decision: decision
 })
 
-export const popOverlayFinish = () => ({
+export const popOverlayFinish = stacks => ({
   type: OverlayTypes.OVERLAY_POP_FINISH,
+  stacks: stacks
+})
+
+export const updateLastStack = stack => ({
+  type: OverlayTypes.UPDATE_LAST_STACK_START,
+  stack: stack,
+})
+
+export const updateLastStackFinish = stacks => ({
+  type: OverlayTypes.UPDATE_LAST_STACK_FINISH,
+  stacks: stacks
 })

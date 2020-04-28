@@ -1,0 +1,31 @@
+@import '../../assets/styles/colors';
+@import '../../assets/styles/basics';
+
+.confirmation-buttons {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+
+  .btn {
+    @include hoverState;
+    width: 50%;
+    border: none;
+    border-top: 1.5px solid rgba($color: $bright-blue, $alpha: 0.5);
+    padding: 15px 0;
+    transition: $transition-value;
+    font-weight: 700;
+    font-size: 0.9rem;
+
+    &.cancel {
+      border-right: 2px solid rgba($color: $bright-blue, $alpha: 0.5);
+    }
+
+    &.accept {
+      background-color: lightgreen;
+
+      &:hover {
+        filter: brightness(120%)
+      }
+    }
+  }
+}
