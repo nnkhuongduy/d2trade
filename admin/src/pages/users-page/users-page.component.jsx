@@ -2,16 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
+import { Icon } from 'react-icons-kit'
+import { ic_expand_more } from 'react-icons-kit/md/ic_expand_more'
+
 import { queryFilter } from '../../helpers/search-query-filter'
 
-import { Icon } from 'react-icons-kit'
-import { ic_refresh } from 'react-icons-kit/md/ic_refresh'
-import { ic_sort } from 'react-icons-kit/md/ic_sort'
 import PulseLoader from 'react-spinners/PulseLoader'
 
 import UserItem from '../../components/user-item/user-item.component'
-import SearchBar from '../../components/search-bar/search-bar.component'
 import FilterBox from '../../components/filter-box/filter-box.component'
+import Toolbar from '../../components/toolbar/toolbar.component'
 
 import { fetchUsersStart } from '../../redux/users/users.actions'
 
@@ -30,6 +30,7 @@ const UsersPage = ({ fetchUsersStart, users, userFilter, ...props }) => {
   const [searchValue, setSearchValue] = useState("")
   const [filterState, setFilterState] = useState(false)
   const [usersArray, setUsersArray] = useState(null)
+  const [usersRendering, setUsersRendering] = useState(null)
 
   useEffect(() => {
     if (!users)
@@ -42,21 +43,43 @@ const UsersPage = ({ fetchUsersStart, users, userFilter, ...props }) => {
     else setUsersArray(null)
   }, [users, userFilter, searchValue])
 
-  const changeHandler = e => {
-    setSearchValue(e.target.value)
+  useEffect(() => {
+    if (usersArray) setUsersRendering(usersArray.slice(0, 10))
+    else setUsersRendering(null)
+  }, [usersArray])
+
+  const sliceUsersArray = () => setUsersRendering(usersArray.slice(0, usersRendering.length + 10))
+
+  const scollHandle = e => {
+    const element = e.target;
+    const percentScroll = element.scrollTop / (element.scrollHeight - element.clientHeight) * 100;
+    if (percentScroll === 100) {
+      sliceUsersArray()
+    }
   }
 
   return (
     <div className={'users-page'}>
-      <div className={'toolbar'}>
-        <SearchBar className={'tool'} onChange={changeHandler} value={searchValue} type="text" />
-        <Icon icon={ic_refresh} size={24} className={'tool hover'} onClick={() => fetchUsersStart()} />
-        <Icon icon={ic_sort} size={24} className={'tool hover'} onClick={() => setFilterState(state => !state)} />
-      </div>
-      {filterState && <FilterBox />}
+      <Toolbar
+        searchValue={searchValue}
+        searchHandler={e => setSearchValue(e.target.value)}
+        refreshHandler={() => fetchUsersStart()}
+        sortHandler={() => setFilterState(state => !state)}
+      />
+      {filterState && <FilterBox
+        options={[
+          { value: "index", children: "Index" },
+          { value: "accountBalance", children: "Balance" }
+        ]}
+      />}
       <UserItem />
-      {usersArray && usersArray.map(user => <UserItem key={user.steamid} user={user} index={user.itemIndex} />)}
       <PulseLoader css={loaderStyle} size={10} color={'#191970'} loading={users ? false : true} />
+      <div className={'users-container'} onScroll={scollHandle}>
+        {usersRendering && usersRendering.map(user => <UserItem key={user.steamid} user={user} index={user.itemIndex} />)}
+        {usersRendering && usersArray && usersRendering.length !== usersArray.length &&
+          <Icon icon={ic_expand_more} onClick={sliceUsersArray} className={'users-expand'} size={50} style={{ display: 'block' }} />
+        }
+      </div>
     </div>
   )
 }

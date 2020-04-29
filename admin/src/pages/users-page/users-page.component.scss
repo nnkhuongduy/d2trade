@@ -1,19 +1,22 @@
 @import '../../assets/styles/basics';
+@import '../../assets/styles/colors';
 
 .users-page {
-  .toolbar {
-    margin: 10px 0;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    position: relative;
+  height: 100%;
 
-    .tool {
-      margin: 0 5px;
+  .users-container {
+    height: calc(100% - 150px);
+    overflow-y: auto;
+  }
 
-      &.hover {
-        @include hoverState;
-      }
+  .users-expand {
+    @include hoverState;
+    width: max-content;
+    margin: 10px auto;
+    border-radius: 100%;
+
+    &:hover {
+      background-color: rgba($color: $bright-blue, $alpha: 0.5);
     }
   }
 }

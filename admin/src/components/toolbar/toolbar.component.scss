@@ -1,0 +1,26 @@
+@import '../../assets/styles/basics';
+@import '../../assets/styles/colors';
+
+.toolbar {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative;
+
+  .tool {
+    margin: 0 5px;
+    padding: 5px;
+    border-radius: 100%;
+    box-sizing: border-box;
+
+    &.hover {
+      @include hoverState;
+
+      &:hover {
+        background-color: rgba($color: $bright-blue, $alpha: 0.25);
+
+      }
+    }
+  }
+}

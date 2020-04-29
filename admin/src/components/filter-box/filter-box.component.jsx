@@ -7,7 +7,7 @@ import { setUserFilter } from '../../redux/filter/filter.actions'
 
 import './filter-box.component.scss'
 
-const FilterBox = ({ setUserFilter, ...props }) => {
+const FilterBox = ({ setUserFilter, options, ...props }) => {
   const [btnState, setBtnState] = useState('Ascending')
   const [option, setOption] = useState('index')
 
@@ -27,8 +27,7 @@ const FilterBox = ({ setUserFilter, ...props }) => {
   return (
     <div className={'filter-box'}>
       <select className={'filter-select'} value={option} onChange={e => setOption(e.target.value)}>
-        <option value={'index'}>Index</option>
-        <option value={'accountBalance'}>Balance</option>
+        {options.map(option => <option value={option.value}>{option.children}</option>)}
       </select>
       <div className={'filter-btns'}>
         <Button onClick={clickHandler} active={btnState === "Ascending" ? true : false}>Ascending</Button>
