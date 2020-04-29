@@ -1,0 +1,28 @@
+@import '../../assets/styles/colors';
+@import '../../assets/styles/basics';
+
+.filter-box {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  .filter-select {
+    width: 25%;
+    padding: 5px;
+    margin: 0 10px;
+    border: none;
+    border-bottom: 2px solid rgba($color: $bright-blue, $alpha: 0.25);
+    transition: $transition-value;
+
+    &:focus {
+      outline: none;
+      border-bottom: 2px solid rgba($color: $bright-blue, $alpha: 1);
+    }
+  }
+
+  .filter-btns {
+    display: flex;
+    align-items: center;
+    margin: 0 30px;
+  }
+}

@@ -13,7 +13,7 @@ import './user-item.component.scss'
 
 const UserItem = ({ user, location, ...props }) => {
   const styles = {
-    backgroundColor: user && user.index % 2 === 1 ? 'whitesmoke' : 'white'
+    backgroundColor: user && user.itemIndex % 2 === 1 ? 'whitesmoke' : 'white'
   }
 
   if (user != null)

@@ -1,0 +1,25 @@
+@import '../../../assets/styles/colors';
+@import '../../../assets/styles/basics';
+
+.normal-btn {
+  @include hoverState;
+  border: 2px solid $bright-blue;
+  padding: 5px 15px;
+  background-color: unset;
+  margin: 5px;
+  box-sizing: border-box;
+  transition: $transition-value;
+  border-radius: $border-radius-value;
+
+  &:hover {
+    background-color: rgba($color: $bright-blue, $alpha: 0.5);
+  }
+
+  &.activated {
+    background-color: rgba($color: $bright-blue, $alpha: 1);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
