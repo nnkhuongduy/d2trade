@@ -13,7 +13,6 @@ import UserItem from '../../components/user-item/user-item.component'
 import SearchBar from '../../components/search-bar/search-bar.component'
 import FilterBox from '../../components/filter-box/filter-box.component'
 
-import { setCurrentPage } from '../../redux/current-page/current-page.actions'
 import { fetchUsersStart } from '../../redux/users/users.actions'
 
 import { selectUsers } from '../../redux/users/users.selectors'
@@ -26,14 +25,15 @@ const loaderStyle = `
   margin: 0 auto;
 `
 
-const UsersPage = ({ setCurrentPage, fetchUsersStart, users, userFilter, ...props }) => {
+const UsersPage = ({ fetchUsersStart, users, userFilter, ...props }) => {
 
   const [searchValue, setSearchValue] = useState("")
   const [filterState, setFilterState] = useState(false)
   const [usersArray, setUsersArray] = useState(null)
 
   useEffect(() => {
-    setCurrentPage("USERS")
+    if (!users)
+      fetchUsersStart();
     // eslint-disable-next-line
   }, [])
 
@@ -62,7 +62,6 @@ const UsersPage = ({ setCurrentPage, fetchUsersStart, users, userFilter, ...prop
 }
 
 const mapDispatchToProps = dispatch => ({
-  setCurrentPage: page => dispatch(setCurrentPage(page)),
   fetchUsersStart: () => dispatch(fetchUsersStart())
 })
 

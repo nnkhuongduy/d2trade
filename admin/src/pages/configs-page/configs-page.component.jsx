@@ -1,15 +1,8 @@
-import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
-
-import { setCurrentPage } from '../../redux/current-page/current-page.actions'
+import React from 'react'
 
 import './configs-page.component.scss'
 
-const ConfigsPage = ({ setCurrentPage, ...props }) => {
-  useEffect(() => {
-    setCurrentPage("CONFIGS")
-    // eslint-disable-next-line
-  }, [])
+const ConfigsPage = () => {
 
   return (
     <div className={'configs-page'}>
@@ -18,8 +11,4 @@ const ConfigsPage = ({ setCurrentPage, ...props }) => {
   )
 }
 
-const mapDispatchToProps = dispatch => ({
-  setCurrentPage: page => dispatch(setCurrentPage(page))
-})
-
-export default connect(null, mapDispatchToProps)(ConfigsPage)
+export default ConfigsPage

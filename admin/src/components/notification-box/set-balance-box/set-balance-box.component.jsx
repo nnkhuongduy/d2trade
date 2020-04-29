@@ -20,11 +20,6 @@ const SetBalanceBox = ({ overlayLastStack, ...props }) => {
 
   const user = overlayLastStack.data.user
 
-  const changeHandler = e => {
-    const value = e.target.value;
-    setValue(balanceInputFilter(value))
-  }
-
   useEffect(() => {
     if (overlayLastStack.data.value)
       setValue((overlayLastStack.data.value).toLocaleString())
@@ -37,10 +32,17 @@ const SetBalanceBox = ({ overlayLastStack, ...props }) => {
         ...overlayLastStack,
         data: {
           ...overlayLastStack.data,
-          value: value === "" || value === "-" ? 0 : parseInt(value.replace(/,/g, ''))
+          value: getIntValue(value)
         }
       })
   }, [overlayLastStack, value])
+
+  const changeHandler = e => {
+    const value = e.target.value;
+    setValue(balanceInputFilter(value))
+  }
+
+  const getIntValue = value => value === "" || value === "-" ? 0 : parseInt(value.replace(/,/g, ''))
 
   return (
     <div className={'set-balance-box'}>

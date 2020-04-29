@@ -1,54 +1,14 @@
-import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
-
-import { setCurrentPage } from '../../redux/current-page/current-page.actions'
+import React from 'react'
 
 import './dashboard.component.scss'
 
-const Dashboard = ({ setCurrentPage, ...props }) => {
-  useEffect(() => {
-    setCurrentPage("DASHBOARD")
-    // eslint-disable-next-line
-  }, [])
+const Dashboard = () => {
 
   return (
     <div className={'dashboard'}>
-      <h1>TEST</h1>
-      <h1>TEST</h1>
-      <h1>TEST</h1>
-      <h1>TEST</h1>
-
-      <h1>TEST</h1><h1>TEST</h1>
-      <h1>TEST</h1>
-      <h1>TEST</h1>
-
-      <h1>TEST</h1><h1>TEST</h1>
-      <h1>TEST</h1>
-      <h1>TEST</h1>
-      <h1>TEST</h1>
-      <h1>TEST</h1>
-      <h1>TEST</h1>
-      <h1>TEST</h1>
-      <h1>TEST</h1>
-      <h1>TEST</h1>
-      <h1>TEST</h1><h1>TEST</h1>
-      <h1>TEST</h1>
-      <h1>TEST</h1>
-      <h1>TEST</h1>
-      <h1>TEST</h1>
-      <h1>TEST</h1>
-      <h1>TEST</h1>
-      <h1>TEST</h1>
-
-      <h1>TEST</h1>
-      <h1>TEST</h1>
       <h1>TEST</h1>
     </div>
   )
 }
 
-const mapDispatchToProps = dispatch => ({
-  setCurrentPage: page => dispatch(setCurrentPage(page))
-})
-
-export default connect(null, mapDispatchToProps)(Dashboard)
+export default Dashboard

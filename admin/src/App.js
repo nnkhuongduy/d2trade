@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux'
-import { createStructuredSelector } from 'reselect'
 
 import Header from './components/header/header.component'
 import Footer from './components/footer/footer.component'
@@ -15,25 +13,18 @@ import OffersPage from './pages/offers-page/offers-page.component'
 import ConfigsPage from './pages/configs-page/configs-page.component'
 import UserPage from './pages/user-page/user-page.component'
 
-import { fetchUsersStart } from './redux/users/users.actions'
-import { selectUsers } from './redux/users/users.selectors'
-
 import './App.scss';
 
-function App({ users, fetchUsersStart, pageFilterState, ...props }) {
-  useEffect(() => {
-    if (!users)
-      fetchUsersStart();
-    // eslint-disable-next-line
-  }, [])
-
+function App({ pageFilterState, ...props }) {
   return (
     <>
       <Overlay />
       <div className={'page-container'}>
         <Menu />
         <div className={'menu-content'}>
-          <Header />
+          <Switch>
+            <Route path='*' component={Header} />
+          </Switch>
           <div className={'page-content'}>
             <Switch>
               <Route exact path='/dashboard' component={Dashboard} />
@@ -54,12 +45,4 @@ function App({ users, fetchUsersStart, pageFilterState, ...props }) {
   );
 }
 
-const mapDispatchToProps = dispatch => ({
-  fetchUsersStart: () => dispatch(fetchUsersStart())
-})
-
-const mapStateToProps = createStructuredSelector({
-  users: selectUsers,
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

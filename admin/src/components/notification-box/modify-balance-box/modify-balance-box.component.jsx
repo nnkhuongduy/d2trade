@@ -20,11 +20,6 @@ const ModifyBalanceBox = ({ overlayLastStack, ...props }) => {
 
   const user = overlayLastStack.data.user
 
-  const changeHandler = e => {
-    const value = e.target.value;
-    setValue(balanceInputFilter(value))
-  }
-
   useEffect(() => {
     if (overlayLastStack.data.value)
       setValue((overlayLastStack.data.value).toLocaleString())
@@ -37,10 +32,17 @@ const ModifyBalanceBox = ({ overlayLastStack, ...props }) => {
         ...overlayLastStack,
         data: {
           ...overlayLastStack.data,
-          value: value === "" || value === "-" ? 0 : parseInt(value.replace(/,/g, ''))
+          value: getIntValue(value)
         }
       })
   }, [overlayLastStack, value])
+
+  const changeHandler = e => {
+    const value = e.target.value;
+    setValue(balanceInputFilter(value))
+  }
+
+  const getIntValue = value => value === "" || value === "-" ? 0 : parseInt(value.replace(/,/g, ''))
 
   return (
     <div className={'set-balance-box'}>
@@ -53,7 +55,8 @@ const ModifyBalanceBox = ({ overlayLastStack, ...props }) => {
       <div className={'balance-section'}>
         <span className={'user-balance'}>{user.accountBalance.toLocaleString()} VND</span>
         <Icon className={'add'} icon={ic_add} />
-        <input className={'balance-input'} onChange={changeHandler} value={value} /><span>VND</span>
+        <input className={'balance-input'} onChange={changeHandler} value={value} /><span> = </span>
+        <span>{(user.accountBalance + getIntValue(value)).toLocaleString()} VND</span>
       </div>
       <ConfirmationButtons stack={stack} />
     </div>
