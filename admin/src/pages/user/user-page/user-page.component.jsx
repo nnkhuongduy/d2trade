@@ -4,9 +4,9 @@ import { createStructuredSelector } from 'reselect'
 
 import PulseLoader from 'react-spinners/PulseLoader'
 
-import UserProfile from '../../components/user-profile/user-profile.component'
+import UserProfile from '../../../components/user-profile/user-profile.component'
 
-import { selectUsers } from '../../redux/users/users.selectors'
+import { selectUsers } from '../../../redux/users/users.selectors'
 
 import './user-page.component.scss'
 

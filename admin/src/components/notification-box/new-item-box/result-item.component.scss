@@ -1,0 +1,24 @@
+  .item-result {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    .item-icon {
+      width: 150px;
+      height: 100px;
+      background-color: grey;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .item-name {
+      margin-bottom: 10px;
+    }
+
+    .item-market-price {
+      font-size: 0.9rem;
+    }
+  }

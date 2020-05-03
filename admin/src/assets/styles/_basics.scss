@@ -22,6 +22,26 @@ $shadow-value: 3px 3px 5px 0px rgba(0, 0, 0, 0.15);
   }
 }
 
+@mixin imgHoverEffect {
+  overflow: hidden;
+  transition: $transition-value;
+
+  img {
+    transition: $transition-value;
+  }
+
+  &:hover {
+    filter: brightness(120%);
+    cursor: pointer;
+
+    img {
+      transform: scale(1.1);
+
+    }
+
+  }
+}
+
 @mixin spanHoverEffect {
   span {
     position: relative;

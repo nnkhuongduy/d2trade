@@ -1,0 +1,14 @@
+@import '../../assets/styles/basics';
+
+.rarity {
+  border-radius: $border-radius-value;
+  padding: 5px 30px;
+  margin: 5px 0;
+  text-align: center;
+  box-shadow: $shadow-value;
+
+  &:hover {
+    cursor: pointer;
+    filter: brightness(110%);
+  }
+}

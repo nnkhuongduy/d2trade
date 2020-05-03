@@ -2,7 +2,7 @@ import _ from 'lodash'
 
 import { userQuickSort } from './user-sort'
 
-export const queryFilter = (query, filter, users) => {
+export const userQueryFilter = (query, filter, users) => {
   let index = 1;
 
   if (filter) {

@@ -10,6 +10,7 @@
   box-sizing: border-box;
   transition: $transition-value;
   border-radius: $border-radius-value;
+  box-shadow: $shadow-value;
 
   &:hover {
     background-color: rgba($color: $bright-blue, $alpha: 0.5);

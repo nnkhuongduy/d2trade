@@ -1,0 +1,28 @@
+@import '../../../assets/styles/basics';
+@import '../../../assets/styles/colors';
+
+
+.item-price-input {
+  display: flex;
+  flex-direction: column;
+
+  svg {
+    pointer-events: none;
+  }
+
+  .input-container {
+    font-size: 0.8rem;
+    margin: 5px 0;
+
+    .input {
+      font-size: 0.75rem;
+    }
+
+    .price-converter {
+      @include hoverEffect;
+      padding: 2px;
+      margin-left: 10px;
+
+    }
+  }
+}
