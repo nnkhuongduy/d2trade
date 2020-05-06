@@ -8,12 +8,26 @@ import { Provider } from 'react-redux';
 
 import { store } from './redux/store'
 
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
+import { indigo, teal } from '@material-ui/core/colors'
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: indigo['A200']
+    },
+    secondary: {
+      main: teal['A400']
+    }
+  }
+})
+
 ReactDOM.render(
   <BrowserRouter>
     <Provider store={store}>
-      <React.StrictMode>
+      <MuiThemeProvider theme={theme}>
         <App />
-      </React.StrictMode>
+      </MuiThemeProvider>
     </Provider>
   </BrowserRouter>
   ,

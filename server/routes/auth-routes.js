@@ -1,16 +1,21 @@
 const authRouter = require('express').Router();
 const passport = require('passport');
+const editUser = require('../services/edit-user')
+const moment = require('moment')
 const CLIENT_HOMEPAGE_URL = 'http://localhost:3000';
 
 authRouter.get("/login/success", (req, res) => {
   if (req.user) {
-    res.json({
-      success: true,
-      message: "user has successfully authenticated",
-      user: req.user,
-      cookies: req.cookies
-    });
-  } else res.sendStatus(404)
+    editUser(req.user.steamid, { lastLogin: moment() })
+      .then(() => res.json({
+        success: true,
+        message: "user has successfully authenticated",
+        user: req.user,
+        cookies: req.cookies
+      }))
+      .catch(() => res.redirect('/auth/login/failed'))
+  }
+  else res.sendStatus(404)
 });
 
 authRouter.get("/login/failed", (req, res) => {

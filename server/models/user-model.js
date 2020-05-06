@@ -8,6 +8,8 @@ const userSchema = new Schema({
   avatar: String,
   accountBalance: Number,
   tradeOfferUrl: String,
+  createdDate: { type: Date, default: Date.now },
+  lastLogin: { type: Date, default: Date.now },
 })
 
 const SteamUsers = mongoose.model("SteamUsers", userSchema, "SteamUsers");

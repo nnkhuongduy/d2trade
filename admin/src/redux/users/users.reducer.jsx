@@ -1,7 +1,7 @@
 import { UsersTypes } from './users.types'
 
 const INITIAL_STATE = {
-  users: null,
+  users: [],
   isFetching: false,
   errorMessage: null,
   isBalanceSetting: false,
@@ -12,7 +12,7 @@ export const usersReducer = (state = INITIAL_STATE, action) => {
     case UsersTypes.FETCH_USERS_START:
       return {
         ...state,
-        users: null,
+        users: state.users.length === 0 ? state.users : [],
         isFetching: true,
         errorMessage: null
       }
@@ -28,7 +28,7 @@ export const usersReducer = (state = INITIAL_STATE, action) => {
     case UsersTypes.FETCH_USERS_FAIL:
       return {
         ...state,
-        users: null,
+        users: state.users.length === 0 ? state.users : [],
         isFetching: false,
         errorMessage: action.message
       }

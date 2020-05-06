@@ -1,19 +1,43 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-import { Icon } from 'react-icons-kit'
-import { ic_refresh } from 'react-icons-kit/md/ic_refresh'
-import { ic_sort } from 'react-icons-kit/md/ic_sort'
+import { makeStyles } from '@material-ui/styles'
+import {
+  FormControl,
+  TextField, IconButton, Fade
+} from '@material-ui/core'
+import { Search, Refresh } from '@material-ui/icons'
 
-import SearchBar from '../../components/search-bar/search-bar.component'
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: 'flex',
+    alignItems: 'center',
+    width: 'max-content',
+    marginLeft: 'auto'
+  },
+  items: {
+    marginLeft: theme.spacing(1)
+  },
+}))
 
-import './toolbar.component.scss'
+const Toolbar = ({ onRefresh }) => {
+  const classes = useStyles()
+  const [search, setSearch] = useState(false)
 
-const Toolbar = ({ searchValue, searchHandler, refreshHandler, sortHandler, ...props }) => {
   return (
-    <div className={'toolbar'}>
-      <SearchBar className={'tool'} onChange={searchHandler} value={searchValue} type="text" />
-      <Icon icon={ic_refresh} size={24} className={'tool hover'} onClick={refreshHandler} />
-      <Icon icon={ic_sort} size={24} className={'tool hover'} onClick={sortHandler} />
+    <div className={classes.root}>
+      <Fade in={search} >
+        <form noValidate autoComplete="off">
+          <FormControl>
+            <TextField id='search' label='Search' variant='outlined' size='small' />
+          </FormControl>
+        </form>
+      </Fade>
+      <IconButton color='inherit' className={classes.items} onClick={() => setSearch(!search)}>
+        <Search />
+      </IconButton>
+      <IconButton color='inherit' onClick={onRefresh}>
+        <Refresh />
+      </IconButton>
     </div>
   )
 }

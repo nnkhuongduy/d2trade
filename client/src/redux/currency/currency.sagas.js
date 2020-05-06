@@ -10,7 +10,7 @@ export function* fetchCurrencyRateAsync() {
     const result = yield axios('/currency/rate')
 
     if (result.status === 200) {
-      yield put(fetchCurrencySuccess(result.data.currencyRate))
+      yield put(fetchCurrencySuccess(result.data))
     } else {
       yield put(fetchCurrencyFailure(result.message))
     }

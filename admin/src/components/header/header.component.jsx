@@ -1,28 +1,72 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import _ from 'lodash'
 
-import { Icon } from 'react-icons-kit'
-import { ic_person } from 'react-icons-kit/md/ic_person'
-import { ic_notifications } from 'react-icons-kit/md/ic_notifications'
-import { ic_dashboard } from 'react-icons-kit/md/ic_dashboard'
+import { makeStyles } from '@material-ui/styles'
+import {
+  AppBar, Toolbar, IconButton, Typography
+} from '@material-ui/core'
+import {
+  Menu as MenuIcon,
+  Dashboard as DashboardIcon,
+  Notifications as NotificationsIcon,
+  Person as PersonIcon
+} from '@material-ui/icons'
 
-import './header.component.scss'
+import { ReactComponent as Logo } from '../../assets/svg/logo.svg'
 
-const Header = ({ location, ...props }) => {
+const useStyles = makeStyles(theme => ({
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+  },
+  toolBar: {
+    justifyContent: 'space-between'
+  },
+  logoContainer: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  logo: {
+    padding: `0px ${theme.spacing(2)}px`
+  },
+  actions: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  typography: {
+    marginLeft: theme.spacing(1)
+  }
+}))
+
+const Header = ({ onMenuClick }) => {
+  const classes = useStyles()
 
   return (
-    <div className={'header'}>
-      <>
-        <h3>{_.startCase(location.pathname)}</h3>
-      </>
-      <div className={'header-actions'}>
-        <Link to="/dashboard"><Icon icon={ic_dashboard} size={24} className={'hover'} /></Link>
-        <Icon icon={ic_notifications} size={24} className={'hover'} />
-        <Icon icon={ic_person} size={24} />
-        <span>ADMIN</span>
-      </div>
-    </div>
+    <AppBar className={classes.appBar} position="fixed" color='default'>
+      <Toolbar className={classes.toolBar}>
+        <div className={classes.logoContainer}>
+          <IconButton aria-label="open drawer" onClick={onMenuClick}>
+            <MenuIcon />
+          </IconButton>
+          <Link className={classes.logo} to="/dashboard"><Logo /></Link>
+        </div>
+        <div className={classes.actions}>
+          <Link to="/dashboard">
+            <IconButton aria-label="to dashboard">
+              <DashboardIcon />
+            </IconButton>
+          </Link>
+          <IconButton aria-label="notifications">
+            <NotificationsIcon />
+          </IconButton>
+          <IconButton aria-label="person">
+            <PersonIcon />
+          </IconButton>
+          <Typography className={classes.typography}>
+            Admin
+          </Typography>
+        </div>
+      </Toolbar>
+    </AppBar>
   )
 }
 

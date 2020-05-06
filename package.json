@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "server": "nodemon server.js",
-    "client": "concurrently \"npm start --prefix client\" \"npm start --prefix admin\"",
+    "client": "npm start --prefix admin",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "",
@@ -23,6 +23,7 @@
     "express-session": "^1.17.0",
     "fs": "0.0.1-security",
     "lodash": "^4.17.15",
+    "moment": "^2.25.3",
     "mongodb": "^3.5.5",
     "mongoose": "^5.9.5",
     "passport": "^0.4.1",

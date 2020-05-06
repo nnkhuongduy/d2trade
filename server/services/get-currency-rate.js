@@ -3,8 +3,8 @@ const SiteSettings = require('../models/site-settings-model')
 
 const getCurrencyRate = () => {
   return new Promise((resolve, reject) => {
-    SiteSettings.findById(process.env.MONGODB_CURRENCY_RATE_ID, (err, result) => {
-      if (!err) resolve(result)
+    SiteSettings.findOne({ name: "currencyRate" }, (err, result) => {
+      if (!err) resolve(result.get('value'))
       else reject(err)
     })
   })

@@ -1,12 +1,12 @@
 import { OverlayTypes } from './overlay.types'
 
 const INITIAL_STATE = {
-  overlayStack: [{
-    data: {},
-    type: "NEW_ITEM",
-    exec_code: "CONFIRMATION_NEW_ITEM"
-  }]
-  // overlayStack: []
+  // overlayStack: [{
+  //   data: {},
+  //   type: "NEW_ITEM",
+  //   exec_code: "CONFIRMATION_NEW_ITEM"
+  // }]
+  overlayStack: []
 }
 
 const overlayReducer = (state = INITIAL_STATE, action) => {

@@ -1,6 +1,6 @@
 require('dotenv').config();
 const CONFIGS = require('../configs/configs')
-const SiteSettings = require('../models/site-settings-model')
+const getCurrencyRate = require('./get-currency-rate')
 
 const manager = require('../configs/steam-setup/steam-manager')
 
@@ -21,17 +21,18 @@ const getInventory = steamId => {
 
             inventory = inventory.filter(item => !itemsOnBlackList[item.id]);
 
-            SiteSettings.findById(process.env.MONGODB_CURRENCY_RATE_ID, (err, rate) => {
-              if (!err) {
+            getCurrencyRate()
+              .then(rate => {
+
                 inventory.forEach(item => {
                   const randPrice = (Math.random() * (10 - 0.01) + 0.01).toFixed(2)
                   item.market_price = randPrice;
-                  item.vnd_price = Math.round((parseFloat(randPrice) * rate.currencyRate * 1000)).toLocaleString();
+                  item.vnd_price = Math.round((parseFloat(randPrice) * rate * 1000)).toLocaleString();
                 })
 
                 resolve(inventory)
-              } else reject(err)
-            })
+              })
+              .catch(err => reject(err))
 
           } else reject(err)
         })
