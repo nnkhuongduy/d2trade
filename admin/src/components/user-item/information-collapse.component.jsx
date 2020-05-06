@@ -20,7 +20,7 @@ const InformationCollapse = ({ user, open }) => {
     { label: 'Tên tài khoản', value: user.personaname },
     { label: 'Steam ID', value: user.steamid },
     { label: 'Steam Profile', value: user.profileurl, isLink: true, link: user.profileurl },
-    { label: 'Số dư tài khoản', value: user.accountBalance },
+    { label: 'Số dư tài khoản', value: user.accountBalance, isMoney: true },
   ]), [user])
 
   const infos2 = useMemo(() => ([
@@ -48,12 +48,13 @@ const InformationCollapse = ({ user, open }) => {
                 </Grid>
                 <Grid item>
                   <List disablePadding dense>
-                    {infos1.map(({ value, isLink, link, isDate }, index) => (
+                    {infos1.map(({ value, isLink, link, isDate, isMoney }, index) => (
                       <ListItem key={index}>
                         <ListItemText primaryTypographyProps={{ variant: 'body2' }}>
                           {isLink && <Link href={link} target='_blank' rel='noopener'>{value}</Link>}
                           {isDate && moment(value).tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY hh:mm:ss A')}
-                          {!isLink && !isDate && value}
+                          {isMoney && value.toLocaleString()}
+                          {!isLink && !isDate && !isMoney && value}
                         </ListItemText>
                       </ListItem>
                     ))}

@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
+import { makeStyles } from '@material-ui/styles'
 import {
   Grid, LinearProgress,
-  Table, TableHead, TableBody, TableCell, TableRow, TableSortLabel
+  Table, TableHead, TableBody, TableCell, TableRow, TableSortLabel, TableContainer
 } from '@material-ui/core'
 
 import UserItem from '../../../components/user-item/user-item.component'
@@ -16,6 +17,12 @@ import { fetchUsersStart } from '../../../redux/users/users.actions'
 import { selectUsers } from '../../../redux/users/users.selectors'
 
 import Toolbar from '../../../components/toolbar/toolbar.component'
+
+const useStyles = makeStyles(theme => ({
+  container: {
+    maxHeight: '75vh'
+  }
+}))
 
 const comparator = (prop, desc = true) => (a, b) => {
   const order = desc ? 1 : -1;
@@ -37,7 +44,7 @@ const labelToProp = label => {
     case 'Tài khoản':
       return 'personaname'
 
-    case 'Tiền dư':
+    case 'Số dư':
       return 'accountBalance'
 
     case 'Đăng nhập gần nhất':
@@ -49,10 +56,12 @@ const labelToProp = label => {
 }
 
 const UsersPage = ({ fetchUsersStart, users, ...props }) => {
+  const classes = useStyles();
+
   const [columns, setColumns] = useState([
     { label: 'Index', active: true, sortable: true, direction: 'asc' },
     { label: 'Tài khoản', active: false, sortable: true, direction: 'asc' },
-    { label: 'Tiền dư', active: false, sortable: true, direction: 'asc' },
+    { label: 'Số dư', active: false, sortable: true, direction: 'asc' },
     { label: 'Đăng nhập gần nhất', active: false, sortable: true, direction: 'asc' },
     { label: 'Thao tác', active: false },
     { label: '', active: false }
@@ -61,13 +70,18 @@ const UsersPage = ({ fetchUsersStart, users, ...props }) => {
   const [addUser, setAddUser] = useState({})
   const [addDialog, setAddDialog] = useState(false)
   const [setDialog, setSetDialog] = useState(false)
+  const [renderedRows, setRenderedRows] = useState(10)
+  const scrollRef = useRef(null)
 
   useEffect(() => {
     if (users.length === 0) {
       setRows([]);
+      setRenderedRows(10)
       fetchUsersStart();
     }
-    else setRows(users)
+    else {
+      setRows(users)
+    }
     //eslint-disable-next-line
   }, [users])
 
@@ -80,8 +94,20 @@ const UsersPage = ({ fetchUsersStart, users, ...props }) => {
       direction: (index === i && (column.direction === 'desc' ? 'asc' : 'desc')) || undefined
     })))
 
-    setRows(rows.slice().sort(comparator(prop, columns[index].direction === 'desc')))
+    setRows(users.slice().sort(comparator(prop, columns[index].direction === 'desc')))
+
+    setRenderedRows(10)
+
+    scrollRef.current.scrollTop = 0;
   }, [columns, rows])
+
+  const onScoll = e => {
+    const element = e.target;
+    const percentScroll = element.scrollTop / (element.scrollHeight - element.clientHeight) * 100;
+    if (percentScroll === 100) {
+      setRenderedRows(renderedRows + 10)
+    }
+  }
 
   return (
     <>
@@ -89,33 +115,35 @@ const UsersPage = ({ fetchUsersStart, users, ...props }) => {
         <Grid item>
           <Toolbar onRefresh={() => fetchUsersStart()} />
         </Grid>
-        <Grid>
-          <Table size='small' stickyHeader>
-            <TableHead>
-              <TableRow>
-                {columns.map(({ label, active, sortable, direction }, index) => (
-                  <TableCell key={index} >
-                    {sortable ? (
-                      <TableSortLabel active={active} onClick={sortOnClick(index)} direction={direction && direction}>
-                        {label}
-                      </TableSortLabel>
-                    ) : label
-                    }
-                  </TableCell>
+        <Grid item>
+          <TableContainer ref={scrollRef} className={classes.container} onScroll={onScoll}>
+            <Table size='small' stickyHeader>
+              <TableHead>
+                <TableRow>
+                  {columns.map(({ label, active, sortable, direction }, index) => (
+                    <TableCell key={index} >
+                      {sortable ? (
+                        <TableSortLabel active={active} onClick={sortOnClick(index)} direction={direction && direction}>
+                          {label}
+                        </TableSortLabel>
+                      ) : label
+                      }
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.length !== 0 && rows.slice(0, renderedRows).map((user, index) => (
+                  <UserItem
+                    key={index}
+                    user={user}
+                    onAddClick={() => { setAddDialog(true); setAddUser(user) }}
+                    onSetClick={() => { setSetDialog(true); setAddUser(user) }}
+                  />
                 ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.length !== 0 && rows.map((user, index) => (
-                <UserItem
-                  key={index}
-                  user={user}
-                  onAddClick={() => { setAddDialog(true); setAddUser(user) }}
-                  onSetClick={() => { setSetDialog(true); setAddUser(user) }}
-                />
-              ))}
-            </TableBody>
-          </Table>
+              </TableBody>
+            </Table>
+          </TableContainer>
           {rows.length === 0 && <LinearProgress />}
         </Grid>
       </Grid>
