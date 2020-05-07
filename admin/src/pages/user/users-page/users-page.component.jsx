@@ -1,28 +1,20 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
-import { makeStyles } from '@material-ui/styles'
 import {
-  Grid, LinearProgress,
-  Table, TableHead, TableBody, TableCell, TableRow, TableSortLabel, TableContainer
+  Grid, LinearProgress, Paper,
 } from '@material-ui/core'
 
-import UserItem from '../../../components/user-item/user-item.component'
 import UserAddBalance from '../../../components/dialogs/user-add-balance/user-add-balance.component'
 import UserSetBalance from '../../../components/dialogs/user-set-balance/user-set-balance.component'
+import VirtualizedTable from '../../../components/virtualized-table/virtualized-table.component'
 
 import { fetchUsersStart } from '../../../redux/users/users.actions'
 
 import { selectUsers } from '../../../redux/users/users.selectors'
 
 import Toolbar from '../../../components/toolbar/toolbar.component'
-
-const useStyles = makeStyles(theme => ({
-  container: {
-    maxHeight: '75vh'
-  }
-}))
 
 const comparator = (prop, desc = true) => (a, b) => {
   const order = desc ? 1 : -1;
@@ -55,28 +47,65 @@ const labelToProp = label => {
   }
 }
 
-const UsersPage = ({ fetchUsersStart, users, ...props }) => {
-  const classes = useStyles();
+const INITIAL_COLUMNS = [
+  {
+    widthPerc: 10,
+    label: 'Index',
+    dataKey: 'index',
+    sortable: true,
+    direction: 'asc',
+    activeSort: true
+  },
+  {
+    widthPerc: 20,
+    label: 'Tài khoản',
+    dataKey: 'personaname',
+    sortable: true,
+    direction: 'asc',
+    activeSort: false
+  },
+  {
+    widthPerc: 10,
+    label: 'Số dư',
+    dataKey: 'accountBalance',
+    sortable: true,
+    direction: 'asc',
+    activeSort: false
+  },
+  {
+    widthPerc: 35,
+    label: 'Đăng nhập gần nhất',
+    dataKey: 'lastLogin',
+    sortable: true,
+    direction: 'asc',
+    activeSort: false
+  },
+  {
+    widthPerc: 20,
+    label: 'Thao tác',
+    dataKey: 'actions',
+    sortable: false
+  },
+  {
+    widthPerc: 5,
+    label: '',
+    dataKey: 'more',
+    sortable: false
+  }
+]
 
-  const [columns, setColumns] = useState([
-    { label: 'Index', active: true, sortable: true, direction: 'asc' },
-    { label: 'Tài khoản', active: false, sortable: true, direction: 'asc' },
-    { label: 'Số dư', active: false, sortable: true, direction: 'asc' },
-    { label: 'Đăng nhập gần nhất', active: false, sortable: true, direction: 'asc' },
-    { label: 'Thao tác', active: false },
-    { label: '', active: false }
-  ])
+const UsersPage = ({ fetchUsersStart, users, ...props }) => {
+  const [columns, setColumns] = useState(INITIAL_COLUMNS)
   const [rows, setRows] = useState([])
-  const [addUser, setAddUser] = useState({})
+  const [dialogUser, setDialogUser] = useState({})
   const [addDialog, setAddDialog] = useState(false)
   const [setDialog, setSetDialog] = useState(false)
-  const [renderedRows, setRenderedRows] = useState(10)
-  const scrollRef = useRef(null)
+  const [slideValue, setSlideValue] = useState(70)
+  const [searchValue, setSearchValue] = useState('')
 
   useEffect(() => {
     if (users.length === 0) {
       setRows([]);
-      setRenderedRows(10)
       fetchUsersStart();
     }
     else {
@@ -85,70 +114,60 @@ const UsersPage = ({ fetchUsersStart, users, ...props }) => {
     //eslint-disable-next-line
   }, [users])
 
-  const sortOnClick = useCallback(index => () => {
+  useEffect(() => {
+    setRows(users.filter(row => row.personaname.toLowerCase().includes(searchValue.toLowerCase())))
+  }, [searchValue])
+
+  const onSortClick = useCallback(index => () => {
     const prop = labelToProp(columns[index].label);
 
     setColumns(columns.map((column, i) => ({
       ...column,
-      active: index === i,
+      activeSort: index === i,
       direction: (index === i && (column.direction === 'desc' ? 'asc' : 'desc')) || undefined
     })))
 
     setRows(users.slice().sort(comparator(prop, columns[index].direction === 'desc')))
-
-    setRenderedRows(10)
-
-    scrollRef.current.scrollTop = 0;
   }, [columns, rows])
 
-  const onScoll = e => {
-    const element = e.target;
-    const percentScroll = element.scrollTop / (element.scrollHeight - element.clientHeight) * 100;
-    if (percentScroll === 100) {
-      setRenderedRows(renderedRows + 10)
-    }
-  }
+  const onAddClick = useCallback(user => {
+    setAddDialog(true);
+    setDialogUser(user)
+  }, [])
+
+  const onSetClick = useCallback(user => {
+    setSetDialog(true);
+    setDialogUser(user)
+  }, [])
 
   return (
     <>
       <Grid container direction='column'>
         <Grid item>
-          <Toolbar onRefresh={() => fetchUsersStart()} />
+          <Toolbar
+            onRefresh={() => fetchUsersStart()} hasSlide={true}
+            slideValue={slideValue}
+            onSlideCommit={(e, value) => setSlideValue(value)}
+            slideTitle='Table Height'
+            searchValue={searchValue}
+            onSearchChange={e => setSearchValue(e.target.value)}
+          />
         </Grid>
         <Grid item>
-          <TableContainer ref={scrollRef} className={classes.container} onScroll={onScoll}>
-            <Table size='small' stickyHeader>
-              <TableHead>
-                <TableRow>
-                  {columns.map(({ label, active, sortable, direction }, index) => (
-                    <TableCell key={index} >
-                      {sortable ? (
-                        <TableSortLabel active={active} onClick={sortOnClick(index)} direction={direction && direction}>
-                          {label}
-                        </TableSortLabel>
-                      ) : label
-                      }
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.length !== 0 && rows.slice(0, renderedRows).map((user, index) => (
-                  <UserItem
-                    key={index}
-                    user={user}
-                    onAddClick={() => { setAddDialog(true); setAddUser(user) }}
-                    onSetClick={() => { setSetDialog(true); setAddUser(user) }}
-                  />
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          {rows.length === 0 && <LinearProgress />}
+          {users.length !== 0 &&
+            <Paper style={{ height: `${slideValue}vh`, width: '100%' }}>
+              <VirtualizedTable
+                rowCount={rows.length}
+                rowGetter={({ index }) => ({ ...rows[index], onAddClick: onAddClick, onSetClick: onSetClick })}
+                columns={columns}
+                onSortClick={onSortClick}
+              />
+            </Paper>}
+          {users.length === 0 && <LinearProgress />}
         </Grid>
       </Grid>
-      <UserAddBalance user={addUser} open={addDialog} onClose={() => setAddDialog(false)} />
-      <UserSetBalance user={addUser} open={setDialog} onClose={() => setSetDialog(false)} />
+      <UserAddBalance user={dialogUser} open={addDialog} onClose={() => setAddDialog(false)} />
+      <UserSetBalance user={dialogUser} open={setDialog} onClose={() => setSetDialog(false)} />
     </>
   )
 }

@@ -6,6 +6,8 @@ import PulseLoader from 'react-spinners/PulseLoader'
 
 import UserProfile from '../../../components/user-profile/user-profile.component'
 
+import { fetchUsersStart } from '../../../redux/users/users.actions'
+
 import { selectUsers } from '../../../redux/users/users.selectors'
 
 import './user-page.component.scss'
@@ -15,10 +17,11 @@ const loaderStyle = `
   margin: 0 auto;
 `
 
-const UserPage = ({ setCurrentPage, users, match, ...props }) => {
+const UserPage = ({ setCurrentPage, fetchUsersStart, users, match, ...props }) => {
   const [matchUser, setMatchUser] = useState(undefined)
 
   useEffect(() => {
+    console.log(users)
     if (users || (users && matchUser === undefined)) {
       let flag = false;
 
@@ -35,6 +38,10 @@ const UserPage = ({ setCurrentPage, users, match, ...props }) => {
     // eslint-disable-next-line
   }, [users])
 
+  useEffect(() => {
+    if (users.length === 0) fetchUsersStart()
+  }, [])
+
   return (
     <div className={'user-page'}>
       <PulseLoader css={loaderStyle} size={10} color={'#191970'} loading={matchUser === undefined ? true : false} />
@@ -43,8 +50,12 @@ const UserPage = ({ setCurrentPage, users, match, ...props }) => {
   )
 }
 
+const mapDispatchToProps = dispatch => ({
+  fetchUsersStart: () => dispatch(fetchUsersStart())
+})
+
 const mapStateToProps = createStructuredSelector({
   users: selectUsers
 })
 
-export default connect(mapStateToProps)(UserPage)
+export default connect(mapStateToProps, mapDispatchToProps)(UserPage)

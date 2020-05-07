@@ -64,6 +64,7 @@ const App = ({ pageFilterState, ...props }) => {
         <Switch>
           <Route exact path='/dashboard' component={Dashboard} />
           <Route exact path='/users' component={UsersPage} />
+          <Route exact path='/users/:steamid' component={UserPage} />
           <Route exact path='/items' component={ItemsPage} />
           <Route exact path='/offers' component={OffersPage} />
           <Route exact path='/configs' component={ConfigsPage} />

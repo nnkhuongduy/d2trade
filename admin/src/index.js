@@ -19,6 +19,24 @@ const theme = createMuiTheme({
     secondary: {
       main: teal['A400']
     }
+  },
+  spanEffect: {
+    position: 'relative',
+    '&::after': {
+      content: "''",
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      width: 0,
+      transition: 'width 0.2s ease-in-out',
+    },
+    '&:hover': {
+      color: indigo['A200'],
+      '&::after': {
+        border: '1px solid black',
+        width: '100%'
+      }
+    }
   }
 })
 

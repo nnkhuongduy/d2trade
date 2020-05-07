@@ -11,18 +11,13 @@ export function* fetchUsersAsync() {
 
     if (respone.status === 200) {
       let index = 1;
-      let users = []
-      let newUser;
 
-      for (let i = 0; i < 50; i++) {
-        yield respone.data.forEach(user => {
-          newUser = { ...user, index: index }
-          index++;
-          users.push(newUser)
-        })
-      }
+      yield respone.data.forEach(user => {
+        user.index = index;
+        index++;
+      })
 
-      yield put(fetchUsersSuccess(users))
+      yield put(fetchUsersSuccess(respone.data))
     }
     else yield put(fetchUsersFail(respone.statusText))
   } catch (err) {
