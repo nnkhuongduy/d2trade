@@ -9,11 +9,10 @@ import {
 import UserAddBalanceDialog from '../../../components/dialogs/user-add-balance/user-add-balance.component'
 import UserSetBalanceDialog from '../../../components/dialogs/user-set-balance/user-set-balance.component'
 import VirtualizedTable from '../../../components/virtualized-table/virtualized-table.component'
-import Snackbar from '../../../components/snackbar/snackbar.component'
 
 import { fetchUsersStart } from '../../../redux/users/users.actions'
 
-import { selectUsers, selectBalanceSetState } from '../../../redux/users/users.selectors'
+import { selectUsers } from '../../../redux/users/users.selectors'
 
 import Toolbar from '../../../components/toolbar/toolbar.component'
 
@@ -95,7 +94,7 @@ const INITIAL_COLUMNS = [
   }
 ]
 
-const UsersPage = ({ fetchUsersStart, users, balanceSetState, ...props }) => {
+const UsersPage = ({ fetchUsersStart, users, ...props }) => {
   const [columns, setColumns] = useState(INITIAL_COLUMNS)
   const [rows, setRows] = useState([])
   const [dialogUser, setDialogUser] = useState({})
@@ -103,7 +102,6 @@ const UsersPage = ({ fetchUsersStart, users, balanceSetState, ...props }) => {
   const [setDialog, setSetDialog] = useState(false)
   const [slideValue, setSlideValue] = useState(70)
   const [searchValue, setSearchValue] = useState('')
-  const [snack, setSnack] = useState('')
 
   useEffect(() => {
     if (users.length === 0) {
@@ -120,10 +118,6 @@ const UsersPage = ({ fetchUsersStart, users, balanceSetState, ...props }) => {
     setRows(users.filter(row => row.personaname.toLowerCase().includes(searchValue.toLowerCase())))
     //eslint-disable-next-line
   }, [searchValue])
-
-  useEffect(() => {
-    setSnack(balanceSetState)
-  }, [balanceSetState])
 
   const onSortClick = useCallback(index => () => {
     const prop = labelToProp(columns[index].label);
@@ -147,13 +141,6 @@ const UsersPage = ({ fetchUsersStart, users, balanceSetState, ...props }) => {
     setSetDialog(true);
     setDialogUser(user)
   }, [])
-
-  const onSnackClose = useCallback((e, reason) => {
-    if (reason === 'clickaway')
-      return
-
-    setSnack('')
-  })
 
   return (
     <>
@@ -185,15 +172,12 @@ const UsersPage = ({ fetchUsersStart, users, balanceSetState, ...props }) => {
         user={dialogUser}
         open={addDialog}
         onClose={() => setAddDialog(false)}
-        setSnack={severity => setSnack(severity)}
       />
       <UserSetBalanceDialog
         user={dialogUser}
         open={setDialog}
         onClose={() => setSetDialog(false)}
-        setSnack={severity => setSnack(severity)}
       />
-      <Snackbar severity={snack} open={snack !== ''} onClose={onSnackClose} />
     </>
   )
 }
@@ -204,7 +188,6 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = createStructuredSelector({
   users: selectUsers,
-  balanceSetState: selectBalanceSetState
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UsersPage)

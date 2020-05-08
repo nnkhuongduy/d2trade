@@ -1,10 +1,15 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
 
 import { makeStyles } from '@material-ui/styles'
 import {
   Backdrop as MaterialBackdrop,
   CircularProgress
 } from '@material-ui/core'
+
+import { selectBackdrop } from '../../redux/backdrop/backdrop.selectors'
+
 
 const useStyles = makeStyles(theme => ({
   backdrop: {
@@ -23,4 +28,8 @@ const Backdrop = ({ open }) => {
   )
 }
 
-export default Backdrop
+const mapStateToProps = createStructuredSelector({
+  open: selectBackdrop
+})
+
+export default connect(mapStateToProps)(Backdrop)

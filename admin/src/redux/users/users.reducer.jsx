@@ -5,7 +5,6 @@ const INITIAL_STATE = {
   isFetching: false,
   errorMessage: null,
   isBalanceSetting: false,
-  balanceSetState: ''
 }
 
 export const usersReducer = (state = INITIAL_STATE, action) => {
@@ -47,7 +46,6 @@ export const usersReducer = (state = INITIAL_STATE, action) => {
         ...state,
         isBalanceSetting: false,
         errorMessage: null,
-        balanceSetState: 'success'
       }
 
     case UsersTypes.SET_BALANCE_FAIL:
@@ -55,7 +53,6 @@ export const usersReducer = (state = INITIAL_STATE, action) => {
         ...state,
         isBalanceSetting: false,
         errorMessage: action.message,
-        balanceSetState: 'error'
       }
 
     default:

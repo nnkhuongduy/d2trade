@@ -37,27 +37,27 @@ const Toolbar = ({ onRefresh, hasSlide, slideValue, onSlideCommit, slideTitle, s
   return (
     <Grid container direction='column' spacing={1} className={clsx(classes.root, { [classes.open]: search || slide })} alignItems='flex-end'>
       <Grid item>
-        <IconButton color={search ? 'primary' : 'inherit'} className={classes.items} onClick={() => { setSearch(!search); setSlide(false) }}>
+        {searchValue !== undefined && <IconButton color={search ? 'primary' : 'inherit'} className={classes.items} onClick={() => { setSearch(!search); setSlide(false) }}>
           <Search />
-        </IconButton>
+        </IconButton>}
         {hasSlide &&
           <IconButton color={slide ? 'primary' : 'inherit'} className={classes.items} onClick={() => { setSlide(!slide); setSearch(false) }}>
             <Tune />
           </IconButton>
         }
-        <IconButton color='inherit' onClick={onRefresh}>
+        {onRefresh && <IconButton color='inherit' onClick={onRefresh}>
           <Refresh />
-        </IconButton>
+        </IconButton>}
       </Grid>
       <Grid item>
-        <Collapse in={search} >
+        {searchValue !== undefined && <Collapse in={search} >
           <form noValidate autoComplete="off">
             <FormControl>
               <TextField id='search' label='Search' variant='outlined' size='small' value={searchValue} onChange={onSearchChange} />
             </FormControl>
           </form>
-        </Collapse>
-        <Collapse in={slide}>
+        </Collapse>}
+        {hasSlide && <Collapse in={slide}>
           <Typography>{slideTitle}</Typography>
           <Slider
             aria-labelledby='slide'
@@ -70,7 +70,7 @@ const Toolbar = ({ onRefresh, hasSlide, slideValue, onSlideCommit, slideTitle, s
             max={90}
             className={classes.slider}
           />
-        </Collapse>
+        </Collapse>}
       </Grid>
     </Grid>
   )

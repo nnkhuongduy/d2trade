@@ -1,55 +1,64 @@
-import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
-import { createStructuredSelector } from 'reselect'
+import React, { useState } from 'react'
+import clsx from 'clsx'
 
-import { Icon } from 'react-icons-kit'
-import { ic_library_add } from 'react-icons-kit/md/ic_library_add'
-import { ic_visibility_off } from 'react-icons-kit/md/ic_visibility_off'
-import { ic_delete } from 'react-icons-kit/md/ic_delete'
+import Toolbar from '../../../components/toolbar/toolbar.component'
 
-import { pushOverlay } from '../../../redux/overlay/overlay.actions'
-import { fetchCurrencyRateStart } from '../../../redux/site-settings/site-settings.actions'
-import { fetchHeroesStart } from '../../../redux/hero/hero.actions'
+import { makeStyles } from '@material-ui/styles'
+import {
+  Grid, Button
+} from '@material-ui/core'
 
-import { selectCurrencyRate } from '../../../redux/site-settings/site-settings.selectors'
-import { selectHeroes } from '../../../redux/hero/hero.selectors'
-
-import './items-page.component.scss'
-
-const ItemsPage = ({ location, pushOverlay, currencyRate, fetchCurrencyRateStart, fetchHeroesStart, heroes, ...props }) => {
-
-  useEffect(() => {
-    if (!currencyRate) fetchCurrencyRateStart()
-    if (!heroes) fetchHeroesStart()
-    //eslint-disable-next-line
-  }, [])
-
-  const newClickHandle = () => {
-    pushOverlay({ type: "NEW_ITEM", data: {}, exec_code: "NEW_ITEM_CONFIRMATION" })
+const useStyles = makeStyles(theme => ({
+  deleteBtn: {
+    color: theme.palette.error.main,
+    borderColor: theme.palette.error.main,
+    marginLeft: theme.spacing(2),
+    '&:hover': {
+      borderColor: theme.palette.error.light,
+    }
+  },
+  deleteBtnActive: {
+    backgroundColor: theme.palette.error.main,
+    color: 'white',
+    '&:hover': {
+      backgroundColor: theme.palette.error.dark,
+    }
   }
+}))
+
+const ItemsPage = () => {
+  const classes = useStyles()
+  const [searchValue, setSearchValue] = useState('')
+  const [deleteState, setDeleteState] = useState(false)
 
   return (
-    <div className={'items-page'}>
-      <div className={'toolbar-container'}>
-        <div className={'actions'}>
-          <div className={'action'} onClick={newClickHandle}><Icon icon={ic_library_add} /><span>New</span></div>
-          <div className={'action'}><Icon icon={ic_visibility_off} /><span>Disable</span></div>
-          <div className={'action'}><Icon icon={ic_delete} /><span>Delete</span></div>
-        </div>
-      </div>
-    </div>
+    <>
+      <Grid container direction='column' spacing={2}>
+        <Grid item>
+          <Grid container justify='space-between'>
+            <Grid item>
+              <Button variant='contained' color='primary'>NEW</Button>
+              <Button
+                variant={deleteState ? 'contained' : 'outlined'}
+                className={clsx(classes.deleteBtn, {
+                  [classes.deleteBtnActive]: deleteState
+                })}
+                onClick={() => setDeleteState(!deleteState)}
+              >
+                DELETE
+              </Button>
+            </Grid>
+            <Grid item>
+              <Toolbar searchValue={searchValue} onSearchChange={e => setSearchValue(e.target.value)} />
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item>
+
+        </Grid>
+      </Grid>
+    </>
   )
 }
 
-const mapDispatchToProps = dispatch => ({
-  pushOverlay: overlay => dispatch(pushOverlay(overlay)),
-  fetchCurrencyRateStart: () => dispatch(fetchCurrencyRateStart()),
-  fetchHeroesStart: () => dispatch(fetchHeroesStart())
-})
-
-const mapStateToProps = createStructuredSelector({
-  currencyRate: selectCurrencyRate,
-  heroes: selectHeroes
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(ItemsPage)
+export default ItemsPage

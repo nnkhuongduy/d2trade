@@ -12,6 +12,6 @@ export default function* rootSaga() {
     call(overlayRootSaga),
     call(itemRootSaga),
     call(siteSettingsRootSaga),
-    call(heroRootSaga)
+    call(heroRootSaga),
   ])
 }

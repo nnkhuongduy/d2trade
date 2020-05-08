@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
-import { createStructuredSelector } from 'reselect'
 
 import { makeStyles } from '@material-ui/styles'
 import {
@@ -10,14 +9,11 @@ import {
 import { Add } from '@material-ui/icons'
 
 import Confirmation from '../confirmation/confirmation.component'
-import Backdrop from '../../backdrop/backdrop.component'
 import UserCard from '../../user/user-card/user-card.component'
 
 import { balanceInputFilter } from '../../../helpers/balance-input-filter'
 
 import { setBalance } from '../../../redux/users/users.actions'
-
-import { selectBalanceSetting } from '../../../redux/users/users.selectors'
 
 const useStyles = makeStyles(theme => ({
   avatar: {
@@ -30,7 +26,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const UserAddBalanceDialog = ({ user, open, onClose, setBalance, isSetting }) => {
+const UserAddBalanceDialog = ({ user, open, onClose, setBalance }) => {
   const classes = useStyles()
   const [value, setValue] = useState('')
   const [disable, setDisable] = useState(true)
@@ -95,17 +91,12 @@ const UserAddBalanceDialog = ({ user, open, onClose, setBalance, isSetting }) =>
         open={confirmOpen}
         onClose={() => setConfirmOpen(false)} onConfirm={onConfirmConfirm}
       />
-      <Backdrop open={isSetting} />
     </>
   )
 }
 
 const mapDispatchToProps = dispatch => ({
-  setBalance: (steamId, value, actionType) => dispatch(setBalance(steamId, value, actionType))
+  setBalance: (steamId, value, actionType) => dispatch(setBalance(steamId, value, actionType)),
 })
 
-const mapStateToProps = createStructuredSelector({
-  isSetting: selectBalanceSetting
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(UserAddBalanceDialog)
+export default connect(null, mapDispatchToProps)(UserAddBalanceDialog)

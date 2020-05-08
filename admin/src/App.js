@@ -5,8 +5,9 @@ import { makeStyles } from '@material-ui/styles'
 import { Toolbar } from '@material-ui/core'
 
 import CustomizedDrawer from './components/drawer/drawer.component'
-
 import Header from './components/header/header.component'
+import Backdrop from './components/backdrop/backdrop.component'
+import Snackbar from './components/snackbar/snackbar.component'
 
 import Dashboard from './pages/dashboard/dashboard.component'
 import UsersPage from './pages/user/users-page/users-page.component'
@@ -27,7 +28,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const App = ({ pageFilterState, ...props }) => {
+const App = ({ backdrop }) => {
   const classes = useStyles()
   const [drawerOpen, setDrawerOpen] = useState(false)
 
@@ -47,6 +48,8 @@ const App = ({ pageFilterState, ...props }) => {
           <Route path='*'><Redirect to='/dashboard' /></Route>
         </Switch>
       </div>
+      <Backdrop />
+      <Snackbar />
     </div>
   );
 }
