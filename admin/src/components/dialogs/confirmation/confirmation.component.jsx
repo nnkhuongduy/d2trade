@@ -1,11 +1,27 @@
 import React from 'react'
 
+import { makeStyles } from '@material-ui/styles'
 import {
   Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
   Button
 } from '@material-ui/core'
 
+const useStyles = makeStyles(theme => ({
+  cancel: {
+    color: 'white',
+    backgroundColor: theme.palette.error.main,
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(3),
+    '&:hover': {
+      color: 'white',
+      backgroundColor: theme.palette.error.dark,
+    }
+  }
+}))
+
 const Confirmation = ({ open, onClose, onConfirm }) => {
+  const classes = useStyles()
+
   return (
     <Dialog
       open={open}
@@ -16,7 +32,7 @@ const Confirmation = ({ open, onClose, onConfirm }) => {
         <DialogContentText>Xin vui lòng xác nhận hành động sắp thực hiện</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>
+        <Button onClick={onClose} className={classes.cancel}>
           Hủy bỏ
         </Button>
         <Button color='primary' variant='contained' onClick={() => { onClose(); onConfirm(); }}>

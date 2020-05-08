@@ -1,4 +1,4 @@
-import React, { PureComponent, useState } from 'react'
+import React, { PureComponent } from 'react'
 import clsx from 'clsx'
 import PropTypes from 'prop-types'
 import moment from 'moment-timezone'
@@ -6,11 +6,13 @@ import { Link } from 'react-router-dom'
 
 import { withStyles } from '@material-ui/styles'
 import {
-  TableCell, Avatar, TableSortLabel, Grid, IconButton
+  TableCell, TableSortLabel, Grid, IconButton, Badge
 } from '@material-ui/core'
 import { Add, Edit, Launch } from '@material-ui/icons'
 
 import { AutoSizer, Column, Table } from 'react-virtualized'
+
+import UserAvatar from '../user/user-avatar/user-avatar.component'
 
 const styles = theme => ({
   flexContainer: {
@@ -40,7 +42,7 @@ const styles = theme => ({
   },
   span: {
     ...theme.spanEffect
-  }
+  },
 })
 
 class VirtualizedTable extends PureComponent {
@@ -69,7 +71,9 @@ class VirtualizedTable extends PureComponent {
         variant='body'
         style={{ height: rowHeight }}
       >
-        {dataKey === 'personaname' && <Avatar src={rowData.avatar} style={{ marginRight: '15px' }} />}
+        {dataKey === 'personaname' &&
+          <UserAvatar user={rowData} />
+        }
         {dataKey === 'accountBalance' && parseInt(cellData).toLocaleString('en-US')}
         {dataKey === 'lastLogin' && moment(cellData).tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY hh:mm:ss A')}
         {dataKey === 'actions' && <Grid container spacing={1} alignItems='center'>

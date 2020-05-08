@@ -1,40 +1,36 @@
-import React, { useState } from 'react'
+import React from 'react'
+import moment from 'moment-timezone'
 
-import { Icon } from 'react-icons-kit'
-import { ic_mode_edit } from 'react-icons-kit/md/ic_mode_edit'
-import { ic_check } from 'react-icons-kit/md/ic_check'
+import { makeStyles } from '@material-ui/styles'
+import {
+  Grid, Link
+} from '@material-ui/core'
 
-import { balanceInputFilter } from '../../helpers/balance-input-filter'
-
-import './info-container.component.scss'
-
-const InfoContainer = ({ editUserInfo, info, detail, isLink, isEditable, confirmEditFunc, ...props }) => {
-  const [editState, setEditState] = useState(false);
-  const [valueState, setValueState] = useState('');
-
-  const checkHandle = () => {
-    setEditState(false)
-    if (!(valueState.replace(/,/g, '') === "" || valueState.replace(/,/g, '') === "-"))
-      confirmEditFunc(parseInt(valueState.replace(/,/g, '')));
+const useStyles = makeStyles(theme => ({
+  root: {
+    margin: `${theme.spacing(1)}px 0`,
   }
+}))
 
-  const changeHandle = e => {
-    const value = e.target.value
-    setValueState(balanceInputFilter(value))
-  }
+const InfoContainer = ({ info: { label, value, isLink, isDate, isBalance } }) => {
+  const classes = useStyles()
 
   return (
-    <div className={'info-container'}>
-      <span className={'info'}>{info}</span>
-      <span className={'separative-colon'}> : </span>
-      {!editState && (isLink ? <a href={detail} target="_blank" rel="noopener noreferrer">{detail}</a> : <span className={'info-detail'}>{detail}</span>)}
-      {editState && <input className={'balance-input'} placeholder={detail} onChange={changeHandle} value={valueState} />}
-      {isEditable && (!editState ?
-        <Icon icon={ic_mode_edit} className={'icon-edit'} onClick={() => setEditState(true)} /> :
-        <Icon icon={ic_check} className={'icon-edit'} onClick={checkHandle} />)
-      }
-    </div>
+    <Grid container className={classes.root}>
+      <Grid item xs={3}>
+        {label}
+      </Grid>
+      <Grid item xs={1}>
+        :
+      </Grid>
+      <Grid item xs={8}>
+        {isLink && <Link href={value} target='_blank' rel='noopener'>{value}</Link>}
+        {isDate && moment(value).tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY hh:mm:ss A')}
+        {isBalance && parseInt(value).toLocaleString()}
+        {!isLink && !isDate && !isBalance && value}
+      </Grid>
+    </Grid>
   )
 }
 
-export default InfoContainer;
+export default InfoContainer

@@ -5,12 +5,13 @@ import { createStructuredSelector } from 'reselect'
 import { makeStyles } from '@material-ui/styles'
 import {
   Dialog, DialogContent, DialogActions,
-  Grid, Avatar, Typography, Button, TextField
+  Grid, Button, TextField
 } from '@material-ui/core'
 import { Add } from '@material-ui/icons'
 
 import Confirmation from '../confirmation/confirmation.component'
 import Backdrop from '../../backdrop/backdrop.component'
+import UserCard from '../../user/user-card/user-card.component'
 
 import { balanceInputFilter } from '../../../helpers/balance-input-filter'
 
@@ -29,7 +30,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const UserAddBalance = ({ user, open, onClose, setBalance, isSetting }) => {
+const UserAddBalanceDialog = ({ user, open, onClose, setBalance, isSetting }) => {
   const classes = useStyles()
   const [value, setValue] = useState('')
   const [disable, setDisable] = useState(true)
@@ -64,37 +65,20 @@ const UserAddBalance = ({ user, open, onClose, setBalance, isSetting }) => {
         disableBackdropClick
       >
         <DialogContent className={classes.root}>
-          <Grid container direction='column' spacing={2} alignItems='center'>
+          <Grid container direction='column' spacing={1} alignItems='center'>
+            <UserCard user={user} size='small' />
             <Grid item>
-              <Avatar src={user.avatar} className={classes.avatar} />
+              <Add />
             </Grid>
             <Grid item>
-              <Typography variant='h6'>{user.personaname}</Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant='body2'>{user.steamid}</Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant='subtitle2'>Số dư tài khoản:</Typography>
-            </Grid>
-            <Grid item>
-              <Grid container spacing={3} alignItems='center'>
-                <Grid item>
-                  <Typography>{user.accountBalance && user.accountBalance.toLocaleString('en-US')}</Typography>
-                </Grid>
-                <Grid item>
-                  <Add />
-                </Grid>
-                <Grid item>
-                  <TextField
-                    label='Số tiền thêm'
-                    required size='small'
-                    variant='filled'
-                    value={balanceInputFilter(value)}
-                    onChange={e => setValue(balanceInputFilter(e.target.value))}
-                  />
-                </Grid>
-              </Grid>
+              <TextField
+                label='Số dư thêm'
+                required
+                size='small'
+                variant='filled'
+                value={balanceInputFilter(value)}
+                onChange={e => setValue(balanceInputFilter(e.target.value))}
+              />
             </Grid>
           </Grid>
         </DialogContent>
@@ -124,4 +108,4 @@ const mapStateToProps = createStructuredSelector({
   isSetting: selectBalanceSetting
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserAddBalance)
+export default connect(mapStateToProps, mapDispatchToProps)(UserAddBalanceDialog)

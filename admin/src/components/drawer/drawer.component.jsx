@@ -1,6 +1,6 @@
-import React, { useState, useCallback, Fragment } from 'react'
+import React, { useState, Fragment, useEffect } from 'react'
 import clsx from 'clsx'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 import { makeStyles } from '@material-ui/styles'
 import {
@@ -50,6 +50,7 @@ const useStyles = makeStyles(theme => ({
 
 const CustomizedDrawer = ({ open }) => {
   const classes = useStyles()
+  const location = useLocation();
   const [items, setItems] = useState([
     { label: "Users", Icon: PersonIcon, selected: false },
     { label: "Items", Icon: StyleIcon, selected: false },
@@ -57,13 +58,10 @@ const CustomizedDrawer = ({ open }) => {
     { label: "Configs", Icon: BuildIcon, selected: false },
   ])
 
-  const onClick = useCallback(i => () => {
-    const newItems = [...items]
-    const item = items[i];
-
-    newItems[i] = { ...item, selected: true }
-    setItems(newItems)
-  }, [items])
+  useEffect(() => {
+    setItems(items.map(item => ({ ...item, selected: location.pathname.includes(item.label.toLowerCase()) })))
+    //eslint-disable-next-line
+  }, [location])
 
   return (
     <Drawer
@@ -85,7 +83,7 @@ const CustomizedDrawer = ({ open }) => {
         {items.map(({ label, Icon, selected }, index) => (
           <Fragment key={index}>
             <Link to={`/${label.toLowerCase()}`}>
-              <ListItem button selected={selected} onClick={onClick(index)}>
+              <ListItem button selected={selected}>
                 <ListItemIcon><Icon color={selected ? "primary" : "inherit"} /></ListItemIcon>
                 <ListItemText disableTypography>
                   <Typography color={selected ? "primary" : "initial"}>{label}</Typography>

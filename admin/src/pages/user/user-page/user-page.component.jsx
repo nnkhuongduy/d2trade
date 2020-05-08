@@ -4,7 +4,7 @@ import { createStructuredSelector } from 'reselect'
 
 import PulseLoader from 'react-spinners/PulseLoader'
 
-import UserProfile from '../../../components/user-profile/user-profile.component'
+import UserProfile from '../../../components/user/user-profile/user-profile.component'
 
 import { fetchUsersStart } from '../../../redux/users/users.actions'
 
@@ -40,6 +40,7 @@ const UserPage = ({ setCurrentPage, fetchUsersStart, users, match, ...props }) =
 
   useEffect(() => {
     if (users.length === 0) fetchUsersStart()
+    //eslint-disable-next-line
   }, [])
 
   return (

@@ -6,13 +6,14 @@ import {
   Grid, LinearProgress, Paper,
 } from '@material-ui/core'
 
-import UserAddBalance from '../../../components/dialogs/user-add-balance/user-add-balance.component'
-import UserSetBalance from '../../../components/dialogs/user-set-balance/user-set-balance.component'
+import UserAddBalanceDialog from '../../../components/dialogs/user-add-balance/user-add-balance.component'
+import UserSetBalanceDialog from '../../../components/dialogs/user-set-balance/user-set-balance.component'
 import VirtualizedTable from '../../../components/virtualized-table/virtualized-table.component'
+import Snackbar from '../../../components/snackbar/snackbar.component'
 
 import { fetchUsersStart } from '../../../redux/users/users.actions'
 
-import { selectUsers } from '../../../redux/users/users.selectors'
+import { selectUsers, selectBalanceSetState } from '../../../redux/users/users.selectors'
 
 import Toolbar from '../../../components/toolbar/toolbar.component'
 
@@ -94,7 +95,7 @@ const INITIAL_COLUMNS = [
   }
 ]
 
-const UsersPage = ({ fetchUsersStart, users, ...props }) => {
+const UsersPage = ({ fetchUsersStart, users, balanceSetState, ...props }) => {
   const [columns, setColumns] = useState(INITIAL_COLUMNS)
   const [rows, setRows] = useState([])
   const [dialogUser, setDialogUser] = useState({})
@@ -102,6 +103,7 @@ const UsersPage = ({ fetchUsersStart, users, ...props }) => {
   const [setDialog, setSetDialog] = useState(false)
   const [slideValue, setSlideValue] = useState(70)
   const [searchValue, setSearchValue] = useState('')
+  const [snack, setSnack] = useState('')
 
   useEffect(() => {
     if (users.length === 0) {
@@ -116,7 +118,12 @@ const UsersPage = ({ fetchUsersStart, users, ...props }) => {
 
   useEffect(() => {
     setRows(users.filter(row => row.personaname.toLowerCase().includes(searchValue.toLowerCase())))
+    //eslint-disable-next-line
   }, [searchValue])
+
+  useEffect(() => {
+    setSnack(balanceSetState)
+  }, [balanceSetState])
 
   const onSortClick = useCallback(index => () => {
     const prop = labelToProp(columns[index].label);
@@ -128,6 +135,7 @@ const UsersPage = ({ fetchUsersStart, users, ...props }) => {
     })))
 
     setRows(users.slice().sort(comparator(prop, columns[index].direction === 'desc')))
+    //eslint-disable-next-line
   }, [columns, rows])
 
   const onAddClick = useCallback(user => {
@@ -139,6 +147,13 @@ const UsersPage = ({ fetchUsersStart, users, ...props }) => {
     setSetDialog(true);
     setDialogUser(user)
   }, [])
+
+  const onSnackClose = useCallback((e, reason) => {
+    if (reason === 'clickaway')
+      return
+
+    setSnack('')
+  })
 
   return (
     <>
@@ -155,7 +170,7 @@ const UsersPage = ({ fetchUsersStart, users, ...props }) => {
         </Grid>
         <Grid item>
           {users.length !== 0 &&
-            <Paper style={{ height: `${slideValue}vh`, width: '100%' }}>
+            <Paper style={{ height: `${slideValue}vh`, width: '100%' }} elevation={3}>
               <VirtualizedTable
                 rowCount={rows.length}
                 rowGetter={({ index }) => ({ ...rows[index], onAddClick: onAddClick, onSetClick: onSetClick })}
@@ -166,8 +181,19 @@ const UsersPage = ({ fetchUsersStart, users, ...props }) => {
           {users.length === 0 && <LinearProgress />}
         </Grid>
       </Grid>
-      <UserAddBalance user={dialogUser} open={addDialog} onClose={() => setAddDialog(false)} />
-      <UserSetBalance user={dialogUser} open={setDialog} onClose={() => setSetDialog(false)} />
+      <UserAddBalanceDialog
+        user={dialogUser}
+        open={addDialog}
+        onClose={() => setAddDialog(false)}
+        setSnack={severity => setSnack(severity)}
+      />
+      <UserSetBalanceDialog
+        user={dialogUser}
+        open={setDialog}
+        onClose={() => setSetDialog(false)}
+        setSnack={severity => setSnack(severity)}
+      />
+      <Snackbar severity={snack} open={snack !== ''} onClose={onSnackClose} />
     </>
   )
 }
@@ -178,6 +204,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = createStructuredSelector({
   users: selectUsers,
+  balanceSetState: selectBalanceSetState
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UsersPage)

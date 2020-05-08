@@ -14,8 +14,6 @@ import { fetchHeroesStart } from '../../../redux/hero/hero.actions'
 import { selectCurrencyRate } from '../../../redux/site-settings/site-settings.selectors'
 import { selectHeroes } from '../../../redux/hero/hero.selectors'
 
-import Toolbar from '../../../components/toolbar/toolbar.component'
-
 import './items-page.component.scss'
 
 const ItemsPage = ({ location, pushOverlay, currencyRate, fetchCurrencyRateStart, fetchHeroesStart, heroes, ...props }) => {
@@ -38,7 +36,6 @@ const ItemsPage = ({ location, pushOverlay, currencyRate, fetchCurrencyRateStart
           <div className={'action'}><Icon icon={ic_visibility_off} /><span>Disable</span></div>
           <div className={'action'}><Icon icon={ic_delete} /><span>Delete</span></div>
         </div>
-        <Toolbar />
       </div>
     </div>
   )

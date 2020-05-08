@@ -7,8 +7,6 @@ import { Toolbar } from '@material-ui/core'
 import CustomizedDrawer from './components/drawer/drawer.component'
 
 import Header from './components/header/header.component'
-import Footer from './components/footer/footer.component'
-import Menu from './components/menu/menu.component'
 
 import Dashboard from './pages/dashboard/dashboard.component'
 import UsersPage from './pages/user/users-page/users-page.component'
@@ -35,28 +33,6 @@ const App = ({ pageFilterState, ...props }) => {
 
   return (
     <div className={classes.root}>
-      {/* <div className={'page-container'}>
-        <Menu />
-        <div className={'menu-content'}>
-          <Switch>
-            <Route path='*' component={Header} />
-          </Switch>
-          <div className={'page-content'}>
-            <Switch>
-              <Route exact path='/dashboard' component={Dashboard} />
-              <Route exact path='/users' component={UsersPage} />
-              <Route exact path='/items' component={ItemsPage} />
-              <Route exact path='/offers' component={OffersPage} />
-              <Route exact path='/configs' component={ConfigsPage} />
-              <Route exact path='/users/:steamid' component={UserPage} />
-              <Route path='*'>
-                <Redirect to="/dashboard" />
-              </Route>
-            </Switch>
-          </div>
-          <Footer />
-        </div>
-      </div> */}
       <Header onMenuClick={() => setDrawerOpen(!drawerOpen)} />
       <CustomizedDrawer open={drawerOpen} />
       <div className={classes.content}>

@@ -29,7 +29,7 @@ adminRouter.post("/user/balance/edit", (req, res) => {
 
   editUser(steamId, updateObj)
     .then(() => res.sendStatus(200))
-    .catch(err => errorHandler(err))
+    .catch(err => errorHandler(err, res, 500))
 })
 
 
