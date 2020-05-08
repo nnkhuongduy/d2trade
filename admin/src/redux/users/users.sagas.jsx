@@ -45,11 +45,11 @@ export function* setBalanceAsync({ steamId, value, actionType, ...action }) {
       yield put(fetchUsersStart())
     }
     else {
-      yield put(enqSnackbar({ severity: 'error' }))
+      yield put(enqSnackbar({ severity: 'error', key: new Date().getTime }))
       yield put(setBalanceFail(respone.statusText))
     }
   } catch (err) {
-    yield put(enqSnackbar({ severity: 'error' }))
+    yield put(enqSnackbar({ severity: 'error', key: new Date().getTime }))
     yield put(setBalanceFail(err.message))
   }
   yield put(toggleBackdrop())

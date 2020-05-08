@@ -16,6 +16,7 @@ const Snackbar = ({ deqSnackbar, snackbars, ...snackProps }) => {
   const [severity, setSeverity] = useState(undefined)
   const [title, setTitle] = useState(undefined)
   const [text, setText] = useState(undefined)
+  const [key, setKey] = useState(undefined)
 
   useEffect(() => {
     if (!open) {
@@ -23,6 +24,7 @@ const Snackbar = ({ deqSnackbar, snackbars, ...snackProps }) => {
         setSeverity(snackbars[0].severity)
         setTitle(snackbars[0].title)
         setText(snackbars[0].text)
+        setKey(snackbars[0].key)
         setOpen(true)
       }
     } else {
@@ -39,6 +41,7 @@ const Snackbar = ({ deqSnackbar, snackbars, ...snackProps }) => {
 
   return (
     <MUISnackbar
+      key={key}
       open={open}
       autoHideDuration={6000}
       onClose={onClose}
