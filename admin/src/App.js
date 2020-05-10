@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import { hot } from 'react-hot-loader/root'
 
 import { makeStyles } from '@material-ui/styles'
 import { Toolbar } from '@material-ui/core'
@@ -54,4 +55,4 @@ const App = ({ backdrop }) => {
   );
 }
 
-export default App;
+export default process.env.NODE_ENV === 'development' ? hot(App) : App;

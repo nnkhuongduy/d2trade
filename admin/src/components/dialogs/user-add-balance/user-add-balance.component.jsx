@@ -57,7 +57,6 @@ const UserAddBalanceDialog = ({ user, open, onClose, setBalance }) => {
       <Dialog
         open={open}
         onClose={onClose}
-        aria-labelledby="user-add-balance"
         disableBackdropClick
       >
         <DialogContent className={classes.root}>

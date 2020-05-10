@@ -1,12 +1,19 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import clsx from 'clsx'
+import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
 
 import Toolbar from '../../../components/toolbar/toolbar.component'
+import ItemNewDialog from '../../../components/dialogs/item-new/item-new.component'
 
 import { makeStyles } from '@material-ui/styles'
 import {
   Grid, Button
 } from '@material-ui/core'
+
+import { fetchHeroesStart } from '../../../redux/hero/hero.actions'
+
+import { selectHeroes } from '../../../redux/hero/hero.selectors'
 
 const useStyles = makeStyles(theme => ({
   deleteBtn: {
@@ -26,10 +33,15 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const ItemsPage = () => {
+const ItemsPage = ({ heroes, fetchHeroesStart }) => {
   const classes = useStyles()
   const [searchValue, setSearchValue] = useState('')
   const [deleteState, setDeleteState] = useState(false)
+  const [dialog, setDialog] = useState(false)
+
+  useEffect(() => {
+    if (!heroes) fetchHeroesStart()
+  }, [])
 
   return (
     <>
@@ -37,7 +49,11 @@ const ItemsPage = () => {
         <Grid item>
           <Grid container justify='space-between'>
             <Grid item>
-              <Button variant='contained' color='primary'>NEW</Button>
+              <Button
+                variant='contained'
+                color='primary'
+                onClick={() => setDialog(true)}
+              >NEW</Button>
               <Button
                 variant={deleteState ? 'contained' : 'outlined'}
                 className={clsx(classes.deleteBtn, {
@@ -57,8 +73,17 @@ const ItemsPage = () => {
 
         </Grid>
       </Grid>
+      <ItemNewDialog open={true} onClose={() => setDialog(false)} />
     </>
   )
 }
 
-export default ItemsPage
+const mapDispatchToProps = dispatch => ({
+  fetchHeroesStart: () => dispatch(fetchHeroesStart())
+})
+
+const mapStateToProps = createStructuredSelector({
+  heroes: selectHeroes
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ItemsPage)

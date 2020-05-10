@@ -1,5 +1,6 @@
 import React from 'react'
 import moment from 'moment-timezone'
+import clsx from 'clsx'
 
 import { makeStyles } from '@material-ui/styles'
 import {
@@ -7,16 +8,16 @@ import {
 } from '@material-ui/core'
 
 const useStyles = makeStyles(theme => ({
-  root: {
+  dense: {
     margin: `${theme.spacing(1)}px 0`,
   }
 }))
 
-const InfoContainer = ({ info: { label, value, isLink, isDate, isBalance } }) => {
+const InfoContainer = ({ info: { label, value, isLink, isDate, isBalance }, dense }) => {
   const classes = useStyles()
 
   return (
-    <Grid container className={classes.root}>
+    <Grid container className={clsx({ [classes.dense]: !dense })}>
       <Grid item xs={3}>
         {label}
       </Grid>

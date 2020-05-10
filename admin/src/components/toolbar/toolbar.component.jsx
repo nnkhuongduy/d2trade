@@ -52,9 +52,15 @@ const Toolbar = ({ onRefresh, hasSlide, slideValue, onSlideCommit, slideTitle, s
       <Grid item>
         {searchValue !== undefined && <Collapse in={search} >
           <form noValidate autoComplete="off">
-            <FormControl>
-              <TextField id='search' label='Search' variant='outlined' size='small' value={searchValue} onChange={onSearchChange} />
-            </FormControl>
+            <TextField
+              id='search'
+              label='Search'
+              variant='outlined'
+              size='small'
+              value={searchValue}
+              onChange={onSearchChange}
+              type='search'
+            />
           </form>
         </Collapse>}
         {hasSlide && <Collapse in={slide}>
