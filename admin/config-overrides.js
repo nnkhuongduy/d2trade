@@ -7,7 +7,13 @@ const myOverride = (config, env) => {
   return config
 }
 
+const reactHotDom = (config, env) => {
+  config.module.resolve.alias['react-dom'] = '@hot-loader/react-dom'
+  return config
+}
+
 module.exports = override(
   myOverride,
+  reactHotDom,
   useBabelRc()
 );
