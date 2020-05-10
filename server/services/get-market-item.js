@@ -10,6 +10,7 @@ const getMarketItem = itemName => {
           getCurrencyRate()
             .then(rate => {
               resolve({
+                nameColor: item.firstAsset.name_color,
                 commodity: item.commodity,
                 name: item.firstAsset.market_hash_name,
                 icon_url: item.firstAsset.icon_url,
