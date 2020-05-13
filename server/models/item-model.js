@@ -3,14 +3,22 @@ const Schema = mongoose.Schema;
 
 const itemsSchema = new Schema({
   name: String,
-  item_id: String,
+  nameColor: String,
   icon_url: String,
-  rarity: String,
-  rarity_color: String,
-  used_by: String,
-  price: {
+  hero: {
+    name: String,
+  },
+  rarity: {
+    label: String,
+    color: String
+  },
+  prices: {
     usd: Number,
     vnd: Number
+  },
+  configs: {
+    isNonMarket: false,
+    isInscribed: false,
   }
 })
 

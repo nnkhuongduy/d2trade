@@ -9,7 +9,6 @@ import {
 import { ArrowDownward } from '@material-ui/icons'
 
 import Confirmation from '../confirmation/confirmation.component'
-import Backdrop from '../../backdrop/backdrop.component'
 import UserCard from '../../user/user-card/user-card.component'
 
 import { balanceInputFilter } from '../../../helpers/balance-input-filter'

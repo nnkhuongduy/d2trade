@@ -149,8 +149,9 @@ const UsersPage = ({ fetchUsersStart, users, ...props }) => {
           <Toolbar
             onRefresh={() => fetchUsersStart()} hasSlide={true}
             slideValue={slideValue}
-            onSlideCommit={(e, value) => setSlideValue(value)}
+            onSlideCommit={value => setSlideValue(value)}
             slideTitle='Table Height'
+            slideProps={{ min: 40, max: 90 }}
             searchValue={searchValue}
             onSearchChange={e => setSearchValue(e.target.value)}
           />

@@ -8,7 +8,7 @@ const myOverride = (config, env) => {
 }
 
 const reactHotDom = (config, env) => {
-  config.module.resolve.alias['react-dom'] = '@hot-loader/react-dom'
+  config.resolve.alias['react-dom'] = '@hot-loader/react-dom'
   return config
 }
 

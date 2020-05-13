@@ -18,7 +18,12 @@ const theme = createMuiTheme({
       main: indigo['A200']
     },
     secondary: {
-      main: teal['A400']
+      main: teal['400']
+    },
+    item: {
+      immortal: '#e4ae39',
+      arcana: '#ade55c',
+      inscribed: '#CF6A32'
     }
   },
   spanEffect: {

@@ -40,16 +40,16 @@ export function* setBalanceAsync({ steamId, value, actionType, ...action }) {
     const respone = yield axios.post('/admin/user/balance/edit', postObj)
 
     if (respone.status === 200) {
-      yield put(enqSnackbar({ severity: 'success' }))
+      yield put(enqSnackbar({ severity: 'success', key: new Date().getTime() }))
       yield put(setBalanceSuccess())
       yield put(fetchUsersStart())
     }
     else {
-      yield put(enqSnackbar({ severity: 'error', key: new Date().getTime }))
+      yield put(enqSnackbar({ severity: 'error', key: new Date().getTime() }))
       yield put(setBalanceFail(respone.statusText))
     }
   } catch (err) {
-    yield put(enqSnackbar({ severity: 'error', key: new Date().getTime }))
+    yield put(enqSnackbar({ severity: 'error', key: new Date().getTime() }))
     yield put(setBalanceFail(err.message))
   }
   yield put(toggleBackdrop())

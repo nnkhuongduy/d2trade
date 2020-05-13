@@ -41,15 +41,15 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const HeroContainer = ({ src, name, onClick }) => {
+const HeroContainer = ({ src, name, onClick, width }) => {
   const classes = useStyles()
 
   const heroClick = useCallback(() => {
-    onClick({ hero: name })
+    onClick({ hero: { name: name, src: src } })
   }, [])
 
   return (
-    <div className={classes.selector} onClick={heroClick}>
+    <div className={classes.selector} onClick={heroClick} style={width && { width: width, height: (width * 71 / 127) }}>
       {src && (
         <img src={src} className={classes.portrait} />
       )}
@@ -57,7 +57,7 @@ const HeroContainer = ({ src, name, onClick }) => {
   )
 }
 
-const HeroesSelector = ({ heroes, fetchHeroesStart, hero, setHero }) => {
+const HeroesSelector = ({ heroes, fetchHeroesStart, hero, setHero, width }) => {
   const classes = useStyles()
   const [dialog, setDialog] = useState(false)
   const [search, setSearch] = useState('')
@@ -69,7 +69,7 @@ const HeroesSelector = ({ heroes, fetchHeroesStart, hero, setHero }) => {
 
   return (
     <>
-      <HeroContainer src={hero && hero.portrait_url} onClick={() => setDialog(true)} />
+      <HeroContainer src={hero && hero.src} onClick={() => setDialog(true)} width={width} />
       <Dialog
         open={dialog}
         onClose={() => setDialog(false)}
@@ -80,11 +80,11 @@ const HeroesSelector = ({ heroes, fetchHeroesStart, hero, setHero }) => {
         <DialogTitle id='hero-dialog-title'>
           <Grid container justify='space-between' alignItems='center'>
             <Grid item>
-              Chọn Hero
+              Bảng Hero
             </Grid>
             <Grid item style={{ display: 'flex', alignItems: 'center' }}>
               <Search style={{ marginRight: 10 }} />
-              <TextField label='Tìm Hero' size='small' value={search} onChange={e => setSearch(e.target.value)} />
+              <TextField label='Tìm Hero' size='small' value={search} onChange={e => setSearch(e.target.value)} autoFocus />
             </Grid>
           </Grid>
         </DialogTitle>
@@ -92,8 +92,18 @@ const HeroesSelector = ({ heroes, fetchHeroesStart, hero, setHero }) => {
           <Grid container spacing={1} alignItems='center'>
             {heroes ? heroes
               .filter(hero => hero.localized_name.toLowerCase().includes(search.toLowerCase()))
-              .map((hero, index) => (
-                <Grid item key={index}><HeroContainer src={hero.portrait_url} name={hero.localized_name} onClick={setHero} /></Grid>
+              .map(hero => (
+                <Grid item key={hero.localized_name}>
+                  <HeroContainer
+                    src={hero.portrait_url}
+                    name={hero.localized_name}
+                    onClick={obj => {
+                      setDialog(false);
+                      setHero(obj);
+                    }}
+                    width={width}
+                  />
+                </Grid>
               )) : <Grid item><CircularProgress /></Grid>}
           </Grid>
         </DialogContent>

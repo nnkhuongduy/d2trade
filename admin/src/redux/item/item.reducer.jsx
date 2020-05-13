@@ -2,7 +2,10 @@ import { ItemTypes } from './item.types'
 
 const INITIAL_STATE = {
   item: null,
+  items: null,
   isFetching: false,
+  isPosting: false,
+  isAllFetching: false,
   errorMessage: null
 }
 
@@ -27,6 +30,48 @@ const itemReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isFetching: false,
+        errorMessage: action.message
+      }
+
+    case ItemTypes.POST_ITEM_START:
+      return {
+        ...state,
+        isPosting: true,
+        errorMessage: null
+      }
+
+    case ItemTypes.POST_ITEM_SUCCESS:
+      return {
+        ...state,
+        isPosting: false,
+      }
+
+    case ItemTypes.POST_ITEM_FAIL:
+      return {
+        ...state,
+        isPosting: false,
+        errorMessage: action.message
+      }
+
+    case ItemTypes.FETCH_ITEMS_START:
+      return {
+        ...state,
+        items: null,
+        isAllFetching: true,
+        errorMessage: null
+      }
+
+    case ItemTypes.FETCH_ITEMS_SUCCESS:
+      return {
+        ...state,
+        isAllFetching: false,
+        items: action.items
+      }
+
+    case ItemTypes.FETCH_ITEMS_FAIL:
+      return {
+        ...state,
+        isAllFetching: false,
         errorMessage: action.message
       }
 

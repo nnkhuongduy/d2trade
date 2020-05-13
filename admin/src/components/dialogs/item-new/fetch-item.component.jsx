@@ -7,7 +7,7 @@ import {
   Grid, TextField, Button
 } from '@material-ui/core'
 
-import { fetchItemStart } from '../../../redux/item/item.actions'
+import { fetchItemStart, fetchItemSuccess } from '../../../redux/item/item.actions'
 import { enqSnackbar } from '../../../redux/snackbar/snackbar.actions'
 
 import { selectItem, selectFetchingState } from '../../../redux/item/item.selectors'
@@ -19,10 +19,17 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const FetchItem = ({ fetchItemStart, enqSnackbar, item, fetching }) => {
+const FetchItem = ({ fetchItemStart, fetchItemSuccess, enqSnackbar, item, fetching, currentItem, nonMarket, setMarket }) => {
   const classes = useStyles()
   const [itemName, setItemName] = useState('')
   const [searched, setSearched] = useState(false)
+  const [disabled, setDisabled] = useState(false)
+
+  useEffect(() => {
+    if (currentItem)
+      setDisabled(currentItem.configs.isNonMarket)
+    else setDisabled(nonMarket)
+  }, [currentItem, nonMarket])
 
   useEffect(() => {
     if (!fetching)
@@ -39,6 +46,11 @@ const FetchItem = ({ fetchItemStart, enqSnackbar, item, fetching }) => {
     fetchItemStart(itemName)
   }, [itemName])
 
+  const onClearClick = useCallback(() => {
+    fetchItemSuccess(null)
+    setMarket(false)
+  })
+
   const onChange = useCallback(e => {
     setItemName(e.target.value)
     if (searched) setSearched(false)
@@ -46,7 +58,7 @@ const FetchItem = ({ fetchItemStart, enqSnackbar, item, fetching }) => {
 
   return (
     <form noValidate autoComplete='off'>
-      <Grid container direction='column' spacing={2}>
+      <Grid container direction='column' spacing={2} alignItems='center'>
         <Grid item>
           <TextField
             id='item-search-name'
@@ -57,18 +69,34 @@ const FetchItem = ({ fetchItemStart, enqSnackbar, item, fetching }) => {
             onChange={onChange}
             disabled={fetching}
             error={!item && searched}
+            disabled={disabled}
           />
         </Grid>
         <Grid item>
-          <Button
-            onClick={onFindClick}
-            type='submit'
-            variant='contained'
-            color='primary'
-            className={classes.btn}
-          >
-            Tìm
+          <Grid container spacing={1}>
+            <Grid item>
+              <Button
+                onClick={onFindClick}
+                type='submit'
+                variant='contained'
+                color='secondary'
+                className={classes.btn}
+                disabled={disabled}
+              >
+                Tìm
           </Button>
+            </Grid>
+            <Grid item>
+              <Button
+                onClick={onClearClick}
+                variant='outlined'
+                color='secondary'
+                className={classes.btn}
+              >
+                Xóa
+          </Button>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </form>
@@ -77,6 +105,7 @@ const FetchItem = ({ fetchItemStart, enqSnackbar, item, fetching }) => {
 
 const mapDispatchToProps = dispatch => ({
   fetchItemStart: itemName => dispatch(fetchItemStart(itemName)),
+  fetchItemSuccess: item => dispatch(fetchItemSuccess(item)),
   enqSnackbar: snack => dispatch(enqSnackbar(snack))
 })
 

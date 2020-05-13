@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import clsx from 'clsx'
 
 import { makeStyles } from '@material-ui/styles'
 import {
-  FormControl, Slider, Grid,
-  TextField, IconButton, Collapse, Typography
+  Slider, Grid,
+  TextField, IconButton, Collapse, Typography,
 } from '@material-ui/core'
-import { Search, Refresh, Tune } from '@material-ui/icons'
+import { Search, Refresh, Tune, FilterList } from '@material-ui/icons'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -16,18 +16,21 @@ const useStyles = makeStyles(theme => ({
   open: {
     marginBottom: theme.spacing(3)
   },
-  items: {
-    marginLeft: theme.spacing(1)
-  },
   slider: {
     width: '150px'
   }
 }))
 
-const Toolbar = ({ onRefresh, hasSlide, slideValue, onSlideCommit, slideTitle, searchValue, onSearchChange }) => {
+const Toolbar = ({
+  onRefresh,
+  hasSlide, slideValue, onSlideCommit, slideTitle, slideProps,
+  searchValue, onSearchChange,
+  hasFilter, filters
+}) => {
   const classes = useStyles()
   const [search, setSearch] = useState(false)
   const [slide, setSlide] = useState(false)
+  const [filter, setFilter] = useState(false)
   const [value, setValue] = useState(70)
 
   useEffect(() => {
@@ -37,12 +40,31 @@ const Toolbar = ({ onRefresh, hasSlide, slideValue, onSlideCommit, slideTitle, s
   return (
     <Grid container direction='column' spacing={1} className={clsx(classes.root, { [classes.open]: search || slide })} alignItems='flex-end'>
       <Grid item>
-        {searchValue !== undefined && <IconButton color={search ? 'primary' : 'inherit'} className={classes.items} onClick={() => { setSearch(!search); setSlide(false) }}>
-          <Search />
-        </IconButton>}
+        {searchValue !== undefined &&
+          <IconButton color={search ? 'primary' : 'inherit'} onClick={() => {
+            setSearch(!search);
+            setSlide(false);
+            setFilter(false);
+          }}>
+            <Search />
+          </IconButton>
+        }
         {hasSlide &&
-          <IconButton color={slide ? 'primary' : 'inherit'} className={classes.items} onClick={() => { setSlide(!slide); setSearch(false) }}>
+          <IconButton color={slide ? 'primary' : 'inherit'} onClick={() => {
+            setSlide(!slide);
+            setSearch(false);
+            setFilter(false);
+          }}>
             <Tune />
+          </IconButton>
+        }
+        {hasFilter &&
+          <IconButton color={filter ? 'primary' : 'inherit'} onClick={() => {
+            setFilter(!filter);
+            setSearch(false);
+            setSlide(false);
+          }}>
+            <FilterList />
           </IconButton>
         }
         {onRefresh && <IconButton color='inherit' onClick={onRefresh}>
@@ -70,12 +92,18 @@ const Toolbar = ({ onRefresh, hasSlide, slideValue, onSlideCommit, slideTitle, s
             getAriaLabel={() => `${slideValue}%`}
             valueLabelDisplay="auto"
             value={value}
-            onChangeCommitted={onSlideCommit}
+            onChangeCommitted={(e, val) => onSlideCommit(val)}
             onChange={(e, newValue) => setValue(newValue)}
-            min={40}
-            max={90}
             className={classes.slider}
+            {...slideProps}
           />
+        </Collapse>}
+        {hasFilter && <Collapse in={filter}>
+          {filters && filters.map((filter, index) => (
+            <Fragment key={index}>
+              {filter}
+            </Fragment>
+          ))}
         </Collapse>}
       </Grid>
     </Grid>

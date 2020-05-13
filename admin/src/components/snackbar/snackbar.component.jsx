@@ -30,6 +30,7 @@ const Snackbar = ({ deqSnackbar, snackbars, ...snackProps }) => {
     } else {
       setOpen(false)
     }
+    //eslint-disable-next-line
   }, [snackbars])
 
   const onClose = useCallback((e, reason) => {
@@ -37,7 +38,7 @@ const Snackbar = ({ deqSnackbar, snackbars, ...snackProps }) => {
       return
 
     setOpen(false)
-  })
+  }, [])
 
   return (
     <MUISnackbar
