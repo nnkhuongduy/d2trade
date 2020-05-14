@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 
 import { withStyles } from '@material-ui/styles'
 import {
-  TableCell, TableSortLabel, Grid, IconButton, Badge
+  TableCell, TableSortLabel, Grid, IconButton
 } from '@material-ui/core'
 import { Add, Edit, Launch } from '@material-ui/icons'
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
@@ -44,14 +44,14 @@ const useStyles = makeStyles(theme => ({
 const HeroContainer = ({ src, name, onClick, width }) => {
   const classes = useStyles()
 
-  const heroClick = useCallback(() => {
-    onClick({ hero: { name: name, src: src } })
-  }, [])
+  const heroClick = () => {
+    onClick({ name: name, src: src })
+  }
 
   return (
     <div className={classes.selector} onClick={heroClick} style={width && { width: width, height: (width * 71 / 127) }}>
       {src && (
-        <img src={src} className={classes.portrait} />
+        <img src={src} className={classes.portrait} alt='hero_portrait' />
       )}
     </div>
   )
@@ -101,7 +101,6 @@ const HeroesSelector = ({ heroes, fetchHeroesStart, hero, setHero, width }) => {
                       setDialog(false);
                       setHero(obj);
                     }}
-                    width={width}
                   />
                 </Grid>
               )) : <Grid item><CircularProgress /></Grid>}

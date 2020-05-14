@@ -81,7 +81,6 @@ const Info = ({ item, onChange, rate, fetchCurrencyRate }) => {
             <TextField
               label={'Tên Item'}
               InputLabelProps={{ shrink: item ? true : undefined }}
-              disabled={false}
               value={item && !item.configs.isNonMarket ? item.name : value}
               onChange={onNameChange}
               disabled={item && !item.configs.isNonMarket}
@@ -98,7 +97,7 @@ const Info = ({ item, onChange, rate, fetchCurrencyRate }) => {
                   <Typography variant='body2'>Hero :</Typography>
                 </Grid>
                 <Grid item>
-                  <HeroesSelector hero={item && item.hero} setHero={onChange} />
+                  <HeroesSelector hero={item && item.hero} setHero={obj => onChange({ hero: { ...obj } })} />
                 </Grid>
               </Grid>
             </Grid>
@@ -108,7 +107,7 @@ const Info = ({ item, onChange, rate, fetchCurrencyRate }) => {
                   <Typography variant='body2'>Rarity :</Typography>
                 </Grid>
                 <Grid item>
-                  <RaritySelector rarity={item && item.rarity} setRarity={onChange} />
+                  <RaritySelector rarity={item && item.rarity} setRarity={obj => onChange({ rarity: { ...obj } })} />
                 </Grid>
               </Grid>
             </Grid>

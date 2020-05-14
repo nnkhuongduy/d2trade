@@ -1,8 +1,8 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState } from 'react'
 
 import { makeStyles } from '@material-ui/styles'
 import {
-  Chip, Collapse, Grid
+  Chip, Fade, Grid
 } from '@material-ui/core'
 
 const useStyles = makeStyles(theme => ({
@@ -35,17 +35,21 @@ const useStyles = makeStyles(theme => ({
 
 const RaritySelector = ({ rarity, setRarity }) => {
   const classes = useStyles()
-
   const [active, setActive] = useState(false)
 
-  const onRarityClick = useCallback((label, color) => {
-    setRarity({ rarity: { label: label, color: color } })
+  const onRarityClick = (label, color) => {
+    setRarity({ label: label, color: color })
     setActive(false)
-  }, [active])
+  }
 
   return (
     <>
-      <Grid container spacing={1} direction='column' alignItems='center'>
+      <Grid
+        container
+        spacing={1}
+        direction='column'
+        alignItems='center'
+      >
         <Grid item>
           <Chip
             label={rarity && rarity.label ? rarity.label : 'Rarity'}
@@ -54,24 +58,24 @@ const RaritySelector = ({ rarity, setRarity }) => {
           />
         </Grid>
         <Grid item>
-          <Collapse in={active}>
+          <Fade in={active} mountOnEnter unmountOnExit>
             <Chip
               label='Immortal'
               clickable
               onClick={() => onRarityClick('Immortal', '#e4ae39')}
               classes={{ root: classes.immortal }}
             />
-          </Collapse>
+          </Fade>
         </Grid>
         <Grid item>
-          <Collapse in={active}>
+          <Fade in={active} mountOnEnter unmountOnExit>
             <Chip
               label='Arcana'
               clickable
               onClick={() => onRarityClick('Arcana', '#ade55c')}
               classes={{ root: classes.arcana }}
             />
-          </Collapse>
+          </Fade>
         </Grid>
       </Grid>
     </>

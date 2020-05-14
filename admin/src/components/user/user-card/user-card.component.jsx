@@ -3,7 +3,7 @@ import clsx from 'clsx'
 
 import { makeStyles } from '@material-ui/styles'
 import {
-  Grid, Avatar, Typography
+  Grid, Typography
 } from '@material-ui/core'
 
 import UserAvatar from '../user-avatar/user-avatar.component'

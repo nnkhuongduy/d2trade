@@ -52,7 +52,7 @@ const ItemNewDialog = ({ open, onClose, item, postItem }) => {
         },
         configs: {
           isNonMarket: false,
-          isInscribed: false,
+          isInscribed: item.name.includes('Inscribed'),
         }
       })
       setTab(1)
@@ -120,7 +120,7 @@ const ItemNewDialog = ({ open, onClose, item, postItem }) => {
 
       Object.keys(obj).forEach(key => {
         if (newItem[key] !== undefined) {
-          if (typeof obj[key] === "object" && typeof obj[key] !== "null")
+          if (typeof obj[key] === "object" && typeof obj[key] != "null")
             Object.keys(obj[key]).forEach(subKey => {
               newItem[key][subKey] = obj[key][subKey]
             })
@@ -132,11 +132,12 @@ const ItemNewDialog = ({ open, onClose, item, postItem }) => {
     }
   }, [currentItem])
 
-  const confirmClick = useCallback(() => {
-    if (currentItem) postItem(currentItem)
-    onClose()
-    //eslint-disable-next-line
-  }, [currentItem])
+  const confirmClick = () => {
+    if (currentItem && (currentItem.hero.name && currentItem.rarity.label && currentItem.prices.usd && currentItem.prices.vnd)) {
+      postItem(currentItem)
+      onClose()
+    }
+  }
 
   return (
     <Dialog

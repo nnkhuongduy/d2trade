@@ -5,7 +5,7 @@ import _ from 'lodash'
 import {
   fetchItemFail, fetchItemSuccess,
   postItemSuccess, postItemFail,
-  fetchItemsSuccess, fetchItemsFail,
+  fetchItemsSuccess, fetchItemsFail, fetchItemsStart
 } from './item.actions'
 import { toggleBackdrop } from '../backdrop/backdrop.actions'
 import { enqSnackbar } from '../snackbar/snackbar.actions'
@@ -60,6 +60,7 @@ export function* postItemAsync({ item }) {
           key: new Date().getTime()
         }))
         yield put(postItemSuccess())
+        yield put(fetchItemsStart())
       }
       else {
         yield put(enqSnackbar({
@@ -90,13 +91,8 @@ export function* fetchItemsAsync() {
   try {
     const respone = yield axios('/admin/items')
 
-    const data = []
-
-    for (let i = 0; i < 20; i++)
-      yield respone.data.forEach((item, index) => data.push({ ...item, key: i * 100 + index }))
-
     if (respone.status === 200)
-      yield put(fetchItemsSuccess(data))
+      yield put(fetchItemsSuccess(respone.data))
     else yield put(fetchItemsFail())
   } catch (err) {
     yield put(fetchItemsFail())

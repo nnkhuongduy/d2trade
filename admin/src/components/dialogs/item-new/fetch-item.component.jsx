@@ -41,15 +41,15 @@ const FetchItem = ({ fetchItemStart, fetchItemSuccess, enqSnackbar, item, fetchi
     //eslint-disable-next-line
   }, [fetching])
 
-  const onFindClick = useCallback(e => {
+  const onFindClick = e => {
     e.preventDefault()
     fetchItemStart(itemName)
-  }, [itemName])
+  }
 
-  const onClearClick = useCallback(() => {
+  const onClearClick = () => {
     fetchItemSuccess(null)
     setMarket(false)
-  })
+  }
 
   const onChange = useCallback(e => {
     setItemName(e.target.value)
@@ -67,9 +67,8 @@ const FetchItem = ({ fetchItemStart, fetchItemSuccess, enqSnackbar, item, fetchi
             helperText='Tên item trên market'
             value={itemName}
             onChange={onChange}
-            disabled={fetching}
             error={!item && searched}
-            disabled={disabled}
+            disabled={disabled || fetching}
           />
         </Grid>
         <Grid item>

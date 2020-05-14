@@ -58,6 +58,7 @@ const ItemCard = ({ item, heroes, width }) => {
   useEffect(() => {
     if (heroes)
       setHero(heroes.filter(hero => hero.localized_name === item.hero.name)[0])
+    //eslint-disable-next-line
   }, [heroes])
 
   return (
@@ -108,6 +109,7 @@ const ItemCard = ({ item, heroes, width }) => {
             <Grid item>
               {item.hero.name &&
                 <Chip
+                  size='small'
                   label={item.hero.name}
                   avatar={<Avatar src={hero && hero.portrait_url} />}
                   clickable
@@ -118,6 +120,7 @@ const ItemCard = ({ item, heroes, width }) => {
             <Grid item>
               {item.rarity.label &&
                 <Chip
+                  size='small'
                   label={item.rarity.label}
                   clickable
                   style={{ backgroundColor: item.rarity.color }}
@@ -127,6 +130,7 @@ const ItemCard = ({ item, heroes, width }) => {
             <Grid item>
               {item.configs.isInscribed &&
                 <Chip
+                  size='small'
                   label='Inscribed'
                   clickable
                   style={{ backgroundColor: '#CF6A32', color: 'white' }}
@@ -136,6 +140,7 @@ const ItemCard = ({ item, heroes, width }) => {
             <Grid item>
               {item.configs.isNonMarket &&
                 <Chip
+                  size='small'
                   label='Non-market'
                   clickable
                   color='secondary'

@@ -5,7 +5,7 @@ import { createStructuredSelector } from 'reselect'
 
 import { makeStyles } from '@material-ui/styles'
 import {
-  Grid, Button, LinearProgress, Collapse
+  Grid, Button, LinearProgress, Collapse, Typography
 } from '@material-ui/core'
 import {
   Search, Refresh, Tune, FilterList
@@ -14,7 +14,7 @@ import {
 import ItemNewDialog from '../../../components/dialogs/item-new/item-new.component'
 import Toolbar from './toolbar.component'
 import ItemsMasonry from './virtualized-items.component'
-import ItemCard from '../../../components/item-card/item-card.component'
+import Filter from './filter.component'
 
 import { fetchHeroesStart } from '../../../redux/hero/hero.actions'
 import { fetchItemsStart } from '../../../redux/item/item.actions'
@@ -26,7 +26,6 @@ const useStyles = makeStyles(theme => ({
   deleteBtn: {
     color: theme.palette.error.main,
     borderColor: theme.palette.error.main,
-    marginLeft: theme.spacing(2),
     '&:hover': {
       borderColor: theme.palette.error.light,
     }
@@ -45,6 +44,7 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems }) => {
   const [deleteState, setDeleteState] = useState(false)
   const [dialog, setDialog] = useState(false)
   const [currentItems, setCurrentItems] = useState(null)
+  const [handling, setHandling] = useState(false)
   const [tools, setTools] = useState([
     {
       label: 'search',
@@ -61,10 +61,7 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems }) => {
     {
       label: 'filter',
       Icon: <FilterList />,
-      value:
-      {
-        hero: null
-      },
+      value: null,
       active: false
     },
     {
@@ -76,12 +73,17 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems }) => {
   useEffect(() => {
     if (!heroes) fetchHeroes()
     if (!items) fetchItems()
+    if (items) setCurrentItems(items)
+    //eslint-disable-next-line
   }, [])
 
   useEffect(() => {
     if (items) {
       setCurrentItems(items)
-    } else setCurrentItems(null)
+    } else {
+      setCurrentItems(null)
+    }
+    //eslint-disable-next-line
   }, [items])
 
   useEffect(() => {
@@ -93,12 +95,38 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems }) => {
       }
     }
     filter()
+    //eslint-disable-next-line
   }, [tools[0].value])
+
+  useEffect(() => {
+    const filter = async () => {
+      const filter = tools[2].value
+
+      setCurrentItems(null)
+      setHandling(true)
+
+      if (currentItems) {
+        const newItems = await items.filter(item =>
+          (filter.hero ? filter.hero.name === item.hero.name : true) &&
+          (filter.rarity ? filter.rarity === item.rarity.label : true) &&
+          (!filter.configs.any ?
+            (filter.configs.isInscribed === item.configs.isInscribed &&
+              filter.configs.isNonMarket === item.configs.isNonMarket)
+            : true)
+        )
+        setCurrentItems(newItems)
+      }
+
+      setHandling(false)
+    }
+    filter()
+    //eslint-disable-next-line
+  }, [tools[2].value])
 
   return (
     <>
       <Grid container direction='column' spacing={2}>
-        <Collapse in={fetching}>
+        <Collapse in={fetching || handling}>
           <Grid item>
             <LinearProgress />
           </Grid>
@@ -106,20 +134,32 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems }) => {
         <Grid item>
           <Grid container justify='space-between'>
             <Grid item>
-              <Button
-                variant='contained'
-                color='primary'
-                onClick={() => setDialog(true)}
-              >NEW</Button>
-              <Button
-                variant={deleteState ? 'contained' : 'outlined'}
-                className={clsx(classes.deleteBtn, {
-                  [classes.deleteBtnActive]: deleteState
-                })}
-                onClick={() => setDeleteState(!deleteState)}
-              >
-                DELETE
+              <Grid container spacing={2} alignItems='center'>
+                <Grid item>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={() => setDialog(true)}
+                  >NEW
               </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant={deleteState ? 'contained' : 'outlined'}
+                    className={clsx(classes.deleteBtn, {
+                      [classes.deleteBtnActive]: deleteState
+                    })}
+                    onClick={() => setDeleteState(!deleteState)}
+                  >DELETE
+              </Button>
+                </Grid>
+                <Grid item>
+                  <Typography>Lọc hiện tại:</Typography>
+                </Grid>
+                <Grid item>
+                  <Filter filter={tools[2].value} search={tools[0].value} />
+                </Grid>
+              </Grid>
             </Grid>
             <Grid item>
               <Toolbar tools={tools} onChange={tools => setTools(tools)} />

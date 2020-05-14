@@ -103,6 +103,7 @@ const Result = ({ item, fetching }) => {
                 <Grid item>
                   {item && item.hero.name &&
                     <Chip
+                      size='small'
                       label={item.hero.name}
                       avatar={<Avatar src={item.hero.src} />}
                       clickable
@@ -113,6 +114,7 @@ const Result = ({ item, fetching }) => {
                 <Grid item>
                   {item && item.rarity.label &&
                     <Chip
+                      size='small'
                       label={item.rarity.label}
                       clickable
                       style={{ backgroundColor: item.rarity.color }}
@@ -122,6 +124,7 @@ const Result = ({ item, fetching }) => {
                 <Grid item>
                   {item && item.configs.isInscribed &&
                     <Chip
+                      size='small'
                       label='Inscribed'
                       clickable
                       style={{ backgroundColor: '#CF6A32', color: 'white' }}
@@ -131,6 +134,7 @@ const Result = ({ item, fetching }) => {
                 <Grid item>
                   {item && item.configs.isNonMarket &&
                     <Chip
+                      size='small'
                       label='Non-market'
                       clickable
                       color='secondary'
