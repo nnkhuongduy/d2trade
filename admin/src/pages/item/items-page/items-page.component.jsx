@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import clsx from 'clsx'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
+import _ from 'lodash'
 
 import { makeStyles } from '@material-ui/styles'
 import {
@@ -15,9 +16,10 @@ import ItemNewDialog from '../../../components/dialogs/item-new/item-new.compone
 import Toolbar from './toolbar.component'
 import ItemsMasonry from './virtualized-items.component'
 import Filter from './filter.component'
+import Confirmation from '../../../components/dialogs/confirmation/confirmation.component'
 
 import { fetchHeroesStart } from '../../../redux/hero/hero.actions'
-import { fetchItemsStart } from '../../../redux/item/item.actions'
+import { fetchItemsStart, deleteItemsStart } from '../../../redux/item/item.actions'
 
 import { selectHeroes } from '../../../redux/hero/hero.selectors'
 import { selectFetchingItems, selectItems } from '../../../redux/item/item.selectors'
@@ -39,12 +41,10 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems }) => {
+const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteItemsStart }) => {
   const classes = useStyles()
-  const [deleteState, setDeleteState] = useState(false)
   const [dialog, setDialog] = useState(false)
   const [currentItems, setCurrentItems] = useState(null)
-  const [handling, setHandling] = useState(false)
   const [tools, setTools] = useState([
     {
       label: 'search',
@@ -69,6 +69,9 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems }) => {
       Icon: <Refresh />
     }
   ])
+  const [deleteState, setDeleteState] = useState(false)
+  const [deleteItems, setDeleteItems] = useState({})
+  const [confirmation, setConfirmation] = useState(false)
 
   useEffect(() => {
     if (!heroes) fetchHeroes()
@@ -87,46 +90,40 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems }) => {
   }, [items])
 
   useEffect(() => {
-    const filter = async () => {
-      setCurrentItems(null)
-      if (currentItems) {
-        const newItems = await items.filter(item => item.name.toLowerCase().includes(tools[0].value.toLowerCase()))
-        setCurrentItems(newItems)
-      }
-    }
-    filter()
+    if (items)
+      setCurrentItems(items.filter(item => item.name.toLowerCase().includes(tools[0].value.toLowerCase())))
     //eslint-disable-next-line
   }, [tools[0].value])
 
   useEffect(() => {
-    const filter = async () => {
-      const filter = tools[2].value
+    const filter = tools[2].value
 
-      setCurrentItems(null)
-      setHandling(true)
-
-      if (currentItems) {
-        const newItems = await items.filter(item =>
-          (filter.hero ? filter.hero.name === item.hero.name : true) &&
-          (filter.rarity ? filter.rarity === item.rarity.label : true) &&
-          (!filter.configs.any ?
-            (filter.configs.isInscribed === item.configs.isInscribed &&
-              filter.configs.isNonMarket === item.configs.isNonMarket)
-            : true)
-        )
-        setCurrentItems(newItems)
-      }
-
-      setHandling(false)
-    }
-    filter()
-    //eslint-disable-next-line
+    if (items)
+      setCurrentItems(items.filter(item =>
+        (filter.hero ? filter.hero.name === item.hero.name : true) &&
+        (filter.rarity ? filter.rarity === item.rarity.label : true) &&
+        (!filter.configs.any ?
+          (filter.configs.isInscribed === item.configs.isInscribed &&
+            filter.configs.isNonMarket === item.configs.isNonMarket)
+          : true) &&
+        (filter.price.min ? item.prices[filter.price.type] >= filter.price.min : true) &&
+        (filter.price.max ? item.prices[filter.price.type] <= filter.price.max : true)
+      ))
   }, [tools[2].value])
+
+  useEffect(() => {
+    if (!deleteState && !_.isEmpty(deleteItems))
+      setConfirmation(true)
+  }, [deleteState])
+
+  const onDeleteClick = (name) => {
+    setDeleteItems({ ...deleteItems, [name]: deleteItems[name] ? undefined : true })
+  }
 
   return (
     <>
       <Grid container direction='column' spacing={2}>
-        <Collapse in={fetching || handling}>
+        <Collapse in={fetching}>
           <Grid item>
             <LinearProgress />
           </Grid>
@@ -167,17 +164,34 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems }) => {
           </Grid>
         </Grid>
         <Grid item>
-          {currentItems && <ItemsMasonry items={currentItems} height={tools[1].value} />}
+          {currentItems &&
+            <ItemsMasonry
+              items={currentItems}
+              height={tools[1].value}
+              deleteState={deleteState}
+              deleteItems={deleteItems}
+              onDeleteClick={onDeleteClick}
+            />
+          }
         </Grid>
       </Grid>
       <ItemNewDialog open={dialog} onClose={() => setDialog(false)} />
+      <Confirmation
+        open={confirmation}
+        onClose={() => setConfirmation(false)}
+        onConfirm={() => {
+          deleteItemsStart(deleteItems);
+          setDeleteItems({})
+        }}
+      />
     </>
   )
 }
 
 const mapDispatchToProps = dispatch => ({
   fetchHeroes: () => dispatch(fetchHeroesStart()),
-  fetchItems: () => dispatch(fetchItemsStart())
+  fetchItems: () => dispatch(fetchItemsStart()),
+  deleteItemsStart: items => dispatch(deleteItemsStart(items))
 })
 
 const mapStateToProps = createStructuredSelector({

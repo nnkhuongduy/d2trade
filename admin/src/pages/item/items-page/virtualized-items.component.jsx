@@ -5,12 +5,36 @@ import {
   CellMeasurerCache, CellMeasurer, createMasonryCellPositioner, AutoSizer, Masonry
 } from 'react-virtualized'
 
+import { withStyles } from '@material-ui/styles'
+import {
+  Badge, Checkbox
+} from '@material-ui/core'
+import {
+  CheckCircle, RadioButtonUnchecked
+} from '@material-ui/icons'
+
 import ItemCard from '../../../components/item-card/item-card.component'
 
-export default class ItemsMasonry extends React.PureComponent {
+const margin = 24
+
+const styles = theme => ({
+  root: {
+    '&:focus': {
+      outline: 'none'
+    }
+  },
+  badge: {
+    margin: margin
+  }
+})
+
+class ItemsMasonry extends React.PureComponent {
   static propsTypes = {
     items: PropTypes.array.isRequired,
-    height: PropTypes.number.isRequired
+    height: PropTypes.number.isRequired,
+    deleteState: PropTypes.bool,
+    deleteItems: PropTypes.object,
+    onDeleteClick: PropTypes.func
   }
 
   constructor(props) {
@@ -20,7 +44,7 @@ export default class ItemsMasonry extends React.PureComponent {
 
     this._cache = new CellMeasurerCache({
       defaultHeight: 215,
-      defaultWidth: 150,
+      defaultWidth: 200,
       fixedWidth: true
     })
 
@@ -28,6 +52,9 @@ export default class ItemsMasonry extends React.PureComponent {
       gutterSize: 10,
       columnWidth: 200,
       overscanByPixels: 5,
+      deleteState: this.props.deleteState,
+      deleteItems: this.props.deleteItems,
+      items: this.props.items
     }
 
     this._cellRenderer = this._cellRenderer.bind(this)
@@ -49,23 +76,46 @@ export default class ItemsMasonry extends React.PureComponent {
     )
   }
 
+  componentDidUpdate() {
+
+    this.setState((state, props) => ({
+      deleteState: props.deleteState,
+      deleteItems: props.deleteItems,
+      items: props.items,
+      // columnWidth: props.deleteItems.active ? 200 : 200 + margin,
+    }))
+
+    this._calculateColumnCount();
+    this._resetCellPositioner();
+    this._masonry.recomputeCellPositions()
+  }
+
   _calculateColumnCount() {
-    const { gutterSize } = this.state
-    const { columnWidth } = this.state
+    const { gutterSize, columnWidth } = this.state
 
     this._columnCount = Math.floor(this._width / (columnWidth + gutterSize))
   }
 
   _cellRenderer({ index, key, parent, style }) {
-    const item = this.props.items[index]
-    const { columnWidth } = this.state
+    const item = this.state.items[index]
+    const { columnWidth, deleteState, deleteItems } = this.state
+    const { classes, onDeleteClick } = this.props
 
     return (
       <CellMeasurer cache={this._cache} index={index} key={key} parent={parent}>
         <div style={{
           ...style
         }}>
-          <ItemCard item={item} width={columnWidth} />
+          {item && (deleteState ?
+            <Badge
+              badgeContent={
+                deleteItems[item.name] ? <CheckCircle color='secondary' /> : <RadioButtonUnchecked color='secondary' />
+              }
+              classes={{ root: classes.badge }}
+            ><ItemCard item={item} width={columnWidth} selectable onClick={name => onDeleteClick(name)} />
+            </Badge> :
+            <ItemCard item={item} width={columnWidth} />
+          )}
         </div>
       </CellMeasurer>
     )
@@ -73,8 +123,7 @@ export default class ItemsMasonry extends React.PureComponent {
 
   _initCellPositioner() {
     if (typeof this._cellPositioner === 'undefined') {
-      const { gutterSize } = this.state
-      const { columnWidth } = this.state
+      const { gutterSize, columnWidth } = this.state
 
       this._cellPositioner = createMasonryCellPositioner({
         cellMeasurerCache: this._cache,
@@ -118,8 +167,8 @@ export default class ItemsMasonry extends React.PureComponent {
     this._calculateColumnCount()
     this._initCellPositioner()
 
-    const { overscanByPixels } = this.state
-    const { items } = this.props
+    const { overscanByPixels, items } = this.state
+    const { classes } = this.props
 
     return (
       <Masonry
@@ -132,13 +181,13 @@ export default class ItemsMasonry extends React.PureComponent {
         ref={this._setMasonryRef}
         scrollTop={this._scrollTop}
         width={width}
+        className={classes.root}
       />
     )
   }
 
   _resetCellPositioner() {
-    const { gutterSize } = this.state
-    const { columnWidth } = this.state
+    const { gutterSize, columnWidth } = this.state
 
     this._cellPositioner.reset({
       columnCount: this._columnCount,
@@ -151,3 +200,5 @@ export default class ItemsMasonry extends React.PureComponent {
     this._masonry = ref;
   }
 }
+
+export default withStyles(styles)(ItemsMasonry)

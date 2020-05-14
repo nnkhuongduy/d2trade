@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import NumberFormat from 'react-number-format'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
@@ -12,28 +11,12 @@ import {
 
 import HeroesSelector from '../../heroes-selector/heroes-selector.component'
 import RaritySelector from '../../rarity-selector/rarity-selector.component'
+import NumberFormatCustom from '../../number-format-input/number-format-input.component'
 
 import { fetchCurrencyRateStart } from '../../../redux/site-settings/site-settings.actions'
 
 import { selectCurrencyRate } from '../../../redux/site-settings/site-settings.selectors'
 
-const NumberFormatCustom = ({ inputRef, onChange, ...props }) => (
-  <NumberFormat
-    {...props}
-    getInputRef={inputRef}
-    onValueChange={(values) => {
-      onChange({
-        target: {
-          value: values.floatValue
-        }
-      })
-    }}
-    thousandSeparator
-    isNumericString
-    decimalScale={2}
-    allowNegative={false}
-  />
-)
 
 const Info = ({ item, onChange, rate, fetchCurrencyRate }) => {
   const [value, setValue] = useState('')

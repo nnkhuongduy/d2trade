@@ -42,3 +42,17 @@ export const fetchItemsFail = message => ({
   type: ItemTypes.FETCH_ITEMS_FAIL,
   message: message
 })
+
+export const deleteItemsStart = items => ({
+  type: ItemTypes.DELETE_ITEMS_START,
+  items: items
+})
+
+export const deleteItemsSuccess = () => ({
+  type: ItemTypes.DELETE_ITEMS_SUCCESS,
+})
+
+export const deleteItemsFail = message => ({
+  type: ItemTypes.DELETE_ITEMS_FAIL,
+  message: message
+})

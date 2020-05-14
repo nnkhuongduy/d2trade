@@ -5,13 +5,14 @@ import clsx from 'clsx'
 import { makeStyles } from '@material-ui/styles'
 import {
   Grid, IconButton, Collapse, TextField, Typography, Slider, Button, Chip, Divider, Fade,
-  FormControlLabel, Checkbox, FormGroup,
+  FormControlLabel, Checkbox, FormGroup
 } from '@material-ui/core'
 import {
   Clear, CheckBoxOutlineBlank, CheckBox as CheckBoxIcon
 } from '@material-ui/icons'
 
 import HeroesSelector from '../../../components/heroes-selector/heroes-selector.component'
+import NumberFormatCustom from '../../../components/number-format-input/number-format-input.component'
 
 import { fetchItemsStart } from '../../../redux/item/item.actions'
 
@@ -71,6 +72,11 @@ const Toolbar = ({ tools, onChange, fetchItems }) => {
       any: true,
       isInscribed: false,
       isNonMarket: false
+    },
+    price: {
+      type: 'vnd',
+      min: 0,
+      max: 0
     }
   })
 
@@ -203,6 +209,45 @@ const Toolbar = ({ tools, onChange, fetchItems }) => {
                 </IconButton>
               </Grid>
             </Fade>
+            <Divider orientation="vertical" flexItem style={{ margin: '0 8px' }} />
+            <Grid item>
+              <Button
+                color='secondary'
+                onClick={() => setFilter({ ...filter, price: { ...filter.price, type: filter.price.type === 'vnd' ? 'usd' : 'vnd' } })}
+              >{filter.price.type.toUpperCase()}
+              </Button>
+            </Grid>
+            <Grid item>
+              <TextField
+                label='Min'
+                name='min'
+                value={filter.price.min}
+                onChange={e => setFilter({ ...filter, price: { ...filter.price, min: e.target.value } })}
+                InputProps={{
+                  inputComponent: NumberFormatCustom
+                }}
+                size='small'
+                variant='outlined'
+                style={{ width: 100 }}
+              />
+            </Grid>
+            <Grid item>
+              <Typography>-</Typography>
+            </Grid>
+            <Grid item>
+              <TextField
+                label='Max'
+                name='max'
+                value={filter.price.max}
+                onChange={e => setFilter({ ...filter, price: { ...filter.price, max: e.target.value } })}
+                InputProps={{
+                  inputComponent: NumberFormatCustom
+                }}
+                size='small'
+                variant='outlined'
+                style={{ width: 100 }}
+              />
+            </Grid>
             <Divider orientation="vertical" flexItem style={{ margin: '0 8px' }} />
             <FormGroup row>
               <Grid item>

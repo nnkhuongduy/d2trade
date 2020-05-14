@@ -5,6 +5,7 @@ const editUser = require('../services/edit-user')
 const getMarketItem = require('../services/get-market-item')
 const newItem = require('../services/new-item')
 const getItems = require('../services/get-items')
+const deleteItems = require('../services/delete-items')
 
 adminRouter.get("/users", (req, res) => {
   getUsers()
@@ -42,6 +43,14 @@ adminRouter.post("/user/balance/edit", (req, res) => {
 
 adminRouter.post('/item/new', (req, res) => {
   newItem(req.body)
+    .then(() => res.sendStatus(200))
+    .catch(err => errorHandler(err, res, 500))
+})
+
+adminRouter.post('/items/delete', (req, res) => {
+  const items = Object.keys(req.body)
+
+  deleteItems(items)
     .then(() => res.sendStatus(200))
     .catch(err => errorHandler(err, res, 500))
 })

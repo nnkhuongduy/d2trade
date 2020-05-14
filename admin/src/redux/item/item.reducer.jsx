@@ -6,6 +6,7 @@ const INITIAL_STATE = {
   isFetching: false,
   isPosting: false,
   isAllFetching: false,
+  isDeleting: false,
   errorMessage: null
 }
 
@@ -72,6 +73,26 @@ const itemReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isAllFetching: false,
+        errorMessage: action.message
+      }
+
+    case ItemTypes.DELETE_ITEMS_START:
+      return {
+        ...state,
+        isDeleting: true,
+        errorMessage: null
+      }
+
+    case ItemTypes.DELETE_ITEMS_SUCCESS:
+      return {
+        ...state,
+        isDeleting: false,
+      }
+
+    case ItemTypes.DELETE_ITEMS_FAIL:
+      return {
+        ...state,
+        isDeleting: false,
         errorMessage: action.message
       }
 

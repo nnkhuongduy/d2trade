@@ -11,3 +11,5 @@ export const selectPostingState = createSelector([selectItemState], state => sta
 export const selectItems = createSelector([selectItemState], state => state.items)
 
 export const selectFetchingItems = createSelector([selectItemState], state => state.isAllFetching)
+
+export const selectDeletingState = createSelector([selectItemState], state => state.isDeleting)

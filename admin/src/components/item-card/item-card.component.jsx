@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
+import clsx from 'clsx'
 
 import { makeStyles } from '@material-ui/styles'
 import {
@@ -13,7 +14,13 @@ const useStyles = makeStyles(theme => ({
   result: {
     width: 220,
     padding: theme.spacing(3),
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+  },
+  selectable: {
+    '&:hover': {
+      cursor: 'pointer',
+      filter: 'brightness(110%)'
+    }
   },
   img: {
     width: (256 * 60 / 100),
@@ -51,7 +58,7 @@ const useStyles = makeStyles(theme => ({
 
 const iconUrl = 'https://steamcommunity-a.akamaihd.net/economy/image/'
 
-const ItemCard = ({ item, heroes, width }) => {
+const ItemCard = ({ item, heroes, width, selectable, onClick }) => {
   const classes = useStyles()
   const [hero, setHero] = useState(null)
 
@@ -62,7 +69,14 @@ const ItemCard = ({ item, heroes, width }) => {
   }, [heroes])
 
   return (
-    <Paper elevation={2} className={classes.result} style={{ width: width && width }}>
+    <Paper
+      elevation={2}
+      className={clsx(classes.result, {
+        [classes.selectable]: selectable
+      })}
+      style={{ width: width && width }}
+      onClick={() => selectable && onClick(item.name)}
+    >
       <Grid container spacing={1} direction='column' alignItems='center'>
         <Grid item>
           <div className={classes.img} style={{ width: width && (width / 100 * 60), height: width && ((width / 100 * 60) * 171 / 256) }}>

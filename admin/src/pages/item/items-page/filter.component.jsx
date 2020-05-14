@@ -85,6 +85,14 @@ const Filter = ({ filter, search }) => {
                 color='secondary'
               />
             </Grid>}
+          {(filter.price.min !== 0 || filter.price.max !== 0) &&
+            <Grid item>
+              <Chip
+                label={`${filter.price.type.toUpperCase()} ${filter.price.min.toLocaleString()} - ${filter.price.max.toLocaleString()}`}
+                clickable
+                color='secondary'
+              />
+            </Grid>}
         </>
       }
     </Grid>
