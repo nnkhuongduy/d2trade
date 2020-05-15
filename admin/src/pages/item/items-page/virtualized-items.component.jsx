@@ -7,7 +7,7 @@ import {
 
 import { withStyles } from '@material-ui/styles'
 import {
-  Badge, Checkbox
+  Badge
 } from '@material-ui/core'
 import {
   CheckCircle, RadioButtonUnchecked
@@ -34,7 +34,8 @@ class ItemsMasonry extends React.PureComponent {
     height: PropTypes.number.isRequired,
     deleteState: PropTypes.bool,
     deleteItems: PropTypes.object,
-    onDeleteClick: PropTypes.func
+    onDeleteClick: PropTypes.func,
+    onItemClick: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -99,7 +100,7 @@ class ItemsMasonry extends React.PureComponent {
   _cellRenderer({ index, key, parent, style }) {
     const item = this.state.items[index]
     const { columnWidth, deleteState, deleteItems } = this.state
-    const { classes, onDeleteClick } = this.props
+    const { classes, onDeleteClick, onItemClick } = this.props
 
     return (
       <CellMeasurer cache={this._cache} index={index} key={key} parent={parent}>
@@ -112,9 +113,9 @@ class ItemsMasonry extends React.PureComponent {
                 deleteItems[item.name] ? <CheckCircle color='secondary' /> : <RadioButtonUnchecked color='secondary' />
               }
               classes={{ root: classes.badge }}
-            ><ItemCard item={item} width={columnWidth} selectable onClick={name => onDeleteClick(name)} />
+            ><ItemCard item={item} width={columnWidth} selectable onClick={item => onDeleteClick(item.name)} />
             </Badge> :
-            <ItemCard item={item} width={columnWidth} />
+            <ItemCard item={item} width={columnWidth} selectable onClick={item => onItemClick(item)} />
           )}
         </div>
       </CellMeasurer>

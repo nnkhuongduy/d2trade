@@ -1,14 +1,15 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
 import { makeStyles } from '@material-ui/styles'
 import {
-  Grid, TextField, Button
+  Grid, TextField, Button, Divider
 } from '@material-ui/core'
 
+import Switch from './switch.component'
+
 import { fetchItemStart, fetchItemSuccess } from '../../../redux/item/item.actions'
-import { enqSnackbar } from '../../../redux/snackbar/snackbar.actions'
 
 import { selectItem, selectFetchingState } from '../../../redux/item/item.selectors'
 
@@ -19,56 +20,43 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const FetchItem = ({ fetchItemStart, fetchItemSuccess, enqSnackbar, item, fetching, currentItem, nonMarket, setMarket }) => {
+const FetchItem = ({ fetchItemStart, fetchItemSuccess, fetchedItem, item, fetching, onMarketChange }) => {
   const classes = useStyles()
-  const [itemName, setItemName] = useState('')
-  const [searched, setSearched] = useState(false)
-  const [disabled, setDisabled] = useState(false)
+  const [searchValue, setSearchValue] = useState('')
+  const [market, setMarket] = useState(false)
 
   useEffect(() => {
-    if (currentItem)
-      setDisabled(currentItem.configs.isNonMarket)
-    else setDisabled(nonMarket)
-  }, [currentItem, nonMarket])
-
-  useEffect(() => {
-    if (!fetching)
-      if (itemName) {
-        setSearched(true)
-        if (item) enqSnackbar({ severity: 'success', text: 'Lấy thông tin item thành công', key: new Date().getTime() })
-        else enqSnackbar({ severity: 'error', text: 'Lấy thông tin item không thành công', key: new Date().getTime() })
-      }
+    setMarket(item.configs.isNonMarket)
     //eslint-disable-next-line
-  }, [fetching])
+  }, [item])
+
+  useEffect(() => {
+    onMarketChange({ ...item, configs: { ...item.configs, isNonMarket: market } })
+  }, [market])
 
   const onFindClick = e => {
     e.preventDefault()
-    fetchItemStart(itemName)
+    fetchItemStart(searchValue)
   }
 
   const onClearClick = () => {
-    fetchItemSuccess(null)
-    setMarket(false)
+    if (fetchedItem)
+      fetchItemSuccess(null)
+    onMarketChange({ ...item, configs: { ...item.configs, isNonMarket: false } })
   }
 
-  const onChange = useCallback(e => {
-    setItemName(e.target.value)
-    if (searched) setSearched(false)
-  }, [searched])
-
   return (
-    <form noValidate autoComplete='off'>
-      <Grid container direction='column' spacing={2} alignItems='center'>
+    <Grid container direction='column' spacing={2} alignItems='center'>
+      <form noValidate autoComplete='off'>
         <Grid item>
           <TextField
             id='item-search-name'
             label='Tên Item'
             variant='outlined'
             helperText='Tên item trên market'
-            value={itemName}
-            onChange={onChange}
-            error={!item && searched}
-            disabled={disabled || fetching}
+            value={searchValue}
+            onChange={e => setSearchValue(e.target.value)}
+            disabled={fetching || market}
           />
         </Grid>
         <Grid item>
@@ -80,10 +68,9 @@ const FetchItem = ({ fetchItemStart, fetchItemSuccess, enqSnackbar, item, fetchi
                 variant='contained'
                 color='secondary'
                 className={classes.btn}
-                disabled={disabled}
-              >
-                Tìm
-          </Button>
+                disabled={fetching || market}
+              >Tìm
+              </Button>
             </Grid>
             <Grid item>
               <Button
@@ -91,25 +78,34 @@ const FetchItem = ({ fetchItemStart, fetchItemSuccess, enqSnackbar, item, fetchi
                 variant='outlined'
                 color='secondary'
                 className={classes.btn}
-              >
-                Xóa
-          </Button>
+              >Xóa
+              </Button>
             </Grid>
           </Grid>
         </Grid>
+      </form>
+      <Divider />
+      <Grid item>
+        <Switch
+          label='Item không có trên market'
+          caption='Không sử dụng market để tìm item. Dùng cho những item không có trên market'
+          name='isMarket'
+          value={market}
+          onChange={() => setMarket(!market)}
+          disabled={fetchedItem || fetching}
+        />
       </Grid>
-    </form>
+    </Grid>
   )
 }
 
 const mapDispatchToProps = dispatch => ({
   fetchItemStart: itemName => dispatch(fetchItemStart(itemName)),
   fetchItemSuccess: item => dispatch(fetchItemSuccess(item)),
-  enqSnackbar: snack => dispatch(enqSnackbar(snack))
 })
 
 const mapStateToProps = createStructuredSelector({
-  item: selectItem,
+  fetchedItem: selectItem,
   fetching: selectFetchingState
 })
 

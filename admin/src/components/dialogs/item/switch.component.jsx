@@ -1,14 +1,19 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 import {
-  Grid, Typography, Switch
+  Grid, Typography, Switch as MaterialSwitch
 } from '@material-ui/core'
 
-const ConfigSwitch = ({ label, caption, name, value, onChange, ...props }) => {
+const Switch = ({ label, caption, name, value, onChange, ...props }) => {
+  const [switchValue, setSwitchValue] = useState(false)
 
-  const onSwitchChange = e => {
-    onChange({ configs: { [e.target.name]: !value } })
-  }
+  useEffect(() => {
+    setSwitchValue(value)
+  }, [value])
+
+  useEffect(() => {
+    onChange(switchValue)
+  }, [switchValue])
 
   return (
     <Grid container direction='column'>
@@ -18,9 +23,9 @@ const ConfigSwitch = ({ label, caption, name, value, onChange, ...props }) => {
             <Typography>{label} :</Typography>
           </Grid>
           <Grid item>
-            <Switch
-              checked={value}
-              onChange={onSwitchChange}
+            <MaterialSwitch
+              checked={switchValue}
+              onChange={e => setSwitchValue(e.target.checked)}
               name={name}
               inputProps={{ 'aria-label': `${label} checkbox` }}
               {...props}
@@ -35,4 +40,4 @@ const ConfigSwitch = ({ label, caption, name, value, onChange, ...props }) => {
   )
 }
 
-export default ConfigSwitch
+export default Switch

@@ -5,13 +5,8 @@ const itemsSchema = new Schema({
   name: String,
   nameColor: String,
   icon_url: String,
-  hero: {
-    name: String,
-  },
-  rarity: {
-    label: String,
-    color: String
-  },
+  hero: String,
+  rarity: String,
   prices: {
     usd: Number,
     vnd: Number
@@ -19,6 +14,7 @@ const itemsSchema = new Schema({
   configs: {
     isNonMarket: false,
     isInscribed: false,
+    isDisabled: false
   }
 })
 

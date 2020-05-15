@@ -37,8 +37,8 @@ const RaritySelector = ({ rarity, setRarity }) => {
   const classes = useStyles()
   const [active, setActive] = useState(false)
 
-  const onRarityClick = (label, color) => {
-    setRarity({ label: label, color: color })
+  const onRarityClick = (label) => {
+    setRarity(label)
     setActive(false)
   }
 
@@ -52,9 +52,10 @@ const RaritySelector = ({ rarity, setRarity }) => {
       >
         <Grid item>
           <Chip
-            label={rarity && rarity.label ? rarity.label : 'Rarity'}
-            clickable onClick={() => setActive(!active)}
-            classes={{ root: rarity && rarity.label && classes[rarity.label.toLowerCase()] }}
+            label={rarity ? rarity : 'Rarity'}
+            clickable
+            onClick={() => setActive(!active)}
+            classes={{ root: rarity && classes[rarity.toLowerCase()] }}
           />
         </Grid>
         <Grid item>
@@ -62,7 +63,7 @@ const RaritySelector = ({ rarity, setRarity }) => {
             <Chip
               label='Immortal'
               clickable
-              onClick={() => onRarityClick('Immortal', '#e4ae39')}
+              onClick={() => onRarityClick('Immortal')}
               classes={{ root: classes.immortal }}
             />
           </Fade>
@@ -72,7 +73,7 @@ const RaritySelector = ({ rarity, setRarity }) => {
             <Chip
               label='Arcana'
               clickable
-              onClick={() => onRarityClick('Arcana', '#ade55c')}
+              onClick={() => onRarityClick('Arcana')}
               classes={{ root: classes.arcana }}
             />
           </Fade>

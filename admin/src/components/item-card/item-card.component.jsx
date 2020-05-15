@@ -12,7 +12,7 @@ import { selectHeroes } from '../../redux/hero/hero.selectors'
 
 const useStyles = makeStyles(theme => ({
   result: {
-    width: 220,
+    width: 280,
     padding: theme.spacing(3),
     boxSizing: 'border-box',
   },
@@ -27,6 +27,12 @@ const useStyles = makeStyles(theme => ({
     height: (171 * 60 / 100),
     backgroundColor: 'gray'
   },
+  imgDisabled: {
+    filter: 'grayscale(100%)'
+  },
+  nameDisabled: {
+    textDecoration: 'line-through'
+  },
   chip: {
     transition: theme.transitions.create('all', {
       easing: theme.transitions.easing.easeInOut,
@@ -40,19 +46,28 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.item.inscribed,
     '&:hover': {
       backgroundColor: theme.palette.item.inscribed,
-    }
+    },
+    '&:focus': {
+      backgroundColor: theme.palette.item.inscribed,
+    },
   },
   immortal: {
     backgroundColor: theme.palette.item.immortal,
     '&:hover': {
       backgroundColor: theme.palette.item.immortal,
-    }
+    },
+    '&:focus': {
+      backgroundColor: theme.palette.item.immortal,
+    },
   },
   arcana: {
     backgroundColor: theme.palette.item.arcana,
     '&:hover': {
       backgroundColor: theme.palette.item.arcana,
-    }
+    },
+    '&:focus': {
+      backgroundColor: theme.palette.item.arcana,
+    },
   }
 }))
 
@@ -64,9 +79,9 @@ const ItemCard = ({ item, heroes, width, selectable, onClick }) => {
 
   useEffect(() => {
     if (heroes)
-      setHero(heroes.filter(hero => hero.localized_name === item.hero.name)[0])
+      setHero(heroes.filter(hero => hero.localized_name === item.hero)[0])
     //eslint-disable-next-line
-  }, [heroes])
+  }, [item])
 
   return (
     <Paper
@@ -75,7 +90,7 @@ const ItemCard = ({ item, heroes, width, selectable, onClick }) => {
         [classes.selectable]: selectable
       })}
       style={{ width: width && width }}
-      onClick={() => selectable && onClick(item.name)}
+      onClick={() => selectable && onClick(item)}
     >
       <Grid container spacing={1} direction='column' alignItems='center'>
         <Grid item>
@@ -84,6 +99,7 @@ const ItemCard = ({ item, heroes, width, selectable, onClick }) => {
               src={iconUrl + item.icon_url}
               alt='item_icon'
               style={{ width: '100%', height: '100%' }}
+              className={clsx({ [classes.imgDisabled]: item.configs.isDisabled })}
             />}
           </div>
         </Grid>
@@ -95,6 +111,7 @@ const ItemCard = ({ item, heroes, width, selectable, onClick }) => {
               textAlign: 'center',
               fontSize: width <= 240 ? 14 : 16
             }}
+            className={clsx({ [classes.nameDisabled]: item.configs.isDisabled })}
           >
             {item.name}
           </Typography>
@@ -120,47 +137,56 @@ const ItemCard = ({ item, heroes, width, selectable, onClick }) => {
         </Grid>
         <Grid item style={{ marginTop: 20, alignSelf: 'flex-start' }}>
           <Grid container spacing={1}>
-            <Grid item>
-              {item.hero.name &&
+            {item.hero &&
+              <Grid item>
                 <Chip
                   size='small'
-                  label={item.hero.name}
+                  label={item.hero}
                   avatar={<Avatar src={hero && hero.portrait_url} />}
                   clickable
                   color='primary'
                 />
-              }
-            </Grid>
-            <Grid item>
-              {item.rarity.label &&
+              </Grid>
+            }
+            {item.rarity &&
+              <Grid item>
                 <Chip
                   size='small'
-                  label={item.rarity.label}
+                  label={item.rarity}
                   clickable
-                  style={{ backgroundColor: item.rarity.color }}
+                  className={classes[item.rarity.toLowerCase()]}
                 />
-              }
-            </Grid>
-            <Grid item>
-              {item.configs.isInscribed &&
+              </Grid>
+            }
+            {item.configs.isInscribed &&
+              <Grid item>
                 <Chip
                   size='small'
                   label='Inscribed'
                   clickable
                   style={{ backgroundColor: '#CF6A32', color: 'white' }}
                 />
-              }
-            </Grid>
-            <Grid item>
-              {item.configs.isNonMarket &&
+              </Grid>
+            }
+            {item.configs.isNonMarket &&
+              <Grid item>
                 <Chip
                   size='small'
                   label='Non-market'
                   clickable
                   color='secondary'
                 />
-              }
-            </Grid>
+              </Grid>
+            }
+            {item.configs.isDisabled &&
+              <Grid item>
+                <Chip
+                  size='small'
+                  label='Disabled'
+                  clickable
+                />
+              </Grid>
+            }
           </Grid>
         </Grid>
       </Grid>

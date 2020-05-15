@@ -13,3 +13,5 @@ export const selectItems = createSelector([selectItemState], state => state.item
 export const selectFetchingItems = createSelector([selectItemState], state => state.isAllFetching)
 
 export const selectDeletingState = createSelector([selectItemState], state => state.isDeleting)
+
+export const selectPuttingState = createSelector([selectItemState], state => state.isPutting)

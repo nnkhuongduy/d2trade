@@ -44,12 +44,8 @@ const useStyles = makeStyles(theme => ({
 const HeroContainer = ({ src, name, onClick, width }) => {
   const classes = useStyles()
 
-  const heroClick = () => {
-    onClick({ name: name, src: src })
-  }
-
   return (
-    <div className={classes.selector} onClick={heroClick} style={width && { width: width, height: (width * 71 / 127) }}>
+    <div className={classes.selector} onClick={() => onClick(name)} style={width && { width: width, height: (width * 71 / 127) }}>
       {src && (
         <img src={src} className={classes.portrait} alt='hero_portrait' />
       )}
@@ -57,19 +53,26 @@ const HeroContainer = ({ src, name, onClick, width }) => {
   )
 }
 
-const HeroesSelector = ({ heroes, fetchHeroesStart, hero, setHero, width }) => {
+const HeroesSelector = ({ heroes, fetchHeroesStart, heroName, setHeroName, width }) => {
   const classes = useStyles()
   const [dialog, setDialog] = useState(false)
   const [search, setSearch] = useState('')
+  const [currentHero, setCurrentHero] = useState(null)
 
   useEffect(() => {
     if (!heroes) fetchHeroesStart()
     //eslint-disable-next-line
   }, [])
 
+  useEffect(() => {
+    if (heroes) {
+      setCurrentHero(heroes.find(hero => hero.localized_name === heroName))
+    }
+  }, [heroName])
+
   return (
     <>
-      <HeroContainer src={hero && hero.src} onClick={() => setDialog(true)} width={width} />
+      <HeroContainer src={currentHero && currentHero.portrait_url} name={currentHero} onClick={() => setDialog(true)} width={width} />
       <Dialog
         open={dialog}
         onClose={() => setDialog(false)}
@@ -97,9 +100,9 @@ const HeroesSelector = ({ heroes, fetchHeroesStart, hero, setHero, width }) => {
                   <HeroContainer
                     src={hero.portrait_url}
                     name={hero.localized_name}
-                    onClick={obj => {
+                    onClick={name => {
                       setDialog(false);
-                      setHero(obj);
+                      setHeroName(name);
                     }}
                   />
                 </Grid>

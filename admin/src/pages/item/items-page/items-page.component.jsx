@@ -12,11 +12,13 @@ import {
   Search, Refresh, Tune, FilterList
 } from '@material-ui/icons'
 
-import ItemNewDialog from '../../../components/dialogs/item-new/item-new.component'
+import ItemNewDialog from '../../../components/dialogs/item/item-new.component'
 import Toolbar from './toolbar.component'
+import ToolbarContent from './toolbar-content.component'
 import ItemsMasonry from './virtualized-items.component'
 import Filter from './filter.component'
 import Confirmation from '../../../components/dialogs/confirmation/confirmation.component'
+import ItemInfoDialog from '../../../components/dialogs/item/item-info.component'
 
 import { fetchHeroesStart } from '../../../redux/hero/hero.actions'
 import { fetchItemsStart, deleteItemsStart } from '../../../redux/item/item.actions'
@@ -72,6 +74,7 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteIte
   const [deleteState, setDeleteState] = useState(false)
   const [deleteItems, setDeleteItems] = useState({})
   const [confirmation, setConfirmation] = useState(false)
+  const [itemInfo, setItemInfo] = useState(null)
 
   useEffect(() => {
     if (!heroes) fetchHeroes()
@@ -98,7 +101,7 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteIte
   useEffect(() => {
     const filter = tools[2].value
 
-    if (items)
+    if (items && filter)
       setCurrentItems(items.filter(item =>
         (filter.hero ? filter.hero.name === item.hero.name : true) &&
         (filter.rarity ? filter.rarity === item.rarity.label : true) &&
@@ -109,7 +112,7 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteIte
         (filter.price.min ? item.prices[filter.price.type] >= filter.price.min : true) &&
         (filter.price.max ? item.prices[filter.price.type] <= filter.price.max : true)
       ))
-  }, [tools[2].value])
+  }, [tools])
 
   useEffect(() => {
     if (!deleteState && !_.isEmpty(deleteItems))
@@ -129,7 +132,7 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteIte
           </Grid>
         </Collapse>
         <Grid item>
-          <Grid container justify='space-between'>
+          <Grid container justify='space-between' alignItems='center'>
             <Grid item>
               <Grid container spacing={2} alignItems='center'>
                 <Grid item>
@@ -154,7 +157,7 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteIte
                   <Typography>Lọc hiện tại:</Typography>
                 </Grid>
                 <Grid item>
-                  <Filter filter={tools[2].value} search={tools[0].value} />
+                  <Filter tools={tools} onChange={tools => setTools(tools)} />
                 </Grid>
               </Grid>
             </Grid>
@@ -164,6 +167,9 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteIte
           </Grid>
         </Grid>
         <Grid item>
+          <ToolbarContent tools={tools} onChange={tools => setTools(tools)} />
+        </Grid>
+        <Grid item>
           {currentItems &&
             <ItemsMasonry
               items={currentItems}
@@ -171,6 +177,7 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteIte
               deleteState={deleteState}
               deleteItems={deleteItems}
               onDeleteClick={onDeleteClick}
+              onItemClick={item => setItemInfo(item)}
             />
           }
         </Grid>
@@ -184,6 +191,7 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteIte
           setDeleteItems({})
         }}
       />
+      <ItemInfoDialog open={Boolean(itemInfo)} onClose={() => setItemInfo(null)} item={itemInfo} />
     </>
   )
 }

@@ -7,6 +7,7 @@ const INITIAL_STATE = {
   isPosting: false,
   isAllFetching: false,
   isDeleting: false,
+  isPutting: false,
   errorMessage: null
 }
 
@@ -93,6 +94,26 @@ const itemReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isDeleting: false,
+        errorMessage: action.message
+      }
+
+    case ItemTypes.PUT_ITEM_START:
+      return {
+        ...state,
+        isPutting: true,
+        errorMessage: null
+      }
+
+    case ItemTypes.PUT_ITEM_SUCCESS:
+      return {
+        ...state,
+        isPutting: false,
+      }
+
+    case ItemTypes.PUT_ITEM_FAIL:
+      return {
+        ...state,
+        isPutting: false,
         errorMessage: action.message
       }
 

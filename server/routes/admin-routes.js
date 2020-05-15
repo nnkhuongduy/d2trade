@@ -6,6 +6,7 @@ const getMarketItem = require('../services/get-market-item')
 const newItem = require('../services/new-item')
 const getItems = require('../services/get-items')
 const deleteItems = require('../services/delete-items')
+const putItem = require('../services/put-item')
 
 adminRouter.get("/users", (req, res) => {
   getUsers()
@@ -13,7 +14,7 @@ adminRouter.get("/users", (req, res) => {
     .catch(err => errorHandler(err, res, 500))
 });
 
-adminRouter.get("/item/:itemName", (req, res) => {
+adminRouter.get("/items/market/:itemName", (req, res) => {
   const itemName = req.params.itemName
 
   getMarketItem(itemName)
@@ -41,7 +42,7 @@ adminRouter.post("/user/balance/edit", (req, res) => {
     .catch(err => errorHandler(err, res, 500))
 })
 
-adminRouter.post('/item/new', (req, res) => {
+adminRouter.post('/items/new', (req, res) => {
   newItem(req.body)
     .then(() => res.sendStatus(200))
     .catch(err => errorHandler(err, res, 500))
@@ -51,6 +52,14 @@ adminRouter.post('/items/delete', (req, res) => {
   const items = Object.keys(req.body)
 
   deleteItems(items)
+    .then(() => res.sendStatus(200))
+    .catch(err => errorHandler(err, res, 500))
+})
+
+adminRouter.put('/items/put', (req, res) => {
+  const item = req.body
+
+  putItem(item)
     .then(() => res.sendStatus(200))
     .catch(err => errorHandler(err, res, 500))
 })
