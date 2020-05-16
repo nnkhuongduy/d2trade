@@ -10,8 +10,8 @@ import {
   Clear, CheckBoxOutlineBlank, CheckBox as CheckBoxIcon
 } from '@material-ui/icons'
 
-import HeroesSelector from '../../../components/heroes-selector/heroes-selector.component'
-import NumberFormatCustom from '../../../components/number-format-input/number-format-input.component'
+import HeroesSelector from '../../components/heroes-selector/heroes-selector.component'
+import NumberFormatCustom from '../../components/number-format-input/number-format-input.component'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -64,8 +64,8 @@ const ToolbarContent = ({ tools, onChange }) => {
     rarity: null,
     configs: {
       any: true,
-      isInscribed: false,
-      isNonMarket: false
+      isNonMarket: false,
+      isDisabled: false
     },
     price: {
       type: 'vnd',
@@ -141,8 +141,8 @@ const ToolbarContent = ({ tools, onChange }) => {
           <Grid item>
             <HeroesSelector
               width={80}
-              hero={filter.hero && filter.hero}
-              setHero={obj => setFilter({ ...filter, hero: obj })}
+              heroName={filter.hero}
+              setHeroName={name => setFilter({ ...filter, hero: name })}
             />
           </Grid>
           <Fade in={Boolean(filter.hero)} mountOnEnter unmountOnExit>
@@ -230,30 +230,10 @@ const ToolbarContent = ({ tools, onChange }) => {
                     icon={<CheckBoxOutlineBlank fontSize='small' />}
                     checkedIcon={<CheckBoxIcon fontSize='small' />}
                     checked={filter.configs.any}
-                    onChange={() => setFilter({ ...filter, configs: { any: true, isInscribed: false, isNonMarket: false } })}
+                    onChange={() => setFilter({ ...filter, configs: { any: true, isInscribed: false, isNonMarket: false, isDisabled: false } })}
                     name='any'
                   />}
                 label='Any'
-              />
-            </Grid>
-            <Grid item>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    icon={<CheckBoxOutlineBlank fontSize='small' />}
-                    checkedIcon={<CheckBoxIcon fontSize='small' />}
-                    checked={filter.configs.isInscribed}
-                    onChange={() => setFilter({
-                      ...filter,
-                      configs: {
-                        ...filter.configs,
-                        any: filter.configs.isInscribed && !filter.configs.isNonMarket,
-                        isInscribed: !filter.configs.isInscribed,
-                      }
-                    })}
-                    name='inscribed'
-                  />}
-                label='Inscribed'
               />
             </Grid>
             <Grid item>
@@ -267,13 +247,33 @@ const ToolbarContent = ({ tools, onChange }) => {
                       ...filter,
                       configs: {
                         ...filter.configs,
-                        any: !filter.configs.isInscribed && filter.configs.isNonMarket,
+                        any: !filter.configs.isInscribed && filter.configs.isNonMarket && !filter.configs.isDisabled,
                         isNonMarket: !filter.configs.isNonMarket,
                       }
                     })}
                     name='non-market'
                   />}
                 label='Non-market'
+              />
+            </Grid>
+            <Grid item>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    icon={<CheckBoxOutlineBlank fontSize='small' />}
+                    checkedIcon={<CheckBoxIcon fontSize='small' />}
+                    checked={filter.configs.isDisabled}
+                    onChange={() => setFilter({
+                      ...filter,
+                      configs: {
+                        ...filter.configs,
+                        any: !filter.configs.isInscribed && !filter.configs.isNonMarket && filter.configs.isDisabled,
+                        isDisabled: !filter.configs.isDisabled,
+                      }
+                    })}
+                    name='disabled'
+                  />}
+                label='Disabled'
               />
             </Grid>
           </FormGroup>

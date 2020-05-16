@@ -1,9 +1,13 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
 
 import { makeStyles } from '@material-ui/styles'
 import {
   Chip, Grid, Avatar
 } from '@material-ui/core'
+
+import { selectHeroes } from '../../redux/hero/hero.selectors'
 
 const useStyles = makeStyles(theme => ({
   Immortal: {
@@ -38,7 +42,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const Filter = ({ tools, onChange }) => {
+const Filter = ({ tools, onChange, heroes }) => {
   const classes = useStyles()
   const filter = tools[2].value
   const search = tools[0].value
@@ -59,7 +63,10 @@ const Filter = ({ tools, onChange }) => {
       newTools[2].value.configs.isInscribed = false
 
     if (token === 'non-market')
-      newTools[2].value.configs.nonMarket = false
+      newTools[2].value.configs.isNonMarket = false
+
+    if (token === 'disabled')
+      newTools[2].value.configs.isDisabled = false
 
     if (token === 'prices') {
       newTools[2].value.price.min = 0
@@ -83,8 +90,8 @@ const Filter = ({ tools, onChange }) => {
           {filter.hero &&
             <Grid item>
               <Chip
-                label={filter.hero.name}
-                avatar={<Avatar src={filter.hero.src} />}
+                label={filter.hero}
+                avatar={<Avatar src={heroes.find(hero => hero.localized_name === filter.hero).portrait_url} />}
                 color='primary'
                 onDelete={() => onDelete('hero')}
               />
@@ -115,6 +122,14 @@ const Filter = ({ tools, onChange }) => {
                 onDelete={() => onDelete('non-market')}
               />
             </Grid>}
+          {filter.configs.isDisabled &&
+            <Grid item>
+              <Chip
+                label='Disabled'
+                clickable
+                onDelete={() => onDelete('disabled')}
+              />
+            </Grid>}
           {(filter.price.min !== 0 || filter.price.max !== 0) &&
             <Grid item>
               <Chip
@@ -130,4 +145,8 @@ const Filter = ({ tools, onChange }) => {
   )
 }
 
-export default Filter
+const mapStateToProps = createStructuredSelector({
+  heroes: selectHeroes
+})
+
+export default connect(mapStateToProps)(Filter)

@@ -18,7 +18,6 @@ import { postItemStart, fetchItemSuccess } from '../../../redux/item/item.action
 import { selectItem, selectFetchingState } from '../../../redux/item/item.selectors'
 
 const INITIAL_ITEM = {
-  commodity: true,
   icon_url: "",
   name: "Tên Item",
   nameColor: "D2D2D2",
@@ -29,7 +28,6 @@ const INITIAL_ITEM = {
   hero: null,
   rarity: null,
   configs: {
-    isInscribed: false,
     isNonMarket: false,
     isDisabled: false
   }
@@ -49,9 +47,9 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const ItemNewDialog = ({ fetchItemSuccess, open, onClose, item, postItem, fetching }) => {
+const ItemNewDialog = ({ fetchItemSuccess, open, onClose, item, postItem, fetching, initialItem }) => {
   const classes = useStyles()
-  const [currentItem, setCurrentItem] = useState(INITIAL_ITEM)
+  const [currentItem, setCurrentItem] = useState(initialItem ? initialItem : INITIAL_ITEM)
   const [tab, setTab] = useState(0)
 
   useEffect(() => {
@@ -61,7 +59,6 @@ const ItemNewDialog = ({ fetchItemSuccess, open, onClose, item, postItem, fetchi
         ...item,
         configs: {
           ...INITIAL_ITEM.configs,
-          isInscribed: item.name.includes('Inscribed'),
         }
       })
       setTab(1)
@@ -72,15 +69,11 @@ const ItemNewDialog = ({ fetchItemSuccess, open, onClose, item, postItem, fetchi
   }, [item])
 
   useEffect(() => {
-    setCurrentItem(INITIAL_ITEM)
-    setTab(0)
-    fetchItemSuccess(null)
+    setCurrentItem(initialItem ? initialItem : INITIAL_ITEM)
+    setTab(initialItem ? 1 : 0)
+    fetchItemSuccess(initialItem ? initialItem : null)
     //eslint-disable-next-line
   }, [open])
-
-  useEffect(() => {
-    console.log(currentItem)
-  }, [currentItem])
 
   const confirmClick = () => {
     if (currentItem && (currentItem.hero && currentItem.rarity && currentItem.prices.usd && currentItem.prices.vnd)) {

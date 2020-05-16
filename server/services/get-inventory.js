@@ -25,9 +25,10 @@ const getInventory = steamId => {
               .then(rate => {
 
                 inventory.forEach(item => {
-                  const randPrice = (Math.random() * (10 - 0.01) + 0.01).toFixed(2)
-                  item.market_price = randPrice;
-                  item.vnd_price = Math.round((parseFloat(randPrice) * rate * 1000)).toLocaleString();
+                  // const randPrice = (Math.random() * (10 - 0.01) + 0.01).toFixed(2)
+                  // item.market_price = randPrice;
+                  // item.vnd_price = Math.round((parseFloat(randPrice) * rate * 1000)).toLocaleString();
+                  item.market_hash_name = item.market_hash_name.replace('Inscribed ', '')
                 })
 
                 resolve(inventory)

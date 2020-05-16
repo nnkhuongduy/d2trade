@@ -3,11 +3,13 @@ import { ItemTypes } from './item.types'
 const INITIAL_STATE = {
   item: null,
   items: null,
+  botItems: null,
   isFetching: false,
   isPosting: false,
   isAllFetching: false,
   isDeleting: false,
   isPutting: false,
+  isBotFetching: false,
   errorMessage: null
 }
 
@@ -114,6 +116,28 @@ const itemReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isPutting: false,
+        errorMessage: action.message
+      }
+
+    case ItemTypes.FETCH_BOT_ITEMS_START:
+      return {
+        ...state,
+        botItems: null,
+        isBotFetching: true,
+        errorMessage: null
+      }
+
+    case ItemTypes.FETCH_BOT_ITEMS_SUCCESS:
+      return {
+        ...state,
+        botItems: action.items,
+        isBotFetching: false,
+      }
+
+    case ItemTypes.FETCH_BOT_ITEMS_FAIL:
+      return {
+        ...state,
+        isBotFetching: false,
         errorMessage: action.message
       }
 

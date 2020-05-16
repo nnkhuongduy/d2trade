@@ -5,15 +5,6 @@ import {
 } from '@material-ui/core'
 
 const Switch = ({ label, caption, name, value, onChange, ...props }) => {
-  const [switchValue, setSwitchValue] = useState(false)
-
-  useEffect(() => {
-    setSwitchValue(value)
-  }, [value])
-
-  useEffect(() => {
-    onChange(switchValue)
-  }, [switchValue])
 
   return (
     <Grid container direction='column'>
@@ -24,8 +15,8 @@ const Switch = ({ label, caption, name, value, onChange, ...props }) => {
           </Grid>
           <Grid item>
             <MaterialSwitch
-              checked={switchValue}
-              onChange={e => setSwitchValue(e.target.checked)}
+              checked={value}
+              onChange={e => onChange(e.target.checked)}
               name={name}
               inputProps={{ 'aria-label': `${label} checkbox` }}
               {...props}

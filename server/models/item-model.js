@@ -3,7 +3,6 @@ const Schema = mongoose.Schema;
 
 const itemsSchema = new Schema({
   name: String,
-  nameColor: String,
   icon_url: String,
   hero: String,
   rarity: String,
@@ -13,10 +12,9 @@ const itemsSchema = new Schema({
   },
   configs: {
     isNonMarket: false,
-    isInscribed: false,
     isDisabled: false
-  }
-})
+  },
+}, { timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } })
 
 const Items = mongoose.model("Items", itemsSchema, "Items");
 

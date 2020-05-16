@@ -58,15 +58,29 @@ export const deleteItemsFail = message => ({
 })
 
 export const putItemStart = item => ({
-  type: ItemTypes.PUT_ITEMS_START,
+  type: ItemTypes.PUT_ITEM_START,
   item: item
 })
 
 export const putItemSuccess = () => ({
-  type: ItemTypes.PUT_ITEMS_SUCCESS,
+  type: ItemTypes.PUT_ITEM_SUCCESS,
 })
 
 export const putItemFail = message => ({
-  type: ItemTypes.PUT_ITEMS_FAIL,
+  type: ItemTypes.PUT_ITEM_FAIL,
+  message: message
+})
+
+export const fetchBotItemsStart = () => ({
+  type: ItemTypes.FETCH_BOT_ITEMS_START,
+})
+
+export const fetchBotItemsSuccess = items => ({
+  type: ItemTypes.FETCH_BOT_ITEMS_SUCCESS,
+  items: items
+})
+
+export const fetchBotItemsFail = message => ({
+  type: ItemTypes.FETCH_BOT_ITEMS_FAIL,
   message: message
 })

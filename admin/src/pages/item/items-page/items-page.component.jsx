@@ -13,18 +13,20 @@ import {
 } from '@material-ui/icons'
 
 import ItemNewDialog from '../../../components/dialogs/item/item-new.component'
-import Toolbar from './toolbar.component'
-import ToolbarContent from './toolbar-content.component'
-import ItemsMasonry from './virtualized-items.component'
-import Filter from './filter.component'
+import Toolbar from '../toolbar.component'
+import ToolbarContent from '../toolbar-content.component'
+import ItemsMasonry from '../virtualized-items.component'
+import Filter from '../filter.component'
 import Confirmation from '../../../components/dialogs/confirmation/confirmation.component'
 import ItemInfoDialog from '../../../components/dialogs/item/item-info.component'
 
 import { fetchHeroesStart } from '../../../redux/hero/hero.actions'
 import { fetchItemsStart, deleteItemsStart } from '../../../redux/item/item.actions'
+import { fetchCurrencyRateStart } from '../../../redux/site-settings/site-settings.actions'
 
 import { selectHeroes } from '../../../redux/hero/hero.selectors'
 import { selectFetchingItems, selectItems } from '../../../redux/item/item.selectors'
+import { selectCurrencyRate } from '../../../redux/site-settings/site-settings.selectors'
 
 const useStyles = makeStyles(theme => ({
   deleteBtn: {
@@ -43,7 +45,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteItemsStart }) => {
+const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteItemsStart, rate, fetchCurrencyRate }) => {
   const classes = useStyles()
   const [dialog, setDialog] = useState(false)
   const [currentItems, setCurrentItems] = useState(null)
@@ -68,7 +70,8 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteIte
     },
     {
       label: 'refresh',
-      Icon: <Refresh />
+      Icon: <Refresh />,
+      func: fetchItems
     }
   ])
   const [deleteState, setDeleteState] = useState(false)
@@ -80,14 +83,13 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteIte
     if (!heroes) fetchHeroes()
     if (!items) fetchItems()
     if (items) setCurrentItems(items)
+    if (!rate) fetchCurrencyRate()
     //eslint-disable-next-line
   }, [])
 
   useEffect(() => {
     if (items) {
       setCurrentItems(items)
-    } else {
-      setCurrentItems(null)
     }
     //eslint-disable-next-line
   }, [items])
@@ -102,16 +104,18 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteIte
     const filter = tools[2].value
 
     if (items && filter)
-      setCurrentItems(items.filter(item =>
-        (filter.hero ? filter.hero.name === item.hero.name : true) &&
-        (filter.rarity ? filter.rarity === item.rarity.label : true) &&
-        (!filter.configs.any ?
-          (filter.configs.isInscribed === item.configs.isInscribed &&
-            filter.configs.isNonMarket === item.configs.isNonMarket)
-          : true) &&
-        (filter.price.min ? item.prices[filter.price.type] >= filter.price.min : true) &&
-        (filter.price.max ? item.prices[filter.price.type] <= filter.price.max : true)
-      ))
+      setCurrentItems(items.filter(item => {
+        console.log(item.configs)
+        console.log(filter.configs)
+        return ((filter.hero ? filter.hero === item.hero : true) &&
+          (filter.rarity ? filter.rarity === item.rarity : true) &&
+          (!filter.configs.any ?
+            (filter.configs.isNonMarket === item.configs.isNonMarket &&
+              filter.configs.isDisabled === item.configs.isDisabled)
+            : true) &&
+          (filter.price.min ? item.prices[filter.price.type] >= filter.price.min : true) &&
+          (filter.price.max ? item.prices[filter.price.type] <= filter.price.max : true))
+      }))
   }, [tools])
 
   useEffect(() => {
@@ -199,13 +203,15 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteIte
 const mapDispatchToProps = dispatch => ({
   fetchHeroes: () => dispatch(fetchHeroesStart()),
   fetchItems: () => dispatch(fetchItemsStart()),
-  deleteItemsStart: items => dispatch(deleteItemsStart(items))
+  deleteItemsStart: items => dispatch(deleteItemsStart(items)),
+  fetchCurrencyRate: () => dispatch(fetchCurrencyRateStart())
 })
 
 const mapStateToProps = createStructuredSelector({
   heroes: selectHeroes,
   items: selectItems,
-  fetching: selectFetchingItems
+  fetching: selectFetchingItems,
+  rate: selectCurrencyRate
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ItemsPage)

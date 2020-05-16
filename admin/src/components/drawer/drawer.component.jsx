@@ -11,7 +11,8 @@ import {
   Person as PersonIcon,
   Build as BuildIcon,
   LocalOffer as LocalOfferIcon,
-  Style as StyleIcon
+  Style as StyleIcon,
+  AccountBalance
 } from '@material-ui/icons'
 
 const drawerWidth = 240;
@@ -52,14 +53,15 @@ const CustomizedDrawer = ({ open }) => {
   const classes = useStyles()
   const location = useLocation();
   const [items, setItems] = useState([
-    { label: "Users", Icon: PersonIcon, selected: false },
-    { label: "Items", Icon: StyleIcon, selected: false },
-    { label: "Offers", Icon: LocalOfferIcon, selected: false },
-    { label: "Configs", Icon: BuildIcon, selected: false },
+    { label: "Users", Icon: PersonIcon, selected: false, link: '/users' },
+    { label: "Items", Icon: StyleIcon, selected: false, link: '/items' },
+    { label: "Bot's Inventory", Icon: AccountBalance, selected: false, link: '/items/bot' },
+    { label: "Offers", Icon: LocalOfferIcon, selected: false, link: '/offers' },
+    { label: "Configs", Icon: BuildIcon, selected: false, link: '/configs' },
   ])
 
   useEffect(() => {
-    setItems(items.map(item => ({ ...item, selected: location.pathname.includes(item.label.toLowerCase()) })))
+    setItems(items.map(item => ({ ...item, selected: location.pathname === item.link })))
     //eslint-disable-next-line
   }, [location])
 
@@ -80,9 +82,9 @@ const CustomizedDrawer = ({ open }) => {
       <Toolbar />
       <img className={classes.background} src="https://i.pinimg.com/564x/d1/59/e9/d159e9ca272b73f56ef2b770a7c0b17b.jpg" alt="background_img" />
       <List >
-        {items.map(({ label, Icon, selected }, index) => (
+        {items.map(({ label, Icon, selected, link }, index) => (
           <Fragment key={index}>
-            <Link to={`/${label.toLowerCase()}`}>
+            <Link to={link}>
               <ListItem button selected={selected}>
                 <ListItemIcon><Icon color={selected ? "primary" : "inherit"} /></ListItemIcon>
                 <ListItemText disableTypography>

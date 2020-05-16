@@ -13,20 +13,25 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const InfoContainer = ({ info: { label, value, isLink, isDate, isBalance }, dense }) => {
+const InfoContainer = ({
+  info: { label, value, isLink, isDate, isBalance },
+  dense,
+  layout,
+  styles
+}) => {
   const classes = useStyles()
 
   return (
-    <Grid container className={clsx({ [classes.dense]: !dense })}>
-      <Grid item xs={3}>
+    <Grid container className={clsx({ [classes.dense]: !dense })} style={styles && styles.root && styles.root}>
+      <Grid item xs={layout ? layout[0] : 3}>
         {label}
       </Grid>
-      <Grid item xs={1}>
+      <Grid item xs={layout ? layout[1] : 1}>
         :
       </Grid>
-      <Grid item xs={8}>
+      <Grid item xs={layout ? layout[2] : 8} style={styles && styles.value && styles.value}>
         {isLink && <Link href={value} target='_blank' rel='noopener'>{value}</Link>}
-        {isDate && moment(value).tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY hh:mm:ss A')}
+        {isDate && moment(value).tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY hh:mm A')}
         {isBalance && parseInt(value).toLocaleString()}
         {!isLink && !isDate && !isBalance && value}
       </Grid>

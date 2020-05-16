@@ -16,10 +16,19 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3),
     boxSizing: 'border-box',
   },
+  unavailable: {
+    filter: 'brightness(60%)'
+  },
   selectable: {
     '&:hover': {
       cursor: 'pointer',
       filter: 'brightness(110%)'
+    }
+  },
+  selectableUnavailable: {
+    '&:hover': {
+      cursor: 'pointer',
+      filter: 'brightness(65%)'
     }
   },
   img: {
@@ -85,9 +94,11 @@ const ItemCard = ({ item, heroes, width, selectable, onClick }) => {
 
   return (
     <Paper
-      elevation={2}
+      elevation={3}
       className={clsx(classes.result, {
-        [classes.selectable]: selectable
+        [classes.selectable]: selectable,
+        [classes.unavailable]: item.unavailable,
+        [classes.selectableUnavailable]: selectable && item.unavailable,
       })}
       style={{ width: width && width }}
       onClick={() => selectable && onClick(item)}
@@ -107,7 +118,6 @@ const ItemCard = ({ item, heroes, width, selectable, onClick }) => {
           <Typography
             variant='h6'
             style={{
-              color: item.nameColor !== 'D2D2D2' && `#${item.nameColor}`,
               textAlign: 'center',
               fontSize: width <= 240 ? 14 : 16
             }}
@@ -143,7 +153,7 @@ const ItemCard = ({ item, heroes, width, selectable, onClick }) => {
                   size='small'
                   label={item.hero}
                   avatar={<Avatar src={hero && hero.portrait_url} />}
-                  clickable
+                  clickable={!selectable}
                   color='primary'
                 />
               </Grid>
@@ -153,18 +163,8 @@ const ItemCard = ({ item, heroes, width, selectable, onClick }) => {
                 <Chip
                   size='small'
                   label={item.rarity}
-                  clickable
+                  clickable={!selectable}
                   className={classes[item.rarity.toLowerCase()]}
-                />
-              </Grid>
-            }
-            {item.configs.isInscribed &&
-              <Grid item>
-                <Chip
-                  size='small'
-                  label='Inscribed'
-                  clickable
-                  style={{ backgroundColor: '#CF6A32', color: 'white' }}
                 />
               </Grid>
             }
@@ -173,7 +173,7 @@ const ItemCard = ({ item, heroes, width, selectable, onClick }) => {
                 <Chip
                   size='small'
                   label='Non-market'
-                  clickable
+                  clickable={!selectable}
                   color='secondary'
                 />
               </Grid>
@@ -183,7 +183,7 @@ const ItemCard = ({ item, heroes, width, selectable, onClick }) => {
                 <Chip
                   size='small'
                   label='Disabled'
-                  clickable
+                  clickable={!selectable}
                 />
               </Grid>
             }

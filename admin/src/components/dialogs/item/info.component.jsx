@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
+import axios from 'axios'
 
 import {
-  Grid, Typography, TextField, IconButton
+  Grid, Typography, TextField, IconButton, Button, CircularProgress
 } from '@material-ui/core'
 import {
   SwapVert
@@ -13,27 +14,12 @@ import HeroesSelector from '../../heroes-selector/heroes-selector.component'
 import RaritySelector from '../../rarity-selector/rarity-selector.component'
 import NumberFormatCustom from '../../number-format-input/number-format-input.component'
 
-import { fetchCurrencyRateStart } from '../../../redux/site-settings/site-settings.actions'
+import { enqSnackbar } from '../../../redux/snackbar/snackbar.actions'
 
 import { selectCurrencyRate } from '../../../redux/site-settings/site-settings.selectors'
 
-
-const Info = ({ item, onChange, rate, fetchCurrencyRate }) => {
-  const [nameValue, setNameValue] = useState('')
-
-  useEffect(() => {
-    if (!rate)
-      fetchCurrencyRate()
-    //eslint-disable-next-line
-  }, [])
-
-  useEffect(() => {
-    setNameValue(item.name)
-  }, [item])
-
-  useEffect(() => {
-    onChange({ ...item, name: nameValue })
-  }, [nameValue])
+const Info = ({ item, onChange, rate, enqSnackbar }) => {
+  const [fetching, setFetching] = useState(false)
 
   const convertClick = to => {
     if (rate) {
@@ -53,6 +39,30 @@ const Info = ({ item, onChange, rate, fetchCurrencyRate }) => {
     //eslint-disable-next-line
   }
 
+  const fetchPrices = () => {
+    const fetch = async () => {
+      setFetching(true)
+      const respone = await axios(`/admin/items/market/${item.name}`)
+
+      if (respone.status === 200) {
+        onChange({ ...item, prices: respone.data.prices })
+        enqSnackbar({
+          severity: 'success',
+          text: 'Lấy giá từ market thành công!',
+          key: new Date().getTime()
+        })
+      } else
+        enqSnackbar({
+          severity: 'error',
+          text: 'Lấy giá từ market thất bại!',
+          key: new Date().getTime()
+        })
+
+      setFetching(false)
+    }
+    fetch()
+  }
+
   return (
     <Grid container spacing={1} direction='column' alignItems='center'>
       <Grid item>
@@ -60,8 +70,8 @@ const Info = ({ item, onChange, rate, fetchCurrencyRate }) => {
           <TextField
             label={'Tên Item'}
             InputLabelProps={{ shrink: true }}
-            value={nameValue}
-            onChange={e => setNameValue(e.target.value)}
+            value={item.name}
+            onChange={e => onChange({ ...item, name: e.target.value })}
             disabled={!item.configs.isNonMarket}
             variant='outlined'
             size='small'
@@ -155,16 +165,20 @@ const Info = ({ item, onChange, rate, fetchCurrencyRate }) => {
           </Grid>
         </Grid>
       </Grid>
+      <Grid item style={{ marginLeft: 'auto' }}>
+        {fetching ? <CircularProgress size={20} />
+          : <Button color='primary' size='small' onClick={fetchPrices}>Lấy giá</Button>}
+      </Grid>
     </Grid>
   )
 }
 
-const mapStateToProps = createStructuredSelector({
-  rate: selectCurrencyRate
+const mapDispatchToProps = dispatch => ({
+  enqSnackbar: snackbar => dispatch(enqSnackbar(snackbar))
 })
 
-const mapDispatchToProps = dispatch => ({
-  fetchCurrencyRate: () => dispatch(fetchCurrencyRateStart())
+const mapStateToProps = createStructuredSelector({
+  rate: selectCurrencyRate,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Info)

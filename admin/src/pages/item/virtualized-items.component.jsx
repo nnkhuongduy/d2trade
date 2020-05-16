@@ -13,9 +13,9 @@ import {
   CheckCircle, RadioButtonUnchecked
 } from '@material-ui/icons'
 
-import ItemCard from '../../../components/item-card/item-card.component'
+import ItemCard from '../../components/item-card/item-card.component'
 
-const margin = 24
+const margin = 8
 
 const styles = theme => ({
   root: {

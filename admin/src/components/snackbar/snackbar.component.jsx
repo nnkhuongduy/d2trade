@@ -44,7 +44,7 @@ const Snackbar = ({ deqSnackbar, snackbars, ...snackProps }) => {
     <MUISnackbar
       key={key}
       open={open}
-      autoHideDuration={6000}
+      autoHideDuration={3000}
       onClose={onClose}
       onExited={deqSnackbar}
       {...snackProps}

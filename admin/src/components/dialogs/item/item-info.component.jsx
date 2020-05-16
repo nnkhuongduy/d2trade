@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 
 import { makeStyles } from '@material-ui/styles'
 import {
@@ -8,7 +9,10 @@ import {
 
 import Info from './info.component'
 import Configs from './configs.component'
+import DateTab from './date.component'
 import ItemCard from '../../item-card/item-card.component'
+
+import { putItemStart } from '../../../redux/item/item.actions'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -24,7 +28,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const ItemInfoDialog = ({ open, onClose, item }) => {
+const ItemInfoDialog = ({ open, onClose, item, putItem }) => {
   const classes = useStyles()
   const [currentItem, setCurrentItem] = useState(null)
   const [tab, setTab] = useState(0)
@@ -36,7 +40,8 @@ const ItemInfoDialog = ({ open, onClose, item }) => {
     //eslint-disable-next-line
   }, [open])
 
-  const confirmClick = () => {
+  const onConfirm = () => {
+    putItem(currentItem)
     onClose()
   }
 
@@ -73,6 +78,12 @@ const ItemInfoDialog = ({ open, onClose, item }) => {
                   label='Thiết lập'
                   classes={{ root: classes.tab }}
                 />
+                <Tab
+                  id='item-tabs-2'
+                  aria-controls='item-tabpanel-2'
+                  label='Khác'
+                  classes={{ root: classes.tab }}
+                />
               </Tabs>
               <Box p={1} style={{ marginTop: 20 }}>
                 <Collapse in={tab === 0}>
@@ -81,16 +92,23 @@ const ItemInfoDialog = ({ open, onClose, item }) => {
                 <Collapse in={tab === 1}>
                   <Configs item={currentItem} onChange={item => setCurrentItem(item)} />
                 </Collapse>
+                <Collapse in={tab === 2}>
+                  <DateTab item={currentItem} />
+                </Collapse>
               </Box>
             </Grid>
           </Grid>}
       </DialogContent>
       <DialogActions>
         <Button variant='outlined' className={classes.cancel} onClick={onClose}>Hủy bỏ</Button>
-        <Button variant='contained' color='primary' onClick={onClose}>Xác nhận</Button>
+        <Button variant='contained' color='primary' onClick={onConfirm}>Xác nhận</Button>
       </DialogActions>
     </Dialog>
   )
 }
 
-export default ItemInfoDialog
+const mapDispatchToProps = dispatch => ({
+  putItem: item => dispatch(putItemStart(item))
+})
+
+export default connect(null, mapDispatchToProps)(ItemInfoDialog)

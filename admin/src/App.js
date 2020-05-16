@@ -13,6 +13,7 @@ import Snackbar from './components/snackbar/snackbar.component'
 import Dashboard from './pages/dashboard/dashboard.component'
 import UsersPage from './pages/user/users-page/users-page.component'
 import ItemsPage from './pages/item/items-page/items-page.component'
+import BotPage from './pages/item/bot-page/bot-page.component'
 import OffersPage from './pages/offers-page/offers-page.component'
 import ConfigsPage from './pages/configs-page/configs-page.component'
 import UserPage from './pages/user/user-page/user-page.component'
@@ -44,6 +45,7 @@ const App = ({ backdrop }) => {
           <Route exact path='/users' component={UsersPage} />
           <Route exact path='/users/:steamid' component={UserPage} />
           <Route exact path='/items' component={ItemsPage} />
+          <Route exact path='/items/bot' component={BotPage} />
           <Route exact path='/offers' component={OffersPage} />
           <Route exact path='/configs' component={ConfigsPage} />
           <Route path='*'><Redirect to='/dashboard' /></Route>
