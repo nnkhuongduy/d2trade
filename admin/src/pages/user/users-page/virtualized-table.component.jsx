@@ -12,7 +12,7 @@ import { Add, Edit, Launch } from '@material-ui/icons'
 
 import { AutoSizer, Column, Table } from 'react-virtualized'
 
-import UserAvatar from '../user/user-avatar/user-avatar.component'
+import UserAvatar from '../../../components/user/user-avatar/user-avatar.component'
 
 const styles = theme => ({
   flexContainer: {
@@ -163,7 +163,7 @@ class VirtualizedTable extends PureComponent {
 }
 
 VirtualizedTable.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object,
   columns: PropTypes.arrayOf(
     PropTypes.shape({
       dataKey: PropTypes.string.isRequired,

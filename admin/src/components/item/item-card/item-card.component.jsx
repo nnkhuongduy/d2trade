@@ -8,7 +8,7 @@ import {
   Paper, Grid, Typography, Divider, Chip, Avatar
 } from '@material-ui/core'
 
-import { selectHeroes } from '../../redux/hero/hero.selectors'
+import { selectHeroes } from '../../../redux/hero/hero.selectors'
 
 const useStyles = makeStyles(theme => ({
   result: {
@@ -126,9 +126,7 @@ const ItemCard = ({ item, heroes, width, selectable, onClick }) => {
             {item.name}
           </Typography>
         </Grid>
-        <Grid item>
-          <Divider />
-        </Grid>
+        <Divider flexItem />
         <Grid item>
           <Typography variant='body2'>Giá:</Typography>
         </Grid>
@@ -145,7 +143,7 @@ const ItemCard = ({ item, heroes, width, selectable, onClick }) => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item style={{ marginTop: 20, alignSelf: 'flex-start' }}>
+        <Grid item style={{ marginTop: 12, alignSelf: 'flex-start' }}>
           <Grid container spacing={1}>
             {item.hero &&
               <Grid item>

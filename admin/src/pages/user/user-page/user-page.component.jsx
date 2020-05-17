@@ -10,8 +10,6 @@ import { fetchUsersStart } from '../../../redux/users/users.actions'
 
 import { selectUsers } from '../../../redux/users/users.selectors'
 
-import './user-page.component.scss'
-
 const loaderStyle = `
   width: max-content;
   margin: 0 auto;

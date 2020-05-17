@@ -8,6 +8,7 @@ const getItems = require('../services/get-items')
 const deleteItems = require('../services/delete-items')
 const putItem = require('../services/put-item')
 const AdminGetBotInventory = require('../services/admin-get-bot')
+const getOffers = require('../services/get-offers')
 
 adminRouter.get("/users", (req, res) => {
   getUsers()
@@ -32,6 +33,12 @@ adminRouter.get('/items/', (req, res) => {
 adminRouter.get('/items/bot', (req, res) => {
   AdminGetBotInventory()
     .then(item => res.json(item))
+    .catch(err => errorHandler(err, res, 500))
+})
+
+adminRouter.get('/offers/', (req, res) => {
+  getOffers()
+    .then(offers => res.json(offers))
     .catch(err => errorHandler(err, res, 500))
 })
 

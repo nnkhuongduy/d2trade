@@ -10,7 +10,7 @@ import {
 import Info from './info.component'
 import Configs from './configs.component'
 import DateTab from './date.component'
-import ItemCard from '../../item-card/item-card.component'
+import ItemCard from '../../item/item-card/item-card.component'
 
 import { putItemStart } from '../../../redux/item/item.actions'
 

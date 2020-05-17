@@ -1,13 +1,10 @@
 import React from 'react'
-import { connect } from 'react-redux'
 
 import {
   Grid, IconButton,
 } from '@material-ui/core'
 
-import { fetchItemsStart } from '../../redux/item/item.actions'
-
-const Toolbar = ({ tools, onChange, fetchItems }) => {
+const Toolbar = ({ tools, onChange }) => {
 
   const onIconClick = (label) => {
     if (label === 'refresh') {
@@ -31,8 +28,4 @@ const Toolbar = ({ tools, onChange, fetchItems }) => {
   )
 }
 
-const mapDispatchToProps = dispatch => ({
-  fetchItems: () => dispatch(fetchItemsStart())
-})
-
-export default connect(null, mapDispatchToProps)(Toolbar)
+export default Toolbar

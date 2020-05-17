@@ -3,49 +3,23 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
 import {
-  Grid, LinearProgress, Paper,
+  Grid, LinearProgress, Paper, Collapse
 } from '@material-ui/core'
+import {
+  Search, Tune, FilterList, Refresh
+} from '@material-ui/icons'
+
+import comparator from '../../../helpers/sort-function'
 
 import UserAddBalanceDialog from '../../../components/dialogs/user-add-balance/user-add-balance.component'
 import UserSetBalanceDialog from '../../../components/dialogs/user-set-balance/user-set-balance.component'
-import VirtualizedTable from '../../../components/virtualized-table/virtualized-table.component'
+import VirtualizedTable from './virtualized-table.component'
+import Toolbar from '../../../components/toolbar/toolbar.component'
+import ToolbarContent from './toolbar-content.component'
 
 import { fetchUsersStart } from '../../../redux/users/users.actions'
 
-import { selectUsers } from '../../../redux/users/users.selectors'
-
-import Toolbar from '../../../components/toolbar/toolbar.component'
-
-const comparator = (prop, desc = true) => (a, b) => {
-  const order = desc ? 1 : -1;
-
-  if (a[prop] < b[prop])
-    return -1 * order
-
-  if (a[prop] > b[prop])
-    return 1 * order;
-
-  return 0 * order;
-}
-
-const labelToProp = label => {
-  switch (label) {
-    case 'Index':
-      return 'index'
-
-    case 'Tài khoản':
-      return 'personaname'
-
-    case 'Số dư':
-      return 'accountBalance'
-
-    case 'Đăng nhập gần nhất':
-      return 'lastLogin'
-
-    default:
-      return ''
-  }
-}
+import { selectUsers, selectUsersFetching } from '../../../redux/users/users.selectors'
 
 const INITIAL_COLUMNS = [
   {
@@ -53,7 +27,7 @@ const INITIAL_COLUMNS = [
     label: 'Index',
     dataKey: 'index',
     sortable: true,
-    direction: 'asc',
+    direction: 'desc',
     activeSort: true
   },
   {
@@ -94,33 +68,47 @@ const INITIAL_COLUMNS = [
   }
 ]
 
-const UsersPage = ({ fetchUsersStart, users, ...props }) => {
+const UsersPage = ({ fetchUsers, users, fetching }) => {
   const [columns, setColumns] = useState(INITIAL_COLUMNS)
   const [rows, setRows] = useState([])
   const [dialogUser, setDialogUser] = useState({})
   const [addDialog, setAddDialog] = useState(false)
   const [setDialog, setSetDialog] = useState(false)
-  const [slideValue, setSlideValue] = useState(70)
-  const [searchValue, setSearchValue] = useState('')
+  const [tools, setTools] = useState([
+    {
+      label: 'search',
+      Icon: <Search />,
+      value: '',
+      active: false
+    },
+    {
+      label: 'slider',
+      Icon: <Tune />,
+      value: 700,
+      active: false
+    },
+    {
+      label: 'refresh',
+      Icon: <Refresh />,
+      func: fetchUsers
+    }
+  ])
 
   useEffect(() => {
-    if (users.length === 0) {
-      setRows([]);
-      fetchUsersStart();
-    }
-    else {
-      setRows(users)
-    }
+    if (!users) fetchUsers()
+  }, [])
+
+  useEffect(() => {
+    if (users) setRows(users)
     //eslint-disable-next-line
   }, [users])
 
   useEffect(() => {
-    setRows(users.filter(row => row.personaname.toLowerCase().includes(searchValue.toLowerCase())))
-    //eslint-disable-next-line
-  }, [searchValue])
+    if (users)
+      setRows(users.filter(user => user.personaname.toLowerCase().includes(tools[0].value.toLowerCase())))
+  }, [tools[0].value])
 
-  const onSortClick = useCallback(index => () => {
-    const prop = labelToProp(columns[index].label);
+  const onSortClick = index => () => {
 
     setColumns(columns.map((column, i) => ({
       ...column,
@@ -128,9 +116,9 @@ const UsersPage = ({ fetchUsersStart, users, ...props }) => {
       direction: (index === i && (column.direction === 'desc' ? 'asc' : 'desc')) || undefined
     })))
 
-    setRows(users.slice().sort(comparator(prop, columns[index].direction === 'desc')))
+    setRows(users.slice().sort(comparator(columns[index].dataKey, columns[index].direction === 'desc')))
     //eslint-disable-next-line
-  }, [columns, rows])
+  }
 
   const onAddClick = useCallback(user => {
     setAddDialog(true);
@@ -144,21 +132,21 @@ const UsersPage = ({ fetchUsersStart, users, ...props }) => {
 
   return (
     <>
-      <Grid container direction='column'>
-        <Grid item>
-          <Toolbar
-            onRefresh={() => fetchUsersStart()} hasSlide={true}
-            slideValue={slideValue}
-            onSlideCommit={value => setSlideValue(value)}
-            slideTitle='Table Height'
-            slideProps={{ min: 40, max: 90 }}
-            searchValue={searchValue}
-            onSearchChange={e => setSearchValue(e.target.value)}
-          />
+      <Grid container direction='column' spacing={2}>
+        <Collapse in={fetching}>
+          <Grid item>
+            <LinearProgress />
+          </Grid>
+        </Collapse>
+        <Grid item style={{ alignSelf: 'flex-end' }}>
+          <Toolbar tools={tools} onChange={tools => setTools(tools)} />
         </Grid>
         <Grid item>
-          {users.length !== 0 &&
-            <Paper style={{ height: `${slideValue}vh`, width: '100%' }} elevation={3}>
+          <ToolbarContent tools={tools} onChange={tools => setTools(tools)} />
+        </Grid>
+        <Grid item>
+          {rows &&
+            <Paper style={{ height: tools[1].value, width: '100%' }} elevation={3}>
               <VirtualizedTable
                 rowCount={rows.length}
                 rowGetter={({ index }) => ({ ...rows[index], onAddClick: onAddClick, onSetClick: onSetClick })}
@@ -166,7 +154,6 @@ const UsersPage = ({ fetchUsersStart, users, ...props }) => {
                 onSortClick={onSortClick}
               />
             </Paper>}
-          {users.length === 0 && <LinearProgress />}
         </Grid>
       </Grid>
       <UserAddBalanceDialog
@@ -184,11 +171,12 @@ const UsersPage = ({ fetchUsersStart, users, ...props }) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  fetchUsersStart: () => dispatch(fetchUsersStart())
+  fetchUsers: () => dispatch(fetchUsersStart())
 })
 
 const mapStateToProps = createStructuredSelector({
   users: selectUsers,
+  fetching: selectUsersFetching
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UsersPage)

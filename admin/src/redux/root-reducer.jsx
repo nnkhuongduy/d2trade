@@ -8,6 +8,7 @@ import siteSettingsReducer from './site-settings/site-settings.reducer'
 import heroReducer from './hero/hero.reducer'
 import backdropReducer from './backdrop/backdrop.reducer'
 import snackbarReducer from './snackbar/snackbar.reducer'
+import offersReducer from './offers/offers.reducer'
 
 const rootReducer = combineReducers({
   users: userReducer,
@@ -17,7 +18,8 @@ const rootReducer = combineReducers({
   siteSettings: siteSettingsReducer,
   hero: heroReducer,
   backdrop: backdropReducer,
-  snackbar: snackbarReducer
+  snackbar: snackbarReducer,
+  offers: offersReducer
 });
 
 export default rootReducer;

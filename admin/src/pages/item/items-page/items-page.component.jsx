@@ -105,8 +105,6 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteIte
 
     if (items && filter)
       setCurrentItems(items.filter(item => {
-        console.log(item.configs)
-        console.log(filter.configs)
         return ((filter.hero ? filter.hero === item.hero : true) &&
           (filter.rarity ? filter.rarity === item.rarity : true) &&
           (!filter.configs.any ?

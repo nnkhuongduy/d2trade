@@ -12,14 +12,11 @@ export function* fetchUsersAsync() {
     const respone = yield axios('/admin/users');
 
     if (respone.status === 200) {
-      let index = 1;
+      let index = 0;
 
-      yield respone.data.forEach(user => {
-        user.index = index;
-        index++;
-      })
+      yield respone.data.forEach(user => user.index = ++index)
 
-      yield put(fetchUsersSuccess(respone.data))
+      yield put(fetchUsersSuccess(respone.data.sort((a, b) => b.index - a.index)))
     }
     else yield put(fetchUsersFail(respone.statusText))
   } catch (err) {

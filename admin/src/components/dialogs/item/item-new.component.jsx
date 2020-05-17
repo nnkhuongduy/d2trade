@@ -11,7 +11,7 @@ import {
 import FetchItem from './fetch.component'
 import Info from './info.component'
 import Configs from './configs.component'
-import ItemCard from '../../item-card/item-card.component'
+import ItemCard from '../../item/item-card/item-card.component'
 
 import { postItemStart, fetchItemSuccess } from '../../../redux/item/item.actions'
 
