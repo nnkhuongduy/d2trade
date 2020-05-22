@@ -94,18 +94,18 @@ const OffersContainer = ({ offers, fetchingOffers, users, fetchingUsers, fetchOf
 
   useEffect(() => {
     if (!offers) fetchOffers()
-    if (!users.length) fetchUsers()
+    if (!users) fetchUsers()
   }, [])
 
   useEffect(() => {
-    if (offers && users.length) {
+    if (offers && users) {
       offers.forEach(offer => offer.user = users.find(user => user.steamid === offer.steam_id))
 
       setRows(offers.map(offer => ({
         ...offer,
         avatar: <Link href={`users/${offer.user.steamid}`} target='_blank' rel='noopener'><Avatar src={offer.user.avatar} /></Link>,
         date: moment(offer.date).tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY'),
-        user_balance: offer.user_balance.toLocaleString(),
+        user_balance: `- ${offer.user_balance.toLocaleString()}`,
         profit: <span style={{ color: 'green' }}>+ {offer.profit.toLocaleString()}</span>,
         status: <span className={clsx(classes.dot, {
           [classes.green]: offer.status === 'Accepted',

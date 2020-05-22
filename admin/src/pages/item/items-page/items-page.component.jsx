@@ -22,11 +22,9 @@ import ItemInfoDialog from '../../../components/dialogs/item/item-info.component
 
 import { fetchHeroesStart } from '../../../redux/hero/hero.actions'
 import { fetchItemsStart, deleteItemsStart } from '../../../redux/item/item.actions'
-import { fetchCurrencyRateStart } from '../../../redux/site-settings/site-settings.actions'
 
 import { selectHeroes } from '../../../redux/hero/hero.selectors'
 import { selectFetchingItems, selectItems } from '../../../redux/item/item.selectors'
-import { selectCurrencyRate } from '../../../redux/site-settings/site-settings.selectors'
 
 const useStyles = makeStyles(theme => ({
   deleteBtn: {
@@ -45,7 +43,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteItemsStart, rate, fetchCurrencyRate }) => {
+const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteItemsStart, fetchSiteConfigs }) => {
   const classes = useStyles()
   const [dialog, setDialog] = useState(false)
   const [currentItems, setCurrentItems] = useState(null)
@@ -83,7 +81,6 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteIte
     if (!heroes) fetchHeroes()
     if (!items) fetchItems()
     if (items) setCurrentItems(items)
-    if (!rate) fetchCurrencyRate()
     //eslint-disable-next-line
   }, [])
 
@@ -202,14 +199,12 @@ const mapDispatchToProps = dispatch => ({
   fetchHeroes: () => dispatch(fetchHeroesStart()),
   fetchItems: () => dispatch(fetchItemsStart()),
   deleteItemsStart: items => dispatch(deleteItemsStart(items)),
-  fetchCurrencyRate: () => dispatch(fetchCurrencyRateStart())
 })
 
 const mapStateToProps = createStructuredSelector({
   heroes: selectHeroes,
   items: selectItems,
   fetching: selectFetchingItems,
-  rate: selectCurrencyRate
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ItemsPage)

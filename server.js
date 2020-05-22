@@ -11,6 +11,7 @@ const userTransaction = require('./server/services/user-transaction')
 const createDBOffer = require('./server/services/create-db-offer')
 const sendOffer = require('./server/services/send-offer')
 const errorHandler = require('./server/services/error-handler')
+const SiteConfigs = require('./server/models/site-configs-model')
 
 app.get('/inventory/bot', (req, res) => {
   getInventory(CONFIGS.STEAM_INFO.STEAM_BOT_ID)
@@ -55,6 +56,16 @@ app.get('/currency/rate', (req, res) => {
   getCurrencyRate()
     .then(rate => res.json(rate))
     .catch(err => errorHandler(err, res, 500))
+})
+
+app.get('/currency/rate/new', (req, res) => {
+  const rate = new SiteConfigs({
+    name: 'currencyRate',
+    value: 22
+  }).save((err) => {
+    if (!err) res.sendStatus(200)
+    else res.sendStatus(500)
+  })
 })
 
 // app.get('/users/offers', authCheck, (req, res) => {

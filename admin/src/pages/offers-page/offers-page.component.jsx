@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
 import {
-  Grid, Typography, LinearProgress, Collapse
+  Grid, LinearProgress, Collapse
 } from '@material-ui/core'
 import {
   Refresh

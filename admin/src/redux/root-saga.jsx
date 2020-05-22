@@ -3,7 +3,7 @@ import { all, call } from 'redux-saga/effects';
 import { usersRootSaga } from './users/users.sagas'
 import { overlayRootSaga } from './overlay/overlay.sagas'
 import { itemRootSaga } from './item/item.sagas'
-import { siteSettingsRootSaga } from './site-settings/site-settings.sagas'
+import { siteConfigsRootSaga } from './site-configs/site-configs.sagas'
 import { heroRootSaga } from './hero/hero.sagas'
 import { offersRootSaga } from './offers/offers.sagas'
 
@@ -12,7 +12,7 @@ export default function* rootSaga() {
     call(usersRootSaga),
     call(overlayRootSaga),
     call(itemRootSaga),
-    call(siteSettingsRootSaga),
+    call(siteConfigsRootSaga),
     call(heroRootSaga),
     call(offersRootSaga)
   ])

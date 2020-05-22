@@ -9,6 +9,8 @@ const deleteItems = require('../services/delete-items')
 const putItem = require('../services/put-item')
 const AdminGetBotInventory = require('../services/admin-get-bot')
 const getOffers = require('../services/get-offers')
+const getSiteConfigs = require('../services/get-site-configs')
+const putConfig = require('../services/put-config')
 
 adminRouter.get("/users", (req, res) => {
   getUsers()
@@ -39,6 +41,12 @@ adminRouter.get('/items/bot', (req, res) => {
 adminRouter.get('/offers/', (req, res) => {
   getOffers()
     .then(offers => res.json(offers))
+    .catch(err => errorHandler(err, res, 500))
+})
+
+adminRouter.get('/configs', (req, res) => {
+  getSiteConfigs()
+    .then(configs => res.json(configs))
     .catch(err => errorHandler(err, res, 500))
 })
 
@@ -74,6 +82,14 @@ adminRouter.put('/items/put', (req, res) => {
   const item = req.body
 
   putItem(item)
+    .then(() => res.sendStatus(200))
+    .catch(err => errorHandler(err, res, 500))
+})
+
+adminRouter.put('/configs', (req, res) => {
+  const config = req.body
+
+  putConfig(config)
     .then(() => res.sendStatus(200))
     .catch(err => errorHandler(err, res, 500))
 })

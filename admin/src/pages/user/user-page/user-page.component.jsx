@@ -37,7 +37,7 @@ const UserPage = ({ setCurrentPage, fetchUsersStart, users, match, ...props }) =
   }, [users])
 
   useEffect(() => {
-    if (users.length === 0) fetchUsersStart()
+    if (!users) fetchUsersStart()
     //eslint-disable-next-line
   }, [])
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import axios from 'axios'
@@ -15,13 +15,20 @@ import RaritySelector from '../../rarity-selector/rarity-selector.component'
 import NumberFormatCustom from '../../number-format-input/number-format-input.component'
 
 import { enqSnackbar } from '../../../redux/snackbar/snackbar.actions'
+import { fetchSiteConfigsStart } from '../../../redux/site-configs/site-configs.actions'
 
-import { selectCurrencyRate } from '../../../redux/site-settings/site-settings.selectors'
+import { selectCurrencyRate } from '../../../redux/site-configs/site-configs.selectors'
 
-const Info = ({ item, onChange, rate, enqSnackbar }) => {
+const Info = ({ item, onChange, rate, enqSnackbar, fetchConfigs }) => {
   const [fetching, setFetching] = useState(false)
 
+  useEffect(() => {
+    if (!rate) fetchConfigs()
+  }, [])
+
   const convertClick = to => {
+    console.log(rate)
+
     if (rate) {
       const value = {
         usd: Math.round(((item.prices.vnd / (rate * 1000)) + Number.EPSILON) * 100) / 100,
@@ -174,7 +181,8 @@ const Info = ({ item, onChange, rate, enqSnackbar }) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  enqSnackbar: snackbar => dispatch(enqSnackbar(snackbar))
+  enqSnackbar: snackbar => dispatch(enqSnackbar(snackbar)),
+  fetchConfigs: () => dispatch(fetchSiteConfigsStart())
 })
 
 const mapStateToProps = createStructuredSelector({
