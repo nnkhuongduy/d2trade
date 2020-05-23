@@ -41,7 +41,7 @@ const OffersPage = ({ fetchOffers, fetching }) => {
         <Grid item>
           <Grid container spacing={5}>
             <Grid item sm={12} md={7}>
-              <OffersContainer setCurrentOffer={offer => setCurrentOffer(offer)} />
+              <OffersContainer setCurrentOffer={offer => setCurrentOffer(offer)} sortable />
             </Grid>
             <Grid item sm={12} md={5}>
               <OfferInfo offer={currentOffer} />

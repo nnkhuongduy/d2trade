@@ -1,12 +1,10 @@
 import React, { PureComponent } from 'react'
 import clsx from 'clsx'
 import PropTypes from 'prop-types'
-import moment from 'moment-timezone'
-import { Link } from 'react-router-dom'
 
 import { withStyles } from '@material-ui/styles'
 import {
-  TableCell, TableSortLabel, Avatar
+  TableCell
 } from '@material-ui/core'
 
 import { AutoSizer, Column, Table } from 'react-virtualized'
@@ -44,7 +42,7 @@ const styles = theme => ({
 
 class VirtualizedTable extends PureComponent {
   static defaultProps = {
-    headerHeight: 48,
+    headerHeight: 0,
     rowHeight: 48
   }
 
@@ -73,25 +71,6 @@ class VirtualizedTable extends PureComponent {
     )
   }
 
-  headerRender = ({ columnData: { sortable, direction, onSortClick, activeSort }, label, columnIndex }) => {
-    const { headerHeight, classes } = this.props
-
-    return (
-      <TableCell
-        component='div'
-        className={clsx(classes.tableCell, classes.flexContainer, classes.noClick)}
-        variant='head'
-        style={{ height: headerHeight }}
-      >
-        <div style={{ fontSize: '0.75rem', textAlign: 'center' }}>
-          {sortable ? <TableSortLabel active={activeSort} onClick={onSortClick(columnIndex)} direction={direction}>
-            {label}
-          </TableSortLabel> : label}
-        </div>
-      </TableCell>
-    )
-  }
-
   render() {
     const { classes, columns, rowHeight, headerHeight, onSortClick, ...tableProps } = this.props
 
@@ -113,12 +92,6 @@ class VirtualizedTable extends PureComponent {
             {columns.map(({ dataKey, widthPerc, sortable, direction, activeSort, ...other }, index) => (
               <Column
                 key={dataKey}
-                headerRenderer={(headerProps) =>
-                  this.headerRender({
-                    ...headerProps,
-                    columnIndex: index
-                  })
-                }
                 className={classes.flexContainer}
                 cellRenderer={this.cellRenderer}
                 dataKey={dataKey}
@@ -147,9 +120,6 @@ VirtualizedTable.propTypes = {
       label: PropTypes.string.isRequired,
       numeric: PropTypes.bool,
       widthPerc: PropTypes.number.isRequired,
-      sortable: PropTypes.bool.isRequired,
-      direction: PropTypes.string,
-      activeSort: PropTypes.bool
     }),
   ).isRequired,
   headerHeight: PropTypes.number,

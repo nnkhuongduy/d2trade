@@ -30,6 +30,7 @@ export function* fetchOfferStatusAsync() {
       itemObj = {
         id: item.id,
         icon_url: item.icon_url,
+        name: item.market_hash_name,
         market_price: item.market_price,
         vnd_price: item.vnd_price
       }
@@ -40,6 +41,7 @@ export function* fetchOfferStatusAsync() {
       itemObj = {
         id: item.id,
         icon_url: item.icon_url,
+        name: item.market_hash_name,
         market_price: item.market_price,
         vnd_price: item.vnd_price,
       }

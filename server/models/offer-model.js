@@ -9,12 +9,14 @@ const steamOffersSchema = new Schema({
   bot_items: [{
     id: String,
     icon_url: String,
+    name: String,
     market_price: String,
     vnd_price: String
   }],
   user_items: [{
     id: String,
     icon_url: String,
+    name: String,
     market_price: String,
     vnd_price: String
   }],

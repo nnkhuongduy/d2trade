@@ -76,7 +76,7 @@ const OfferInfo = ({ offer, users, fetching, fetchUsers }) => {
                       {offer.user_items
                         .map(item => (
                           <Grid key={item.id} item>
-                            <ItemImg key={item.id} src={item.icon_url} perc={30} money={item.id === 'moneyItem'} />
+                            <ItemImg src={item.icon_url} perc={30} money={item.id === 'moneyItem'} />
                           </Grid>
                         ))}
                     </Grid>
@@ -89,7 +89,7 @@ const OfferInfo = ({ offer, users, fetching, fetchUsers }) => {
                       {offer.bot_items
                         .map(item => (
                           <Grid key={item.id} item>
-                            <ItemImg key={item.id} src={item.icon_url} perc={30} />
+                            <ItemImg src={item.icon_url} perc={30} />
                           </Grid>
                         ))}
                     </Grid>
