@@ -1,23 +1,26 @@
 const SteamOffers = require('../models/offer-model')
+const SteamUsers = require('../models/user-model')
 
-const createDBOffer = (botItems, userItems, user, offerId, userBalance) => {
-  return new Promise((resolve, reject) => {
+const createDBOffer = (offer) => new Promise((resolve, reject) => {
 
-    const dbOffer = SteamOffers({
-      offer_id: offerId,
-      steam_id: user.steamid,
-      user_balance: userBalance,
-      bot_items: botItems,
-      user_items: userItems,
-      status: "Created",
-    })
-
-    dbOffer.save((err) => {
-      if (!err)
-        resolve(dbOffer)
-      else reject(err)
-    })
+  const dbOffer = SteamOffers({
+    offer_id: "UNSET",
+    steam_id: offer.steamId,
+    user_balance: offer.balance,
+    bot_items: offer.bot,
+    user_items: offer.user,
+    status: "Initialized",
   })
-}
+
+  dbOffer.save((err) => {
+    if (!err)
+      SteamUsers.findOneAndUpdate({ steamid: offer.steamId }, { '$push': { offers: dbOffer } }, (err, user) => {
+        if (!err)
+          resolve(dbOffer)
+        else reject(err)
+      })
+    else reject(err)
+  })
+})
 
 module.exports = createDBOffer

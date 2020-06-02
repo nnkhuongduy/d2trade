@@ -1,0 +1,1 @@
+export const checkTradeUrl = url => url.includes('https://steamcommunity.com/tradeoffer/new/?partner=')

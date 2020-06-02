@@ -69,7 +69,11 @@ const BotPage = ({
     if (items && botItems) {
       let itemNames = {}
 
-      items.forEach(item => itemNames[item.name] = item)
+      items.forEach(item => {
+        itemNames[item.name] = item
+        itemNames[`Inscribed ${item.name}`] = item
+        itemNames[`Inscribed ${item.name}`].name = `Inscribed ${item.name}`
+      })
 
       setItemsFiltered(botItems.map(item => itemNames[item.name] ? { ...itemNames[item.name] } : { ...item, unavailable: true }))
     }

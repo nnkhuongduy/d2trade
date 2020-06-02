@@ -6,7 +6,8 @@ const newItem = item => {
       if (!err) {
         if (!dataItem) {
           new Items({
-            ...item
+            ...item,
+            name: item.name.replace('Inscribed ', '')
           }).save((err) => {
             if (!err) resolve()
             else reject()

@@ -15,8 +15,8 @@ function* fetchOffersAsync() {
       respone.data.forEach(offer => {
         offer.index = ++index
 
-        offer.botTotalPrice = offer.bot_items.reduce((accumulator, item) => accumulator + parseInt(item.vnd_price.replace(/,/g, '')), 0)
-        offer.userTotalPrice = offer.user_items.reduce((accumulator, item) => accumulator + parseInt(item.vnd_price.replace(/,/g, '')), 0)
+        offer.botTotalPrice = offer.bot_items.reduce((accumulator, item) => accumulator + item.vnd_price, 0)
+        offer.userTotalPrice = offer.user_items.reduce((accumulator, item) => accumulator + item.vnd_price, 0)
 
         offer.profit = offer.userTotalPrice - offer.botTotalPrice
       })

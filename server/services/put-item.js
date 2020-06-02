@@ -2,7 +2,8 @@ const Items = require('../models/item-model')
 
 const putItem = item => {
   return new Promise((resolve, reject) => {
-    Items.findOneAndUpdate({ name: item.name }, item, (err) => {
+    name = item.name.replace('Inscribed ', '')
+    Items.findOneAndUpdate({ name: name }, { ...item, name: name }, (err) => {
       if (!err) resolve()
       else reject(err)
     })

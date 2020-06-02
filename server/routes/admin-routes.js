@@ -11,6 +11,7 @@ const AdminGetBotInventory = require('../services/admin-get-bot')
 const getOffers = require('../services/get-offers')
 const getSiteConfigs = require('../services/get-site-configs')
 const putConfig = require('../services/put-config')
+const createReceipt = require('../services/create-receipt')
 
 adminRouter.get("/users", (req, res) => {
   getUsers()
@@ -50,7 +51,7 @@ adminRouter.get('/configs', (req, res) => {
     .catch(err => errorHandler(err, res, 500))
 })
 
-adminRouter.post("/user/balance/edit", (req, res) => {
+adminRouter.post("/user/balance/edit", async (req, res) => {
   const steamId = req.body.steamId
   let updateObj = {};
 
@@ -59,9 +60,16 @@ adminRouter.post("/user/balance/edit", (req, res) => {
   if (req.body.type === "MODIFY")
     updateObj = { $inc: { accountBalance: req.body.value } }
 
-  editUser(steamId, updateObj)
-    .then(() => res.sendStatus(200))
-    .catch(err => errorHandler(err, res, 500))
+  try {
+    await editUser(steamId, updateObj)
+
+    await createReceipt(req.body, steamId)
+
+    res.sendStatus(200)
+  } catch (err) {
+    errorHandler(err, res, 500)
+  }
+
 })
 
 adminRouter.post('/items/new', (req, res) => {

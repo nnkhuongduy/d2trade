@@ -6,7 +6,7 @@ import clsx from 'clsx'
 
 import { makeStyles } from '@material-ui/styles'
 import {
-  CircularProgress, Avatar, Link
+  CircularProgress, Avatar
 } from '@material-ui/core'
 
 import VirtualizedTable from '../virtualized-table.component'
@@ -83,11 +83,11 @@ const OffersContainer = ({ offers, fetchingOffers, users, fetchingUsers, fetchOf
         .slice(0, 10)
         .map(offer => ({
           ...offer,
-          avatar: <Link href={`users/${offer.user.steamid}`} target='_blank' rel='noopener'>
-            <Avatar src={offer.user.avatar} className={classes.avatar} />
-          </Link>,
+          avatar: <Avatar src={offer.user.avatar} className={classes.avatar} />,
           date: moment(offer.date).tz('Asia/Ho_Chi_Minh').format('DD / MM'),
-          profit: <span style={{ color: 'green' }}>+ {offer.profit.toLocaleString()}</span>,
+          profit: <span style={{
+            color: offer.status === 'Accepted' && 'green', textDecoration: offer.status !== 'Accepted' && 'line-through'
+          }}>+ {offer.profit.toLocaleString()}</span>,
           status: <span className={clsx(classes.dot, {
             [classes.green]: offer.status === 'Accepted',
             [classes.yellow]: offer.status === "Active" || offer.status === "CreatedNeedsConfirmation" || offer.status === "Created",

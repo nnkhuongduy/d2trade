@@ -10,6 +10,14 @@ const userSchema = new Schema({
   tradeOfferUrl: String,
   createdDate: { type: Date, default: Date.now },
   lastLogin: { type: Date, default: Date.now },
+  receipts: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Receipts'
+  }],
+  offers: [{
+    type: Schema.Types.ObjectId,
+    ref: 'SteamOffers'
+  }],
 })
 
 const SteamUsers = mongoose.model("SteamUsers", userSchema, "SteamUsers");

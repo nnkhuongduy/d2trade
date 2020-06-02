@@ -1,13 +1,14 @@
-const getInventory = require('../services/get-inventory')
+require('dotenv').config();
 const CONFIGS = require('../configs/configs')
+const manager = require('../configs/steam-setup/steam-manager')
 
 const AdminGetBotInventory = () => {
   return new Promise(async (resolve, reject) => {
     try {
       const newInventory = []
 
-      getInventory(CONFIGS.STEAM_INFO.STEAM_BOT_ID)
-        .then(inventory => {
+      manager.getUserInventoryContents(CONFIGS.STEAM_INFO.STEAM_BOT_ID, CONFIGS.STEAM_INFO.APP_ID, CONFIGS.STEAM_INFO.CONTEXT_ID, true, (err, inventory) => {
+        if (!err) {
           inventory
             .forEach(item => newInventory.push({
               icon_url: item.icon_url,
@@ -27,8 +28,9 @@ const AdminGetBotInventory = () => {
             }))
 
           resolve(newInventory)
-        })
-        .catch(err => reject(err))
+        }
+        else reject(err)
+      })
     } catch (err) {
       reject(err)
     }

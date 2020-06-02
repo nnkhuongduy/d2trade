@@ -1,44 +1,70 @@
 require('dotenv').config();
 const CONFIGS = require('../configs/configs')
-const getCurrencyRate = require('./get-currency-rate')
+const Items = require('../models/item-model')
 
 const manager = require('../configs/steam-setup/steam-manager')
 
+const fetchInventory = (steamId) => new Promise((resolve, reject) => {
+  manager.getUserInventoryContents(steamId, CONFIGS.STEAM_INFO.APP_ID, CONFIGS.STEAM_INFO.CONTEXT_ID, true, (err, inventory) => {
+    if (!err) resolve(inventory)
+    else reject(err)
+  })
+})
+
+const fetchOffers = (inventory, steamId) => new Promise((resolve, reject) => {
+  manager.getOffersContainingItems(inventory, false, (err, sent, received) => {
+    if (!err) {
+      const itemsOnBlackList = {};
+
+      sent.forEach(offer => {
+        let itemsArray;
+        if (steamId === process.env.BOT_STEAM_ID) itemsArray = offer.itemsToGive
+        else itemsArray = offer.itemsToReceive
+        itemsArray.forEach(item => itemsOnBlackList[item.id] ? itemsOnBlackList[item.id]++ : itemsOnBlackList[item.id] = 1)
+      })
+
+      resolve(inventory.filter(item => !itemsOnBlackList[item.id]))
+
+    } else reject(err)
+  })
+})
+
+const filterItems = (inventory) => new Promise((resolve, reject) => {
+  Items.find({}, (err, items) => {
+    if (!err) {
+      let list = {};
+
+      items.forEach(item => list[item.name] = item)
+
+      resolve(inventory
+        .filter(item => list[item.market_hash_name.replace('Inscribed ', '')] && !list[item.market_hash_name.replace('Inscribed ', '')].configs.isDisabled)
+        .map(item => ({
+          assetId: item.assetid,
+          name: item.market_hash_name,
+          iconUrl: item.icon_url,
+          prices: list[item.market_hash_name.replace('Inscribed ', '')].prices,
+          hero: list[item.market_hash_name.replace('Inscribed ', '')].hero,
+          rarity: list[item.market_hash_name.replace('Inscribed ', '')].rarity,
+        }))
+      )
+    }
+    else reject(err)
+  })
+})
+
 const getInventory = steamId => {
-  return new Promise((resolve, reject) => {
-    manager.getUserInventoryContents(steamId, CONFIGS.STEAM_INFO.APP_ID, CONFIGS.STEAM_INFO.CONTEXT_ID, true, (err, inventory) => {
-      if (!err)
-        manager.getOffersContainingItems(inventory, false, (err, sent, received) => {
-          if (!err) {
-            const itemsOnBlackList = {};
+  return new Promise(async (resolve, reject) => {
+    try {
+      let inventory = await fetchInventory(steamId)
 
-            sent.forEach(offer => {
-              let itemsArray;
-              if (steamId === process.env.BOT_STEAM_ID) itemsArray = offer.itemsToGive
-              else itemsArray = offer.itemsToReceive
-              itemsArray.forEach(item => itemsOnBlackList[item.id] ? itemsOnBlackList[item.id]++ : itemsOnBlackList[item.id] = 1)
-            })
+      inventory = await fetchOffers(inventory, steamId)
 
-            inventory = inventory.filter(item => !itemsOnBlackList[item.id]);
+      inventory = await filterItems(inventory)
 
-            getCurrencyRate()
-              .then(rate => {
-
-                inventory.forEach(item => {
-                  // const randPrice = (Math.random() * (10 - 0.01) + 0.01).toFixed(2)
-                  // item.market_price = randPrice;
-                  // item.vnd_price = Math.round((parseFloat(randPrice) * rate * 1000)).toLocaleString();
-                  item.market_hash_name = item.market_hash_name.replace('Inscribed ', '')
-                })
-
-                resolve(inventory)
-              })
-              .catch(err => reject(err))
-
-          } else reject(err)
-        })
-      else reject(err)
-    })
+      resolve(inventory)
+    } catch (err) {
+      reject(err)
+    }
   })
 }
 

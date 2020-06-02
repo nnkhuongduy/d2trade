@@ -1,23 +1,37 @@
-import React from 'react';
-import { Link } from 'react-router-dom'
+import React from 'react'
+import { useHistory } from 'react-router-dom'
 
-import Navigation from '../navigation/navigation.component';
+import { makeStyles } from '@material-ui/styles'
+import { AppBar, Toolbar, IconButton } from '@material-ui/core'
 
 import { ReactComponent as Logo } from '../../assets/svg/logo.svg';
 
-import './header.component.scss';
+import User from '../user/user.component'
 
-class Header extends React.Component {
-  render() {
-    return (
-      <div className="header">
-        <Link to='/'>
-          <Logo className="logo" />
-        </Link>
-        <Navigation />
-      </div>
-    );
+const useStyles = makeStyles(theme => ({
+  root: {
+    backgroundColor: theme.palette.primary.light,
+    flexGrow: 1,
+  },
+  toolbar: {
+    justifyContent: 'space-between'
   }
+}))
+
+const Header = () => {
+  const classes = useStyles()
+  const history = useHistory()
+
+  return (
+    <AppBar position='static' className={classes.root}>
+      <Toolbar className={classes.toolbar}>
+        <IconButton onClick={() => history.push('/')}>
+          <Logo />
+        </IconButton>
+        <User />
+      </Toolbar>
+    </AppBar>
+  )
 }
 
-export default Header;
+export default Header

@@ -7,18 +7,26 @@ const steamOffersSchema = new Schema({
   date: { type: Date, default: Date.now, expires: 3 * 30 * 24 * 60 * 60 },
   user_balance: Number,
   bot_items: [{
-    id: String,
-    icon_url: String,
+    assetId: String,
+    hero: String,
+    iconUrl: String,
     name: String,
-    market_price: String,
-    vnd_price: String
+    prices: {
+      usd: Number,
+      vnd: Number
+    },
+    rarity: String
   }],
   user_items: [{
-    id: String,
-    icon_url: String,
+    assetId: String,
+    hero: String,
+    iconUrl: String,
     name: String,
-    market_price: String,
-    vnd_price: String
+    prices: {
+      usd: Number,
+      vnd: Number
+    },
+    rarity: String
   }],
   status: String,
 })

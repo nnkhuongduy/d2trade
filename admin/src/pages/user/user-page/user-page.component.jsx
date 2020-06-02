@@ -19,7 +19,6 @@ const UserPage = ({ setCurrentPage, fetchUsersStart, users, match, ...props }) =
   const [matchUser, setMatchUser] = useState(undefined)
 
   useEffect(() => {
-    console.log(users)
     if (users || (users && matchUser === undefined)) {
       let flag = false;
 

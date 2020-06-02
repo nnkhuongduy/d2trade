@@ -32,6 +32,6 @@ authRouter.get("/logout", (req, res) => {
 
 authRouter.get('/steam', passport.authenticate('steam'));
 
-authRouter.get('/steam/return', passport.authenticate('steam', { failureRedirect: '/auth/login/failed', successRedirect: CLIENT_HOMEPAGE_URL }));
+authRouter.get('/steam/return', passport.authenticate('steam', { failureRedirect: CLIENT_HOMEPAGE_URL, successRedirect: CLIENT_HOMEPAGE_URL }));
 
 module.exports = authRouter;

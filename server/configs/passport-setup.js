@@ -31,6 +31,8 @@ passport.use(new SteamStrategy({
       avatar: profile._json.avatarfull,
       accountBalance: 0,
       tradeOfferUrl: "",
+      receipts: [],
+      offers: [],
     }).save();
 
     if (newUser) done(null, newUser);

@@ -105,8 +105,12 @@ const OffersContainer = ({ offers, fetchingOffers, users, fetchingUsers, fetchOf
         ...offer,
         avatar: <Link href={`users/${offer.user.steamid}`} target='_blank' rel='noopener'><Avatar src={offer.user.avatar} /></Link>,
         date: moment(offer.date).tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY'),
-        user_balance: `- ${offer.user_balance.toLocaleString()}`,
-        profit: <span style={{ color: 'green' }}>+ {offer.profit.toLocaleString()}</span>,
+        user_balance: <span style={{
+          color: offer.status !== 'Accepted' && 'gray', textDecoration: offer.status !== 'Accepted' && 'line-through'
+        }}>- {offer.user_balance.toLocaleString()}</span>,
+        profit: <span style={{
+          color: offer.status === 'Accepted' ? 'green' : 'gray', textDecoration: offer.status !== 'Accepted' && 'line-through'
+        }}>+ {offer.profit.toLocaleString()}</span>,
         status: <span className={clsx(classes.dot, {
           [classes.green]: offer.status === 'Accepted',
           [classes.yellow]: offer.status === "Active" || offer.status === "CreatedNeedsConfirmation" || offer.status === "Created",

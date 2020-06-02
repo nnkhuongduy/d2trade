@@ -1,19 +1,25 @@
 const manager = require('../configs/steam-setup/steam-manager')
+const SteamUsers = require('../models/user-model')
+const getInventory = require('./get-inventory')
+const CONFIGS = require('../configs/configs')
 
-const createOffer = (botItems, userItems, userData) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const offer = manager.createOffer(userData.tradeOfferUrl);
+const createOffer = (botItems, userItems, steamId) => new Promise(async (resolve, reject) => {
+  try {
+    const user = await SteamUsers.findOne({ steamid: steamId });
 
-      offer.addMyItems(botItems)
-      offer.addTheirItems(userItems)
+    const offer = manager.createOffer(user.tradeOfferUrl);
 
-      resolve(offer);
+    const botSteamItems = botItems.map(item => ({ ...item, id: item.assetId, appid: CONFIGS.STEAM_INFO.APP_ID, contextid: CONFIGS.STEAM_INFO.CONTEXT_ID }))
+    const userSteamItems = userItems.map(item => ({ ...item, id: item.assetId, appid: CONFIGS.STEAM_INFO.APP_ID, contextid: CONFIGS.STEAM_INFO.CONTEXT_ID }))
 
-    } catch (err) {
-      reject(err)
-    }
-  })
-}
+    offer.addMyItems(botSteamItems)
+    offer.addTheirItems(userSteamItems)
+
+    resolve(offer);
+
+  } catch (err) {
+    reject(err)
+  }
+})
 
 module.exports = createOffer

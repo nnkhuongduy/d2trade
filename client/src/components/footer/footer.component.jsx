@@ -1,26 +1,25 @@
-import React from 'react';
+import React from 'react'
 
-import { Icon } from '@iconify/react';
-import copyrightIcon from '@iconify/icons-fa-solid/copyright';
-import steamIcon from '@iconify/icons-cib/steam';
-import twitterCircleFilled from '@iconify/icons-ant-design/twitter-circle-filled';
-import facebookIcon from '@iconify/icons-cib/facebook';
+import { makeStyles } from '@material-ui/styles'
+import {
+  Box
+} from '@material-ui/core'
 
-import './footer.component.scss';
+const useStyles = makeStyles(theme => ({
+  root: {
+    backgroundColor: theme.palette.primary.light,
+    color: 'white'
+  }
+}))
 
+const Footer = () => {
+  const classes = useStyles()
 
-const Footer = () => (
-  <div className="footer">
-    <div className="copyright">
-      <Icon icon={copyrightIcon} />
-      <span>2020 D2TRADE.COM All rights reserved.</span>
-    </div>
-    <div className="footer-socials">
-      <Icon icon={steamIcon} width="1.5em" height="1.5em" />
-      <Icon icon={twitterCircleFilled} width="1.5em" height="1.5em" />
-      <Icon icon={facebookIcon} width="1.5em" height="1.5em" />
-    </div>
-  </div>
-)
+  return (
+    <Box p={3} className={classes.root}>
+      2020 D2TRADE.COM All rights reserved.
+    </Box>
+  )
+}
 
-export default Footer;
+export default Footer

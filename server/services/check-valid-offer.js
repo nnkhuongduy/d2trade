@@ -1,54 +1,59 @@
-const getInventory = require('./get-inventory')
-const CONFIGS = require('../configs/configs')
 const SteamUsers = require('../models/user-model')
+const Items = require('../models/item-model')
 
-const checkUserBalance = (user, moneyItem) => {
-  return new Promise((resolve, reject) => {
-    SteamUsers.findOne({ steamid: user.steamid }, (err, user) => {
-      if (!err)
-        if (user.accountBalance >= parseInt(moneyItem.vnd_price.replace(/,/g, ''))) resolve(true)
-        else resolve(false)
-      else reject(err)
-    })
-  })
-}
+const checkBalance = (steamId, balance) => new Promise(async (resolve, reject) => {
+  try {
+    const user = await SteamUsers.findOne({ steamid: steamId });
 
-const checkValidOffer = (botItemsId, userItemsId, userData) => {
-  return new Promise(async (resolve, reject) => {
-    const botItemsObj = {}
-    const userItemsObj = {}
-    let moneyItem = null;
-    let checkBalance = false;
+    if (user.accountBalance >= balance) resolve()
+    else reject()
 
-    botItemsId.forEach(item => botItemsObj[item.id] ? botItemsObj[item.id]++ : botItemsObj[item.id] = 1)
-    userItemsId.forEach(item => {
-      userItemsObj[item.id] ? userItemsObj[item.id]++ : userItemsObj[item.id] = 1
-      if (item.id === 'moneyItem') moneyItem = item
-    })
+  } catch (err) {
+    reject(err)
+  }
+})
 
-    try {
-      const botInventory = await getInventory(CONFIGS.STEAM_INFO.STEAM_BOT_ID)
-      const userInventory = await getInventory(userData.steamid)
+const checkItems = (botItems, userItems, balance) => new Promise(async (resolve, reject) => {
+  const botNames = botItems.map(item => item.name.replace("Inscribed ", ""))
+  const userNames = userItems.map(item => item.name.replace("Inscribed ", ""))
+  let botHash = {};
+  let userHash = {};
+  let botDBHash = {};
+  let userDBHash = {};
+  let valid = true;
 
-      const botItems = botInventory.filter(item => botItemsObj[item.id] >= 1)
-      const userItems = userInventory.filter(item => userItemsObj[item.id] >= 1)
+  try {
+    const botItemsDB = await Items.find({ name: { "$in": botNames } })
+    const userItemsDB = await Items.find({ name: { "$in": userNames } })
 
-      const items = {
-        bot: botItems,
-        user: userItems,
-        moneyItem: moneyItem !== null && moneyItem
-      }
+    await botItems.forEach(item => botHash[item.name.replace("Inscribed ", "")] = item.prices.vnd);
+    await userItems.forEach(item => userHash[item.name.replace("Inscribed ", "")] = item.prices.vnd);
+    await botItemsDB.forEach(item => botDBHash[item.name] = item.prices.vnd);
+    await userItemsDB.forEach(item => userDBHash[item.name] = item.prices.vnd);
 
-      if (moneyItem != null)
-        checkBalance = await checkUserBalance(userData, moneyItem)
-      else checkBalance = true;
+    throw "invalid!";
 
-      if (checkBalance) resolve(items)
-      else reject("Not enough money")
-    } catch (err) {
-      reject(err)
-    }
-  })
-}
+    await botNames.forEach(name => valid = botHash[name] !== botDBHash[name] ? false : valid)
+    await userNames.forEach(name => valid = userHash[name] !== userDBHash[name] ? false : valid)
+
+    const balanceDB = await botItemsDB.reduce((accumulator, item) => accumulator += item.prices.vnd, 0);
+    if (balanceDB !== balance) valid = false;
+
+    if (valid) resolve();
+    else reject("Invalid!")
+  } catch (err) {
+    reject(err)
+  }
+})
+
+const checkValidOffer = (offer) => new Promise(async (resolve, reject) => {
+  try {
+    await checkItems(offer.bot, offer.user, offer.balance)
+    await checkBalance(offer.steamId, offer.balance);
+    resolve();
+  } catch (err) {
+    reject(err)
+  }
+})
 
 module.exports = checkValidOffer
