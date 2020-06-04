@@ -4,6 +4,8 @@ const INIITIAL_STATE = {
   user: null,
   isLoggingIn: false,
   isLoggingOut: false,
+  isFetchingOffers: false,
+  offers: [],
   error: null
 }
 
@@ -49,6 +51,28 @@ const userReducer = (state = INIITIAL_STATE, action) => {
       return {
         ...state,
         isLoggingOut: false,
+        error: action.message
+      }
+
+    case UserTypes.FETCH_OFFERS_START:
+      return {
+        ...state,
+        isFetchingOffers: true,
+        offers: [],
+        error: null
+      }
+
+    case UserTypes.FETCH_OFFERS_SUCCESS:
+      return {
+        ...state,
+        isFetchingOffers: false,
+        offers: action.offers
+      }
+
+    case UserTypes.FETCH_OFFERS_FAIL:
+      return {
+        ...state,
+        isFetchingOffers: false,
         error: action.message
       }
 

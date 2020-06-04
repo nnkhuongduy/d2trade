@@ -19,7 +19,7 @@ client.on("webSession", (sessionid, cookies) => {
 
 manager.on('sentOfferChanged', (offer, oldState) => {
   SteamOffers.findOneAndUpdate({ offer_id: offer.id }, { status: TradeOfferManager.ETradeOfferState[offer.state] }, { new: true }, (err, offer) => {
-    if (!err) {
+    if (!err && offer) {
       console.log(`Successfully update offer #${offer.offer_id}'s state in db!`)
       if (offer.status === "Declined" && offer.user_balance !== null)
         userTransaction(offer.steam_id, offer.user_balance)

@@ -41,7 +41,7 @@ const INITIAL_LIST = [
     label: 'Lịch sử giao dịch',
     Icon: LocalOffer,
     isLink: true,
-    to: '/user'
+    to: '/offers'
   },
   {
     label: 'Nạp tiền',

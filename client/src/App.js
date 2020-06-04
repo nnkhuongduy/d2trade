@@ -16,6 +16,8 @@ import HomePage from './pages/home/home-page.component'
 import UserPage from './pages/user/user-page.component'
 import FourOhFourPage from './pages/404/404-page.component'
 import TransactionPage from './pages/transaction/transaction-page.component'
+import OffersPage from './pages/offers/offers-page.component'
+import PrivateRoute from './pages/private-route/private-route.component'
 
 import { logInStart } from './redux/user/user.actions'
 import { setBackdrop } from './redux/backdrop/backdrop.actions'
@@ -51,21 +53,15 @@ const App = ({ logIn, user, backdrop, setBackdrop }) => {
         <Grid item>
           <Header />
         </Grid>
-        <Grid item style={{ flex: 1, position: 'relative' }}>
+        <Grid item style={{ flex: 1, position: 'relative', overflowY: 'auto' }}>
           <div className={classes.root}>
             <Switch>
-              <Route exact path='/user'>
-                <UserPage />
-              </Route>
-              <Route exact path='/transaction'>
-                <TransactionPage />
-              </Route>
-              <Route exact path='/404'>
-                <FourOhFourPage />
-              </Route>
-              <Route exact path='/'>
-                <HomePage />
-              </Route>
+              <PrivateRoute exact path='/user' component={UserPage} />
+              <PrivateRoute exact path='/transaction' component={TransactionPage} />
+              <PrivateRoute exact path='/offers/:id' component={OffersPage} />
+              <PrivateRoute exact path='/offers/' component={OffersPage} />
+              <Route exact path='/404' component={FourOhFourPage} />
+              <Route exact path='/' component={HomePage} />
               <Redirect to='/404' />
             </Switch>
           </div>

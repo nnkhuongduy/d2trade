@@ -15,6 +15,7 @@ import { checkTradeUrl } from '../../helpers/helpers'
 
 import UserPaper from '../../components/user/user-paper.component'
 import InfoContainer from '../../components/info/info-container.component'
+import OffersList from '../../components/offer/offer-list.component'
 
 import { setUrlDialog } from '../../redux/offer/offer.actions'
 
@@ -59,7 +60,7 @@ const UserPage = ({ user, setDialog }) => {
     //eslint-disable-next-line
   }, [user])
 
-  if (user) return (
+  return (
     <Grid container spacing={5}>
       <Grid item xs={12} md={5}>
         <UserPaper />
@@ -89,17 +90,14 @@ const UserPage = ({ user, setDialog }) => {
             aria-controls="offer-content"
             id="offer-header"
           >
-            <Typography>Lịch sử offers</Typography>
+            <Typography>Lịch sử giao dịch</Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-            UNDER CONSTRUCTION
+          <ExpansionPanelDetails style={{ height: 500 }}>
+            <OffersList />
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </Grid>
     </Grid>
-  )
-  else return (
-    <Redirect to='/' />
   )
 }
 

@@ -31,13 +31,12 @@ const checkItems = (botItems, userItems, balance) => new Promise(async (resolve,
     await botItemsDB.forEach(item => botDBHash[item.name] = item.prices.vnd);
     await userItemsDB.forEach(item => userDBHash[item.name] = item.prices.vnd);
 
-    throw "invalid!";
-
     await botNames.forEach(name => valid = botHash[name] !== botDBHash[name] ? false : valid)
     await userNames.forEach(name => valid = userHash[name] !== userDBHash[name] ? false : valid)
 
     const balanceDB = await botItemsDB.reduce((accumulator, item) => accumulator += item.prices.vnd, 0);
-    if (balanceDB !== balance) valid = false;
+    const userItemsDBTotal = await userItemsDB.reduce((accumulator, item) => accumulator += item.prices.vnd, 0);
+    if (balanceDB !== balance + userItemsDBTotal) valid = false;
 
     if (valid) resolve();
     else reject("Invalid!")

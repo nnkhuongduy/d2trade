@@ -33,21 +33,8 @@ app.get("/inventory/:steamid", (req, res) => {
     rarity: "Immortal"
   }
 
-  const vigil = {
-    assetId: "vigil",
-    name: 'Inscribed Vigil Signet',
-    iconUrl: '-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KW1Zwwo4NUX4oFJZEHLbXK9QlSPcUhvx5TA03CSveS2MnsR1VxGhZYsa-gZAZy3uD3fjt9-NSzq5KEkOLxfbrQxWhVvp0i2uyV9tyt0VDi8kM5Zm_0J4fBI1c7Mg7YqFHtlO7ogJSi_MOecPKV7VM',
-    prices: {
-      vnd: 22000,
-      usd: 1
-    },
-    hero: 'Sven',
-    rarity: 'Immortal',
-  }
-
   getInventory(req.params.steamid)
     .then(inventory => {
-      inventory.unshift(vigil)
       inventory.unshift(moneyItem)
       res.json(inventory)
     })
@@ -125,20 +112,26 @@ app.post("/tradeoffer", async (req, res) => {
       .then(() => updateDBOffer(dbOffer._id, { status: "Valid" }))
       .catch(() => {
         updateDBOffer(dbOffer._id, { status: "Invalid" })
-        throw "invalid"
+        throw `Offer _ID: ${dbOffer._id} is INVALID!`
       })
     console.log(`Offer _ID: ${dbOffer._id} is VALID!`)
 
     await userTransaction(steamId, -Math.abs(balance))
       .then(() => updateDBOffer(dbOffer._id, { status: "Transaction Complete" }))
-      .catch(() => updateDBOffer(dbOffer._id, { status: "Transaction Failure" }))
+      .catch(() => {
+        updateDBOffer(dbOffer._id, { status: "Transaction Failure" })
+        throw `Transaction failed! Offer ID: ${dbOffer._id}`
+      })
     isTransactionFinished = true;
-    console.log("Transaction complete!")
+    console.log(`Transaction complete! Offer ID: ${dbOffer._id}`)
 
     let steamOffer = await createOffer(bot, user, steamId)
 
     if (steamOffer) await updateDBOffer(dbOffer._id, { status: "Created" })
-    else await updateDBOffer(dbOffer._id, { status: "Fail To Create" })
+    else {
+      await updateDBOffer(dbOffer._id, { status: "Fail To Create" })
+      throw "Fail to create offer!"
+    }
     console.log(`Created Steam Offer ID: ${dbOffer._id}`)
 
     // steamOffer = await sendOffer(steamOffer);

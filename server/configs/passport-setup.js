@@ -6,14 +6,14 @@ passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
-  SteamUsers.findById(id)
-    .then(user => {
-      done(null, user);
-    })
-    .catch(e => {
-      done(new Error("Failed to deserialize an user"));
-    });
+passport.deserializeUser(async (id, done) => {
+  const user = await SteamUsers.findById(id).populate({
+    path: 'offers',
+    match: { offer_id: { $ne: "UNSET" } }
+  })
+
+  if (user) done(null, user)
+  else done(new Error("Failed to deserialize an user"))
 });
 
 passport.use(new SteamStrategy({
