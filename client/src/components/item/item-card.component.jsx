@@ -1,16 +1,23 @@
 import React from 'react'
 import clsx from 'clsx'
+import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
 
-import { makeStyles } from '@material-ui/styles'
+import { makeStyles, withStyles } from '@material-ui/styles'
 import {
-  Paper, Grid, Typography, Divider
+  Paper, Grid, Typography, Divider, Tooltip
 } from '@material-ui/core'
+
+import { selectHeroes } from '../../redux/heroes/heroes.selectors'
 
 const useStyles = makeStyles(theme => ({
   result: {
     width: 100,
     padding: theme.spacing(1),
     boxSizing: 'border-box',
+    [theme.breakpoints.down('md')]: {
+      width: 80,
+    }
   },
   selectable: {
     '&:hover': {
@@ -28,79 +35,101 @@ const useStyles = makeStyles(theme => ({
   img: {
     width: (256 * 30 / 100),
     height: (171 * 30 / 100),
-    backgroundColor: 'gray'
+    backgroundColor: 'gray',
+    [theme.breakpoints.down('md')]: {
+      width: (256 * 20 / 100),
+      height: (171 * 20 / 100),
+    }
   },
   price: {
-    fontSize: theme.typography.pxToRem(13)
-  },
-  inscribed: {
-    backgroundColor: theme.palette.item.inscribed,
-    '&:hover': {
-      backgroundColor: theme.palette.item.inscribed,
-    },
-    '&:focus': {
-      backgroundColor: theme.palette.item.inscribed,
-    },
+    fontSize: theme.typography.pxToRem(13),
+    textAlign: 'center',
+    [theme.breakpoints.down('md')]: {
+      fontSize: theme.typography.pxToRem(10),
+    }
   },
   immortal: {
-    backgroundColor: theme.palette.item.immortal,
-    '&:hover': {
-      backgroundColor: theme.palette.item.immortal,
-    },
-    '&:focus': {
-      backgroundColor: theme.palette.item.immortal,
-    },
+    border: `2px solid ${theme.palette.item.immortal}`
   },
   arcana: {
-    backgroundColor: theme.palette.item.arcana,
-    '&:hover': {
-      backgroundColor: theme.palette.item.arcana,
-    },
-    '&:focus': {
-      backgroundColor: theme.palette.item.arcana,
-    },
+    border: `2px solid ${theme.palette.item.aracana}`
+  },
+  hero: {
+    width: (127 / 3),
+    height: (71 / 3)
   }
 }))
 
 const iconUrl = 'https://steamcommunity-a.akamaihd.net/economy/image/'
 
-const ItemCard = ({ item, selectable, onClick, disabled }) => {
+const ItemTooltip = withStyles(theme => ({
+  tooltip: {
+    maxWidth: 400,
+    fontSize: theme.typography.pxToRem(12),
+    padding: theme.spacing(2)
+  }
+}))(Tooltip)
+
+const ItemCard = ({ item, selectable, onClick, disabled, heroes }) => {
   const classes = useStyles()
 
   return (
-    <Paper
-      elevation={2}
-      className={clsx(classes.result, {
-        [classes.selectable]: selectable,
-        [classes.disabled]: disabled
-      })}
-      onClick={() => selectable && onClick(item)}
+    <ItemTooltip
+      title={item.assetId !== 'moneyItem' ?
+        <>
+          <Typography>{item.name}</Typography>
+          <Grid container alignItems='center'>
+            <Grid item>
+              Hero:
+            </Grid>
+            {heroes && <Grid item>
+              <img className={classes.hero} src={heroes.find(hero => hero.localized_name === item.hero).portrait_url} alt='hero_img' />
+            </Grid>}
+          </Grid>
+        </> :
+        'Số dư'
+      }
+      interactive
+      enterDelay={1000}
+      arrow
     >
-      <Grid container spacing={1} direction='column' alignItems='center'>
-        <Grid item>
-          <div className={classes.img}>
-            <img
-              src={item.assetId === 'moneyItem' ? item.iconUrl : iconUrl + item.iconUrl}
-              alt='item_icon'
-              style={{ width: '100%', height: '100%' }}
-            />
-          </div>
-        </Grid>
-        <Grid item>
-          <Divider />
-        </Grid>
-        <Grid item>
-          <Typography
-            variant='body2'
-            className={classes.price}
-          >
-            {/* {item.assetId === 'moneyItem' ? 'Số dư' : `${item.prices.vnd.toLocaleString('en-US')} VND`} */}
-            {item.prices.vnd.toLocaleString('en-US')} VND
+      <Paper
+        elevation={2}
+        className={clsx(classes.result, classes[item.rarity.toLowerCase()], {
+          [classes.selectable]: selectable,
+          [classes.disabled]: disabled,
+        })}
+        onClick={() => selectable && onClick(item)}
+      >
+        <Grid container spacing={1} direction='column' alignItems='center'>
+          <Grid item>
+            <div className={classes.img}>
+              <img
+                src={item.assetId === 'moneyItem' ? item.iconUrl : iconUrl + item.iconUrl}
+                alt='item_icon'
+                style={{ width: '100%', height: '100%' }}
+              />
+            </div>
+          </Grid>
+          <Grid item>
+            <Divider />
+          </Grid>
+          <Grid item>
+            <Typography
+              variant='body2'
+              className={classes.price}
+            >
+              {item.prices.vnd.toLocaleString('en-US')} VND
           </Typography>
+          </Grid>
         </Grid>
-      </Grid>
-    </Paper>
+      </Paper>
+    </ItemTooltip>
   )
 }
 
-export default ItemCard
+const mapStateToProps = createStructuredSelector({
+  heroes: selectHeroes
+})
+
+export default connect(mapStateToProps)(ItemCard)

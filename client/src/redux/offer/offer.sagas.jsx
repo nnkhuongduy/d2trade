@@ -3,6 +3,8 @@ import axios from 'axios'
 
 import { postUrlSuccess, postUrlFail, postOfferSuccess, postOfferFail } from './offer.actions'
 import { setBackdrop } from '../backdrop/backdrop.actions'
+import { enqSnackbar } from '../snackbar/snackbar.actions'
+import { resetSite } from '../site/site.actions'
 
 import { selectCurrentUser } from '../user/user.selectors'
 import { selectBotStash, selectUserStash, selectUserBalance } from '../stash/stash.selectors'
@@ -23,11 +25,27 @@ function* postUrlAsync({ url }) {
 
     if (respone.status === 200) {
       yield put(postUrlSuccess())
+      yield put(enqSnackbar({
+        severity: 'success',
+        text: 'Cập nhật Link Trade Offer thành công!',
+        key: new Date().getTime()
+      }))
+      yield put(resetSite())
     } else {
       yield put(postUrlFail(respone.statusMessage))
+      yield put(enqSnackbar({
+        severity: 'error',
+        text: 'Cập nhật Link Trade Offer thất bại!',
+        key: new Date().getTime()
+      }))
     }
   } catch (err) {
     yield put(postUrlFail(err.message))
+    yield put(enqSnackbar({
+      severity: 'error',
+      text: 'Cập nhật Link Trade Offer thất bại!',
+      key: new Date().getTime()
+    }))
   }
 }
 
@@ -52,11 +70,27 @@ function* postOfferAsync() {
 
     if (respone.status === 200) {
       yield put(postOfferSuccess())
+      yield put(enqSnackbar({
+        severity: 'success',
+        text: 'Trade thành công! Steam Offer đã được gửi',
+        key: new Date().getTime()
+      }))
+      yield put(resetSite())
     } else {
       yield put(postOfferFail(respone.statusMessage))
+      yield put(enqSnackbar({
+        severity: 'error',
+        text: 'Trade thất bại!',
+        key: new Date().getTime()
+      }))
     }
   } catch (err) {
     yield put(postOfferFail(err.message))
+    yield put(enqSnackbar({
+      severity: 'error',
+      text: 'Trade thất bại!',
+      key: new Date().getTime()
+    }))
   }
 
   yield put(setBackdrop(false))

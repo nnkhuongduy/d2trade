@@ -2,9 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
-import { makeStyles } from '@material-ui/styles'
+import { makeStyles, useTheme } from '@material-ui/styles'
 import {
-  Grid, Avatar, Typography, Badge
+  Grid, Avatar, Typography, Badge, useMediaQuery
 } from '@material-ui/core'
 import {
   CheckCircle
@@ -29,8 +29,10 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const UserInfo = ({ user, currentUser, onClick }) => {
+const UserInfo = ({ user, currentUser, onClick, header }) => {
   const classes = useStyles()
+  const theme = useTheme()
+  const matches = useMediaQuery(theme.breakpoints.down('md'))
 
   if (currentUser && user)
     return (
@@ -50,7 +52,7 @@ const UserInfo = ({ user, currentUser, onClick }) => {
             : <Avatar src={currentUser.avatar} />}
         </Grid>
         <Grid item>
-          <Typography variant='body1'>{currentUser.personaname}</Typography>
+          {(!matches || !header) && <Typography variant='body1'>{currentUser.personaname}</Typography>}
         </Grid>
       </Grid>
     )

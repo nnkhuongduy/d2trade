@@ -12,3 +12,12 @@ export const updateStashFinish = (inventoryType, stash) => ({
   stash: stash,
   inventoryType: inventoryType,
 })
+
+export const resetStash = inventoryType => ({
+  type: StashTypes.RESET_STASH,
+  inventoryType: inventoryType
+})
+
+export const resetAllStash = () => ({
+  type: StashTypes.RESET_ALL_STASH
+})

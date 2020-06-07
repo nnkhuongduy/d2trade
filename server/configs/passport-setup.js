@@ -9,7 +9,8 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser(async (id, done) => {
   const user = await SteamUsers.findById(id).populate({
     path: 'offers',
-    match: { offer_id: { $ne: "UNSET" } }
+    match: { offer_id: { $ne: "UNSET" } },
+    options: { sort: { date: -1 } }
   })
 
   if (user) done(null, user)

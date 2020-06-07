@@ -4,12 +4,12 @@ import { createStructuredSelector } from 'reselect'
 import moment from 'moment-timezone'
 import clsx from 'clsx'
 
-import { makeStyles } from '@material-ui/styles'
+import { makeStyles, useTheme } from '@material-ui/styles'
 import {
-  Paper, Grid, Typography, Divider
+  Paper, Grid, Typography, Divider, useMediaQuery
 } from '@material-ui/core'
 import {
-  SwapHoriz
+  SwapHoriz, SwapVert
 } from '@material-ui/icons'
 
 import ItemImg from '../item/item-img.component'
@@ -35,6 +35,8 @@ const useStyles = makeStyles(theme => ({
 const Offer = ({ id, offers }) => {
   const classes = useStyles()
   const [offer, setOffer] = useState(null)
+  const theme = useTheme()
+  const matches = useMediaQuery(theme.breakpoints.down('md'))
 
   useEffect(() => {
     const offer = offers.find(offer => offer.offer_id === id)
@@ -55,49 +57,53 @@ const Offer = ({ id, offers }) => {
             <Typography variant='h6'>Nội dung</Typography>
           </Grid>
           <Grid item style={{ width: '100%' }}>
-            <Grid container spacing={1} justify='space-between'>
+            <Grid container spacing={1} justify='space-between' spacing={matches && 4}>
               <Grid item xs={12} sm={5}>
-                <Typography style={{ textAlign: 'center' }} variant='body2'>Người dùng</Typography>
-              </Grid>
-              <Grid item xs={12} sm={5}>
-                <Typography style={{ textAlign: 'center' }} variant='body2'>Bot</Typography>
-              </Grid>
-            </Grid>
-            <Grid container spacing={1} justify='space-between'>
-              <Grid item xs={12} sm={5}>
-                <Grid container spacing={1}>
-                  {offer.user_items
-                    .map(item => (
-                      <Grid key={item.assetId} item>
-                        <ItemImg src={item.iconUrl} perc={30} />
-                      </Grid>
-                    ))}
+                <Grid container direction='column' alignItems='center' spacing={1}>
+                  <Grid item>
+                    <Typography style={{ textAlign: 'center' }}>Người dùng</Typography>
+                  </Grid>
+                  <Grid item>
+                    <Grid container spacing={1}>
+                      {offer.user_items
+                        .map(item => (
+                          <Grid key={item.assetId} item>
+                            <ItemImg src={item.iconUrl} perc={30} />
+                          </Grid>
+                        ))}
+                    </Grid>
+                  </Grid>
+                  <Grid item>
+                    <Typography style={{ textAlign: 'center' }} variant='body2'>
+                      Tổng: {offer.userTotal.toLocaleString('en-US')}
+                    </Typography>
+                  </Grid>
                 </Grid>
               </Grid>
-              <Grid item style={{ alignSelf: 'center' }}>
-                <SwapHoriz />
+              <Grid item xs={12} sm={2} style={{ alignSelf: 'center' }}>
+                {matches ? <SwapVert style={{ display: 'block', margin: '0 auto' }} /> : <SwapHoriz style={{ display: 'block', margin: '0 auto' }} />}
               </Grid>
               <Grid item xs={12} sm={5}>
-                <Grid container spacing={1}>
-                  {offer.bot_items
-                    .map(item => (
-                      <Grid key={item.assetId} item>
-                        <ItemImg src={item.iconUrl} perc={30} />
-                      </Grid>
-                    ))}
+                <Grid container direction='column' alignItems='center' spacing={1}>
+                  <Grid item>
+                    <Typography style={{ textAlign: 'center' }}>Bot</Typography>
+                  </Grid>
+                  <Grid item>
+                    <Grid container spacing={1}>
+                      {offer.bot_items
+                        .map(item => (
+                          <Grid key={item.assetId} item>
+                            <ItemImg src={item.iconUrl} perc={30} />
+                          </Grid>
+                        ))}
+                    </Grid>
+                  </Grid>
+                  <Grid item>
+                    <Typography style={{ textAlign: 'center' }} variant='body2'>
+                      Tổng: {offer.botTotal.toLocaleString('en-US')}
+                    </Typography>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Grid>
-            <Grid container spacing={1} justify='space-between'>
-              <Grid item xs={12} sm={5}>
-                <Typography style={{ textAlign: 'center' }} variant='body2'>
-                  Tổng: {offer.userTotal.toLocaleString('en-US')}
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={5}>
-                <Typography style={{ textAlign: 'center' }} variant='body2'>
-                  Tổng: {offer.botTotal.toLocaleString('en-US')}
-                </Typography>
               </Grid>
             </Grid>
           </Grid>
@@ -147,8 +153,9 @@ const Offer = ({ id, offers }) => {
       </Paper>
     )
   else return (
-    <>
-    </>
+    <Paper elevation={3} className={classes.paper}>
+      <Typography>Chọn offer</Typography>
+    </Paper>
   )
 }
 

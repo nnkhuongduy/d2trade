@@ -2,9 +2,9 @@ import { createSelector } from 'reselect'
 
 const selectStash = state => state.stash
 
-export const selectBotStash = createSelector([selectStash], state => state.stash.bot)
+export const selectBotStash = createSelector([selectStash], state => state.bot)
 
-export const selectUserStash = createSelector([selectStash], state => state.stash.user)
+export const selectUserStash = createSelector([selectStash], state => state.user)
 
 export const selectBotTotal = createSelector([selectBotStash], stash => stash.reduce(((accumulator, item) => accumulator += item.prices.vnd), 0))
 

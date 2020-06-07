@@ -5,7 +5,7 @@ import { Link as RouterLink } from 'react-router-dom'
 
 import { makeStyles, useTheme } from '@material-ui/styles'
 import {
-  Drawer, List, ListItem, ListItemIcon, ListItemText, Typography
+  SwipeableDrawer, List, ListItem, ListItemIcon, ListItemText, Typography
 } from '@material-ui/core'
 import {
   Person, AccountBalanceWallet, LocalOffer, PowerSettingsNew, Link
@@ -20,6 +20,8 @@ import { setUrlDialog } from '../../redux/offer/offer.actions'
 
 import { selectCurrentUser } from '../../redux/user/user.selectors'
 
+const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
+
 const useStyles = makeStyles(theme => ({
   root: {
     width: 400,
@@ -27,6 +29,9 @@ const useStyles = makeStyles(theme => ({
     boxSizing: 'border-box',
     backgroundColor: theme.palette.grey[100],
     height: '100%',
+    [theme.breakpoints.down('md')]: {
+      width: 'max-content'
+    }
   }
 }))
 
@@ -56,7 +61,7 @@ const INITIAL_LIST = [
   },
 ]
 
-const UserDrawer = ({ open, onClose, user, logOut, setUrlDialog }) => {
+const UserDrawer = ({ open, onClose, onOpen, user, logOut, setUrlDialog }) => {
   const classes = useStyles()
   const theme = useTheme()
   const [list, setList] = useState(null)
@@ -86,7 +91,14 @@ const UserDrawer = ({ open, onClose, user, logOut, setUrlDialog }) => {
   }
 
   return (
-    <Drawer anchor='right' open={open} onClose={onClose}>
+    <SwipeableDrawer
+      anchor='right'
+      open={open}
+      onClose={onClose}
+      onOpen={onOpen}
+      disableBackdropTransition={!iOS}
+      disableDiscovery={iOS}
+    >
       <div className={classes.root}>
         <UserInfo user />
         <Typography style={{ marginTop: theme.spacing(2) }}>
@@ -119,7 +131,7 @@ const UserDrawer = ({ open, onClose, user, logOut, setUrlDialog }) => {
           )}
         </List>
       </div>
-    </Drawer>
+    </SwipeableDrawer>
   )
 }
 

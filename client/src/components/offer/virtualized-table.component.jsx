@@ -1,12 +1,10 @@
 import React, { PureComponent } from 'react'
 import clsx from 'clsx'
 import PropTypes from 'prop-types'
-import moment from 'moment-timezone'
-import { Link } from 'react-router-dom'
 
 import { withStyles } from '@material-ui/styles'
 import {
-  TableCell, TableSortLabel, Avatar
+  TableCell, TableSortLabel
 } from '@material-ui/core'
 
 import { AutoSizer, Column, Table } from 'react-virtualized'
@@ -33,12 +31,23 @@ const styles = theme => ({
   },
   tableCell: {
     flex: 1,
+    [theme.breakpoints.down('md')]: {
+      fontSize: theme.typography.pxToRem(11),
+      lineHeight: '100%'
+    }
   },
   noClick: {
     cursor: 'initial',
   },
   span: {
     ...theme.spanEffect
+  },
+  header: {
+    fontSize: '0.75rem',
+    [theme.breakpoints.down('md')]: {
+      fontSize: theme.typography.pxToRem(11),
+      lineHeight: '100%'
+    }
   },
 })
 
@@ -83,10 +92,15 @@ class VirtualizedTable extends PureComponent {
         variant='head'
         style={{ height: headerHeight }}
       >
-        <div style={{ fontSize: '0.75rem', textAlign: 'center' }}>
-          {sortable ? <TableSortLabel active={activeSort} onClick={onSortClick(columnIndex)} direction={direction}>
-            {label}
-          </TableSortLabel> : label}
+        <div className={classes.header}>
+          {sortable ?
+            <TableSortLabel
+              active={activeSort}
+              onClick={onSortClick(columnIndex)}
+              direction={direction}
+            >
+              {label}
+            </TableSortLabel> : label}
         </div>
       </TableCell>
     )

@@ -11,6 +11,7 @@ import {
 import Header from './components/header/header.component'
 import Footer from './components/footer/footer.component'
 import TradeUrlDialog from './components/trade-url/trade-url-dialog.component'
+import Snackbar from './components/snackbar/snackbar.component'
 
 import HomePage from './pages/home/home-page.component'
 import UserPage from './pages/user/user-page.component'
@@ -31,7 +32,12 @@ const useStyles = makeStyles(theme => ({
     boxSizing: 'border-box',
     width: '100%',
     height: '100%',
-    position: 'absolute'
+    position: 'absolute',
+    backgroundColor: theme.palette.grey[200],
+    [theme.breakpoints.down('md')]: {
+      height: 'unset',
+      minHeight: '100%'
+    }
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
@@ -39,7 +45,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const App = ({ logIn, user, backdrop, setBackdrop }) => {
+const App = ({ logIn, user, backdrop, setBackdrop, botFetching, userFetching }) => {
   const classes = useStyles()
 
   useEffect(() => {
@@ -74,18 +80,19 @@ const App = ({ logIn, user, backdrop, setBackdrop }) => {
       <Backdrop className={classes.backdrop} open={backdrop} onClick={() => setBackdrop(false)}>
         <CircularProgress color="inherit" />
       </Backdrop>
+      <Snackbar />
     </>
   )
 }
 
 const mapDispatchToProps = dispatch => ({
   logIn: () => dispatch(logInStart()),
-  setBackdrop: state => dispatch(setBackdrop(state))
+  setBackdrop: state => dispatch(setBackdrop(state)),
 })
 
 const mapStateToProps = createStructuredSelector({
   user: selectCurrentUser,
-  backdrop: selectBackdropState
+  backdrop: selectBackdropState,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

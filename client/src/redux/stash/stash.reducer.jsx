@@ -1,10 +1,8 @@
 import { StashTypes } from './stash.types'
 
 const INITIAL_STATE = {
-  stash: {
-    bot: [],
-    user: []
-  }
+  bot: [],
+  user: []
 }
 
 const stashReducer = (state = INITIAL_STATE, action) => {
@@ -12,10 +10,20 @@ const stashReducer = (state = INITIAL_STATE, action) => {
     case StashTypes.UPDATE_STASH_FINISH:
       return {
         ...state,
-        stash: {
-          ...state.stash,
-          [action.inventoryType]: action.stash
-        }
+        [action.inventoryType]: action.stash
+      }
+
+    case StashTypes.RESET_STASH:
+      return {
+        ...state,
+        [action.inventoryType]: []
+      }
+
+    case StashTypes.RESET_ALL_STASH:
+      return {
+        ...state,
+        bot: [],
+        user: []
       }
 
     default:

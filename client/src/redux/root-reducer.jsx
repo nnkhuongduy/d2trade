@@ -8,6 +8,8 @@ import heroesReducer from './heroes/heroes.reducer';
 import stashReducer from './stash/stash.reducer';
 import offerReducer from './offer/offer.reducer';
 import backdropReducer from './backdrop/backdrop.reducer';
+import snackbarReducer from './snackbar/snackbar.reducer';
+import siteReducer from './site/site.reducer';
 
 const persistConfig = {
   key: 'root',
@@ -21,7 +23,9 @@ const rootReducer = combineReducers({
   heroes: heroesReducer,
   stash: stashReducer,
   offer: offerReducer,
-  backdrop: backdropReducer
+  backdrop: backdropReducer,
+  snackbar: snackbarReducer,
+  site: siteReducer
 });
 
 export default persistReducer(persistConfig, rootReducer);

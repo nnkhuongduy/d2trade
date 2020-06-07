@@ -16,3 +16,7 @@ export const fetchInventoryFailure = (inventoryType, errMessage) => ({
   inventoryType: inventoryType,
   errMessage: errMessage
 })
+
+export const fetchAllInventory = () => ({
+  type: InventoryActionTypes.FETCH_ALL_INVENTORY
+})

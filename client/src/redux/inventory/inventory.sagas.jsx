@@ -4,7 +4,7 @@ import axios from 'axios';
 import { InventoryActionTypes } from './inventory.types.jsx';
 
 import {
-  fetchInventorySuccess, fetchInventoryFailure,
+  fetchInventorySuccess, fetchInventoryFailure, fetchInventoryStart,
 } from './inventory.actions';
 
 import { selectCurrentUser } from '../user/user.selectors'
@@ -38,8 +38,17 @@ function* fetchInventoryAsync({ inventoryType }) {
   }
 }
 
+function* fetchAllInventoryAsync() {
+  yield put(fetchInventorySuccess('bot', null))
+  yield put(fetchInventorySuccess('user', null))
+  const user = yield select(selectCurrentUser);
+  yield put(fetchInventoryStart('bot'))
+  if (user) yield put(fetchInventoryStart('user'))
+}
+
 export function* inventoryRootSaga() {
   yield all([
-    takeLatest(InventoryActionTypes.FETCH_INVENTORY_START, fetchInventoryAsync)
+    takeLatest(InventoryActionTypes.FETCH_INVENTORY_START, fetchInventoryAsync),
+    takeLatest(InventoryActionTypes.FETCH_ALL_INVENTORY, fetchAllInventoryAsync)
   ])
 }

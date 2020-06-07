@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
+import { useTheme } from '@material-ui/styles'
 import {
-  CircularProgress
+  CircularProgress, useMediaQuery
 } from '@material-ui/core'
 
-import ItemsMasonry from './virtualized-table.component'
+import ItemsMasonry from './items-masonry.component'
 
 import { fetchInventoryStart } from '../../redux/inventory/inventory.actions'
 import { updateStashStart } from '../../redux/stash/stash.actions'
@@ -17,6 +18,8 @@ import { selectUserStash } from '../../redux/stash/stash.selectors'
 
 const InventoryBot = ({ user, inventory, fetching, fetchInventory, stash, updateStash, getRef, heroName, rarity, search }) => {
   const [currentInventory, setCurrentInventory] = useState(null)
+  const theme = useTheme()
+  const matches = useMediaQuery(theme.breakpoints.down('md'))
 
   useEffect(() => {
     if (user && !inventory && !fetching) fetchInventory('user')
@@ -59,7 +62,7 @@ const InventoryBot = ({ user, inventory, fetching, fetchInventory, stash, update
         <ItemsMasonry
           items={currentInventory}
           onItemClick={onClick}
-          height={getRef().current.offsetHeight - 100}
+          height={matches ? getRef().current.offsetHeight - 20 : getRef().current.offsetHeight - 100}
         />
       }
       {!user && <div>Xin vui lòng đăng nhập</div>}

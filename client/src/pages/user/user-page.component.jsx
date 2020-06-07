@@ -77,7 +77,7 @@ const UserPage = ({ user, setDialog }) => {
           <ExpansionPanelDetails>
             <Grid container direction='column' spacing={1} wrap='nowrap'>
               {userInfo.map((info, index) =>
-                <Grid item key={index}>
+                <Grid item key={index} zeroMinWidth>
                   <InfoContainer info={info} />
                 </Grid>
               )}

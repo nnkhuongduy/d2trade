@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
-import { makeStyles } from '@material-ui/styles'
+import { makeStyles, useTheme } from '@material-ui/styles'
 import {
-  Grid, Button, Tabs, Tab, Paper, Typography
+  Grid, Button, Tabs, Tab, Paper, Typography, useMediaQuery
 } from '@material-ui/core'
 import { SwapVert } from '@material-ui/icons'
 
@@ -47,36 +47,75 @@ const useStyles = makeStyles(theme => ({
 const HomePage = ({ tradeable, user, postOffer }) => {
   const classes = useStyles()
   const [tab, setTab] = useState(1)
+  const theme = useTheme()
+  const matches = useMediaQuery(theme.breakpoints.down('md'))
 
-  return (
-    <Grid container spacing={3} style={{ height: '100%' }}>
-      <Grid item xs={12} md={6}>
-        <Grid container direction='column' spacing={3} alignItems='center'>
-          <Grid item>
-            <Button
-              color='secondary'
-              variant='contained'
-              className={classes.button}
-              disabled={!tradeable || (user && !checkTradeUrl(user.tradeOfferUrl))}
-              onClick={() => postOffer()}
-            >
-              TRADE
+  if (!matches)
+    return (
+      <Grid container spacing={3} style={{ height: '100%' }}>
+        <Grid item xs={12} md={6}>
+          <Grid container direction='column' spacing={3} alignItems='center'>
+            <Grid item>
+              <Button
+                color='secondary'
+                variant='contained'
+                className={classes.button}
+                disabled={!tradeable || (user && !checkTradeUrl(user.tradeOfferUrl))}
+                onClick={() => postOffer()}
+              >
+                TRADE
             </Button>
-          </Grid>
-          {user && !checkTradeUrl(user.tradeOfferUrl) && <Grid item>
-            <Typography variant='subtitle2' style={{ color: 'red' }}>Cần cập nhật link Trade Offer!</Typography>
-          </Grid>}
-          <Grid item style={{ width: '80%' }}>
-            <Stash type='user' />
-          </Grid>
-          <Grid item>
-            <SwapVert className={classes.icon} />
-          </Grid>
-          <Grid item style={{ width: '80%' }}>
-            <Stash type='bot' />
+            </Grid>
+            {user && !checkTradeUrl(user.tradeOfferUrl) && <Grid item>
+              <Typography variant='subtitle2' style={{ color: 'red' }}>Cần cập nhật link Trade Offer!</Typography>
+            </Grid>}
+            <Grid item style={{ width: '80%' }}>
+              <Stash type='user' />
+            </Grid>
+            <Grid item>
+              <SwapVert className={classes.icon} />
+            </Grid>
+            <Grid item style={{ width: '80%' }}>
+              <Stash type='bot' />
+            </Grid>
           </Grid>
         </Grid>
+        <Grid item xs={12} md={6}>
+          <Paper elevation={3} style={{ height: '100%' }}>
+            <Grid container direction='column' style={{ height: '100%' }}>
+              <Grid item>
+                <Tabs
+                  value={tab}
+                  onChange={(e, v) => setTab(v)}
+                  aria-label="inventory tab"
+                  variant='fullWidth'
+                  indicatorColor='primary'
+                  textColor='primary'
+                >
+                  <Tab
+                    label={user ? user.personaname : 'Người dùng'}
+                    id='inventory-tab-0'
+                    aria-controls='inventory-tabpanel-0'
+                    classes={{ root: classes.tab, selected: classes.tabSelected }}
+                  />
+                  <Tab
+                    label='Bot'
+                    id='inventory-tab-1'
+                    aria-controls='inventory-tabpanel-1'
+                    classes={{ root: classes.tab, selected: classes.tabSelected }}
+                  />
+                </Tabs>
+              </Grid>
+              <Grid item style={{ flex: 1 }}>
+                <InventoryContainer tab={tab} />
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
       </Grid>
+    )
+  else return (
+    <Grid container spacing={3} style={{ height: '100%' }}>
       <Grid item xs={12} md={6}>
         <Paper elevation={3} style={{ height: '100%' }}>
           <Grid container direction='column' style={{ height: '100%' }}>
@@ -108,6 +147,33 @@ const HomePage = ({ tradeable, user, postOffer }) => {
             </Grid>
           </Grid>
         </Paper>
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <Grid container direction='column' spacing={3} alignItems='center'>
+          <Grid item>
+            <Button
+              color='secondary'
+              variant='contained'
+              className={classes.button}
+              disabled={!tradeable || (user && !checkTradeUrl(user.tradeOfferUrl))}
+              onClick={() => postOffer()}
+            >
+              TRADE
+            </Button>
+          </Grid>
+          {user && !checkTradeUrl(user.tradeOfferUrl) && <Grid item>
+            <Typography variant='subtitle2' style={{ color: 'red' }}>Cần cập nhật link Trade Offer!</Typography>
+          </Grid>}
+          <Grid item style={{ width: '100%' }}>
+            <Stash type='user' />
+          </Grid>
+          <Grid item>
+            <SwapVert className={classes.icon} />
+          </Grid>
+          <Grid item style={{ width: '100%' }}>
+            <Stash type='bot' />
+          </Grid>
+        </Grid>
       </Grid>
     </Grid>
   )

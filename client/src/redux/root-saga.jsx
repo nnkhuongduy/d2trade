@@ -5,6 +5,7 @@ import { userRootSaga } from './user/user.sagas';
 import { heroesRootSaga } from './heroes/heroes.sagas';
 import { stashRootSaga } from './stash/stash.sagas';
 import { offerRootSaga } from './offer/offer.sagas';
+import { siteRootSaga } from './site/site.sagas'
 
 export default function* rootSaga() {
   yield all([
@@ -12,6 +13,7 @@ export default function* rootSaga() {
     call(userRootSaga),
     call(heroesRootSaga),
     call(stashRootSaga),
-    call(offerRootSaga)
+    call(offerRootSaga),
+    call(siteRootSaga)
   ]);
 }

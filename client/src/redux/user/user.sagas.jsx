@@ -6,11 +6,10 @@ import {
 } from './user.actions'
 import { fetchInventorySuccess } from '../inventory/inventory.actions'
 import { updateStashFinish } from '../stash/stash.actions'
+import { resetSite } from '../site/site.actions'
 
 import { UserTypes } from './user.types'
 import { selectCurrentUser } from './user.selectors'
-
-
 
 function* logInAsync() {
   try {

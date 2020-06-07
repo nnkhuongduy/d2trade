@@ -36,7 +36,7 @@ const checkItems = (botItems, userItems, balance) => new Promise(async (resolve,
 
     const balanceDB = await botItemsDB.reduce((accumulator, item) => accumulator += item.prices.vnd, 0);
     const userItemsDBTotal = await userItemsDB.reduce((accumulator, item) => accumulator += item.prices.vnd, 0);
-    if (balanceDB !== balance + userItemsDBTotal) valid = false;
+    if (balanceDB > balance + userItemsDBTotal) valid = false;
 
     if (valid) resolve();
     else reject("Invalid!")

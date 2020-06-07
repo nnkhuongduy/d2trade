@@ -4,11 +4,15 @@ import { createStructuredSelector } from 'reselect'
 
 import { makeStyles } from '@material-ui/styles'
 import {
-  Grid, Typography, Box
+  Grid, Typography, Box, Button
 } from '@material-ui/core'
+
+import { checkTradeUrl } from '../../helpers/helpers'
 
 import UserDrawer from './user-drawer.component'
 import UserInfo from '../info/user-info.component'
+
+import { setUrlDialog } from '../../redux/offer/offer.actions'
 
 import { selectCurrentUser } from '../../redux/user/user.selectors'
 
@@ -21,16 +25,21 @@ const useStyles = makeStyles(theme => ({
   box: {
     backgroundColor: 'white',
     color: 'black',
-    borderRadius: theme.shape.borderRadius
+    borderRadius: theme.shape.borderRadius,
   },
   hoverable: {
     '&:hover': {
       cursor: 'pointer'
     }
+  },
+  money: {
+    [theme.breakpoints.down('md')]: {
+      fontSize: theme.typography.pxToRem(12)
+    }
   }
 }))
 
-const User = ({ user }) => {
+const User = ({ user, setUrlDialog }) => {
   const classes = useStyles()
   const [drawer, setDrawer] = useState(false)
 
@@ -46,16 +55,25 @@ const User = ({ user }) => {
     return (
       <>
         <Grid container spacing={2} alignItems='center' justify='flex-end'>
+          {!checkTradeUrl(user.tradeOfferUrl) && <Grid item>
+            <Button
+              color='secondary'
+              variant='contained'
+              onClick={() => setUrlDialog(true)}
+            >
+              Cập nhật link Trade Offer
+            </Button>
+          </Grid>}
           <Grid item>
             <Box p={1} className={classes.box}>
-              <Typography>{user.accountBalance.toLocaleString('en-US')} VND</Typography>
+              <Typography className={classes.money}>{user.accountBalance.toLocaleString('en-US')} VND</Typography>
             </Box>
           </Grid>
           <Grid item>
-            <UserInfo user onClick={onProfileClick} />
+            <UserInfo user header onClick={onProfileClick} />
           </Grid>
         </Grid>
-        <UserDrawer open={drawer} onClose={() => setDrawer(false)} />
+        <UserDrawer open={drawer} onClose={() => setDrawer(false)} onOpen={() => setDrawer(true)} />
       </>
     )
   else return (
@@ -68,8 +86,12 @@ const User = ({ user }) => {
   )
 }
 
+const mapDispatchToProps = dispatch => ({
+  setUrlDialog: state => dispatch(setUrlDialog(state))
+})
+
 const mapStateToProps = createStructuredSelector({
   user: selectCurrentUser
 })
 
-export default connect(mapStateToProps)(User)
+export default connect(mapStateToProps, mapDispatchToProps)(User)

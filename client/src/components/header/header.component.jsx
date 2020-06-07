@@ -15,6 +15,15 @@ const useStyles = makeStyles(theme => ({
   },
   toolbar: {
     justifyContent: 'space-between'
+  },
+  logo: {
+    '&:hover': {
+      cursor: 'pointer'
+    },
+    [theme.breakpoints.down('md')]: {
+      height: '100%',
+      maxWidth: '50%'
+    }
   }
 }))
 
@@ -25,9 +34,7 @@ const Header = () => {
   return (
     <AppBar position='static' className={classes.root}>
       <Toolbar className={classes.toolbar}>
-        <IconButton onClick={() => history.push('/')}>
-          <Logo />
-        </IconButton>
+        <Logo className={classes.logo} onClick={() => history.push('/')} />
         <User />
       </Toolbar>
     </AppBar>

@@ -22,7 +22,7 @@ const styles = theme => ({
   },
 })
 
-class ItemsMasonry extends React.PureComponent {
+class ItemsMasonryClass extends React.PureComponent {
   static propsTypes = {
     items: PropTypes.array.isRequired,
     height: PropTypes.number.isRequired,
@@ -42,9 +42,10 @@ class ItemsMasonry extends React.PureComponent {
 
     this.state = {
       gutterSize: 10,
-      columnWidth: 100,
+      columnWidth: this.props.matches ? 80 : 100,
       overscanByPixels: 5,
-      items: this.props.items
+      items: this.props.items,
+      matches: this.props.matches
     }
 
     this._cellRenderer = this._cellRenderer.bind(this)
@@ -70,6 +71,7 @@ class ItemsMasonry extends React.PureComponent {
 
     this.setState((state, props) => ({
       items: props.items,
+      columnWidth: props.matches ? 80 : 100
     }))
 
     this._calculateColumnCount();
@@ -116,7 +118,7 @@ class ItemsMasonry extends React.PureComponent {
       this._cellPositioner = createMasonryCellPositioner({
         cellMeasurerCache: this._cache,
         columnCount: this._columnCount,
-        columnWidth,
+        columnWidth: columnWidth,
         spacer: gutterSize
       })
     }
@@ -179,7 +181,7 @@ class ItemsMasonry extends React.PureComponent {
 
     this._cellPositioner.reset({
       columnCount: this._columnCount,
-      columnWidth,
+      columnWidth: columnWidth,
       spacer: gutterSize
     })
   }
@@ -194,4 +196,4 @@ const mapStateToProps = createStructuredSelector({
   userStash: selectUserStash
 })
 
-export default compose(withStyles(styles), connect(mapStateToProps))(ItemsMasonry)
+export default compose(withStyles(styles), connect(mapStateToProps))(ItemsMasonryClass)
