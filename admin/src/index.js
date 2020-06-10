@@ -11,6 +11,8 @@ import { store } from './redux/store'
 
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
 import { indigo, teal } from '@material-ui/core/colors'
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
 
 const theme = createMuiTheme({
   palette: {
@@ -50,7 +52,9 @@ ReactDOM.render(
   <BrowserRouter>
     <Provider store={store}>
       <MuiThemeProvider theme={theme}>
-        <App />
+        <MuiPickersUtilsProvider utils={MomentUtils}>
+          <App />
+        </MuiPickersUtilsProvider>
       </MuiThemeProvider>
     </Provider>
   </BrowserRouter>

@@ -106,8 +106,8 @@ const ItemCard = ({ item, heroes, width, selectable, onClick }) => {
       <Grid container spacing={1} direction='column' alignItems='center'>
         <Grid item>
           <div className={classes.img} style={{ width: width && (width / 100 * 60), height: width && ((width / 100 * 60) * 171 / 256) }}>
-            {item.icon_url && <img
-              src={iconUrl + item.icon_url}
+            {(item.iconUrl || item.icon_url) && <img
+              src={iconUrl + (item.iconUrl ? item.iconUrl : item.icon_url)}
               alt='item_icon'
               style={{ width: '100%', height: '100%' }}
               className={clsx({ [classes.imgDisabled]: item.configs.isDisabled })}

@@ -16,7 +16,7 @@ export function* fetchUsersAsync() {
 
       yield respone.data.forEach(user => user.index = ++index)
 
-      yield put(fetchUsersSuccess(respone.data.sort((a, b) => b.index - a.index)))
+      yield put(fetchUsersSuccess(respone.data))
     }
     else yield put(fetchUsersFail(respone.statusText))
   } catch (err) {

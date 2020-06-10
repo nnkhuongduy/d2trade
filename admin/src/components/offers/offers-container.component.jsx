@@ -4,7 +4,7 @@ import { createStructuredSelector } from 'reselect'
 import moment from 'moment-timezone'
 import clsx from 'clsx'
 
-import { makeStyles } from '@material-ui/styles'
+import { makeStyles, useTheme } from '@material-ui/styles'
 import {
   Paper, CircularProgress, Avatar, Link
 } from '@material-ui/core'
@@ -44,8 +44,9 @@ const INITIAL_COLUMNS = [
     widthPerc: 15,
     label: 'Index',
     dataKey: 'index',
+    sortKey: 'index',
     sortable: true,
-    direction: 'desc',
+    direction: 'asc',
     activeSort: true
   },
   {
@@ -58,6 +59,7 @@ const INITIAL_COLUMNS = [
     widthPerc: 20,
     label: 'Ngày thực hiện',
     dataKey: 'date',
+    sortKey: 'date',
     sortable: true,
     direction: 'asc',
     activeSort: false
@@ -65,7 +67,8 @@ const INITIAL_COLUMNS = [
   {
     widthPerc: 20,
     label: 'Số dư người dùng',
-    dataKey: 'user_balance',
+    dataKey: 'userBalance',
+    sortKey: 'user_balance',
     sortable: true,
     direction: 'asc',
     activeSort: false
@@ -73,7 +76,8 @@ const INITIAL_COLUMNS = [
   {
     widthPerc: 20,
     label: 'Lợi nhuận',
-    dataKey: 'profit',
+    dataKey: 'displayProfit',
+    sortKey: 'profit',
     sortable: true,
     direction: 'asc',
     activeSort: false
@@ -86,8 +90,9 @@ const INITIAL_COLUMNS = [
   },
 ]
 
-const OffersContainer = ({ offers, fetchingOffers, users, fetchingUsers, fetchOffers, fetchUsers, setCurrentOffer }) => {
+const OffersContainer = ({ offers, fetchingOffers, users, fetchingUsers, fetchOffers, fetchUsers, setCurrentOffer, filter }) => {
   const classes = useStyles()
+  const theme = useTheme()
 
   const [columns, setColumns] = useState(INITIAL_COLUMNS)
   const [rows, setRows] = useState(null)
@@ -105,20 +110,43 @@ const OffersContainer = ({ offers, fetchingOffers, users, fetchingUsers, fetchOf
         ...offer,
         avatar: <Link href={`users/${offer.user.steamid}`} target='_blank' rel='noopener'><Avatar src={offer.user.avatar} /></Link>,
         date: moment(offer.date).tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY'),
-        user_balance: <span style={{
-          color: offer.status !== 'Accepted' && 'gray', textDecoration: offer.status !== 'Accepted' && 'line-through'
-        }}>- {offer.user_balance.toLocaleString()}</span>,
-        profit: <span style={{
-          color: offer.status === 'Accepted' ? 'green' : 'gray', textDecoration: offer.status !== 'Accepted' && 'line-through'
-        }}>+ {offer.profit.toLocaleString()}</span>,
-        status: <span className={clsx(classes.dot, {
+        userBalance: offer.status === 'Accepted' && <span>- {offer.user_balance.toLocaleString()}</span>,
+        displayProfit: offer.status === 'Accepted' && <span style={{ color: theme.palette.success.dark }}>+ {offer.profit.toLocaleString()}</span>,
+        status: offer.offer_id !== 'UNSET' ? <span className={clsx(classes.dot, {
           [classes.green]: offer.status === 'Accepted',
-          [classes.yellow]: offer.status === "Active" || offer.status === "CreatedNeedsConfirmation" || offer.status === "Created",
-          [classes.red]: offer.status !== 'Accepted' && offer.status !== "Active" && offer.status !== "CreatedNeedsConfirmation" && offer.status !== "Created"
-        })} />
+          [classes.yellow]: offer.status === "Active" || offer.status === "CreatedNeedsConfirmation",
+          [classes.red]: offer.status !== 'Accepted' && offer.status !== "Active" && offer.status !== "CreatedNeedsConfirmation"
+        })} /> : <span style={{ color: theme.palette.error.main }}>Error</span>
       })))
     }
   }, [offers, users])
+
+  useEffect(() => {
+    if (offers) {
+      setRows(offers
+        .filter(offer =>
+          offer.steam_id.includes(filter.searchQuery) &&
+          (filter.date.active ? (offer.date >= filter.date.from && offer.date <= filter.date.toPlus) : true) &&
+          (
+            (filter.status === 'All' && true) ||
+            (filter.status === 'Error' && offer.status !== 'Accepted' && offer.status !== 'Active' && offer.status !== 'Declined') ||
+            (offer.status === filter.status)
+          )
+        )
+        .map(offer => ({
+          ...offer,
+          avatar: <Link href={`users/${offer.user.steamid}`} target='_blank' rel='noopener'><Avatar src={offer.user.avatar} /></Link>,
+          date: moment(offer.date).tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY'),
+          userBalance: offer.status === 'Accepted' && <span>- {offer.user_balance.toLocaleString()}</span>,
+          displayProfit: offer.status === 'Accepted' && <span style={{ color: theme.palette.success.dark }}>+ {offer.profit.toLocaleString()}</span>,
+          status: offer.offer_id !== 'UNSET' ? <span className={clsx(classes.dot, {
+            [classes.green]: offer.status === 'Accepted',
+            [classes.yellow]: offer.status === "Active" || offer.status === "CreatedNeedsConfirmation",
+            [classes.red]: offer.status !== 'Accepted' && offer.status !== "Active" && offer.status !== "CreatedNeedsConfirmation"
+          })} /> : <span style={{ color: theme.palette.error.main }}>Error</span>
+        })))
+    }
+  }, [filter])
 
   const onSortClick = index => () => {
 
@@ -128,7 +156,7 @@ const OffersContainer = ({ offers, fetchingOffers, users, fetchingUsers, fetchOf
       direction: (index === i && (column.direction === 'desc' ? 'asc' : 'desc')) || undefined
     })))
 
-    setRows(rows.slice().sort(comparator(columns[index].dataKey, columns[index].direction === 'desc')))
+    setRows(rows.slice().sort(comparator(columns[index].sortKey, columns[index].direction === 'desc')))
 
     //eslint-disable-next-line
   }

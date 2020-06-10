@@ -8,7 +8,8 @@ import {
   fetchItemsSuccess, fetchItemsFail, fetchItemsStart,
   deleteItemsSuccess, deleteItemsFail,
   putItemSuccess, putItemFail,
-  fetchBotItemsSuccess, fetchBotItemsFail
+  fetchBotItemsSuccess, fetchBotItemsFail,
+  fetchBotItemsStart
 } from './item.actions'
 import { toggleBackdrop } from '../backdrop/backdrop.actions'
 import { enqSnackbar } from '../snackbar/snackbar.actions'
@@ -64,6 +65,7 @@ export function* postItemAsync({ item }) {
         }))
         yield put(postItemSuccess())
         yield put(fetchItemsStart())
+        yield put(fetchBotItemsStart())
       }
       else {
         yield put(enqSnackbar({
@@ -118,6 +120,7 @@ export function* deleteItemsAsync({ items }) {
         key: new Date().getTime()
       }))
       yield put(fetchItemsStart())
+      yield put(fetchBotItemsStart())
     }
     else {
       yield put(deleteItemsFail(respone.statusText))
@@ -151,6 +154,7 @@ export function* putItemAsync({ item }) {
         key: new Date().getTime()
       }))
       yield put(fetchItemsStart())
+      yield put(fetchBotItemsStart())
     }
     else {
       yield put(putItemFail(respone.statusText))

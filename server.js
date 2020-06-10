@@ -14,6 +14,7 @@ const sendOffer = require('./server/services/send-offer')
 const errorHandler = require('./server/services/error-handler')
 const SiteConfigs = require('./server/models/site-configs-model')
 const Heroes = require('./server/models/hero-model.js')
+const createReceipt = require('./server/services/create-receipt')
 
 app.get('/inventory/bot', (req, res) => {
   getInventory(CONFIGS.STEAM_INFO.STEAM_BOT_ID)
@@ -133,6 +134,14 @@ app.post("/tradeoffer", async (req, res) => {
       throw "Fail to create offer!"
     }
     console.log(`Created Steam Offer ID: ${dbOffer._id}`)
+
+    if (balance > 0) {
+      await createReceipt(-Math.abs(balance), steamId)
+        .then(receipt => console.log(`Receipt successfully created, ID: ${receipt._id}`))
+        .catch(err => {
+          throw 'Receipt fail to create!'
+        })
+    }
 
     // steamOffer = await sendOffer(steamOffer);
     // await updateDBOffer(dbOffer._id, { offer_id: steamOffer.id })

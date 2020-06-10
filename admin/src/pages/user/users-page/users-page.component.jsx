@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
+import moment from 'moment-timezone'
 
 import {
-  Grid, LinearProgress, Paper, Collapse
+  Grid, LinearProgress, Paper, Collapse, IconButton
 } from '@material-ui/core'
 import {
-  Search, Tune, FilterList, Refresh
+  Search, Tune, FilterList, Refresh, Add, Edit
 } from '@material-ui/icons'
 
 import comparator from '../../../helpers/sort-function'
@@ -16,6 +17,7 @@ import UserSetBalanceDialog from '../../../components/dialogs/user-set-balance/u
 import VirtualizedTable from './virtualized-table.component'
 import Toolbar from '../../../components/toolbar/toolbar.component'
 import ToolbarContent from './toolbar-content.component'
+import UserAvatar from '../../../components/user/user-avatar/user-avatar.component'
 
 import { fetchUsersStart } from '../../../redux/users/users.actions'
 
@@ -26,6 +28,7 @@ const INITIAL_COLUMNS = [
     widthPerc: 10,
     label: 'Index',
     dataKey: 'index',
+    sortKey: 'index',
     sortable: true,
     direction: 'desc',
     activeSort: true
@@ -33,7 +36,8 @@ const INITIAL_COLUMNS = [
   {
     widthPerc: 20,
     label: 'Tài khoản',
-    dataKey: 'personaname',
+    dataKey: 'usernameColumn',
+    sortKey: 'personaname',
     sortable: true,
     direction: 'asc',
     activeSort: false
@@ -41,7 +45,8 @@ const INITIAL_COLUMNS = [
   {
     widthPerc: 10,
     label: 'Số dư',
-    dataKey: 'accountBalance',
+    dataKey: 'balanceColumn',
+    sortKey: 'accountBalance',
     sortable: true,
     direction: 'asc',
     activeSort: false
@@ -49,15 +54,16 @@ const INITIAL_COLUMNS = [
   {
     widthPerc: 35,
     label: 'Đăng nhập gần nhất',
-    dataKey: 'lastLogin',
+    dataKey: 'loginColumn',
+    sortKey: 'lastLogin',
     sortable: true,
-    direction: 'asc',
+    direction: 'desc',
     activeSort: false
   },
   {
     widthPerc: 20,
     label: 'Thao tác',
-    dataKey: 'actions',
+    dataKey: 'actionsColumn',
     sortable: false
   },
   {
@@ -70,6 +76,7 @@ const INITIAL_COLUMNS = [
 
 const UsersPage = ({ fetchUsers, users, fetching }) => {
   const [columns, setColumns] = useState(INITIAL_COLUMNS)
+  const [usersState, setUsersState] = useState([])
   const [rows, setRows] = useState([])
   const [dialogUser, setDialogUser] = useState({})
   const [addDialog, setAddDialog] = useState(false)
@@ -99,13 +106,40 @@ const UsersPage = ({ fetchUsers, users, fetching }) => {
   }, [])
 
   useEffect(() => {
-    if (users) setRows(users)
+    if (users) {
+      setUsersState(users
+        .reverse()
+        .map(user => ({
+          ...user,
+          usernameColumn: <span><UserAvatar user={user} /> {user.personaname}</span>,
+          balanceColumn: user.accountBalance.toLocaleString('en-US'),
+          loginColumn: moment(user.lastLogin).tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY hh:mm:ss A'),
+          actionsColumn: <Grid container spacing={1} wrap='nowrap' alignItems='center'>
+            <Grid item>
+              <IconButton size='small' onClick={() => onAddClick(user)}>
+                <Add />
+              </IconButton>
+            </Grid>
+            <Grid item>
+              <IconButton size='small' onClick={() => onSetClick(user)}>
+                <Edit fontSize='small' style={{ padding: '2px' }} />
+              </IconButton>
+            </Grid>
+          </Grid>
+        })))
+    }
     //eslint-disable-next-line
   }, [users])
 
   useEffect(() => {
-    if (users)
-      setRows(users.filter(user => user.personaname.toLowerCase().includes(tools[0].value.toLowerCase())))
+    setRows(usersState)
+    //eslint-disable-next-line
+  }, [usersState])
+
+  useEffect(() => {
+    if (usersState)
+      setRows(usersState.filter(user => user.personaname.toLowerCase().includes(tools[0].value.toLowerCase())))
+    //eslint-disable-next-line
   }, [tools[0].value])
 
   const onSortClick = index => () => {
@@ -116,7 +150,7 @@ const UsersPage = ({ fetchUsers, users, fetching }) => {
       direction: (index === i && (column.direction === 'desc' ? 'asc' : 'desc')) || undefined
     })))
 
-    setRows(users.slice().sort(comparator(columns[index].dataKey, columns[index].direction === 'desc')))
+    setRows(usersState.slice().sort(comparator(columns[index].sortKey, columns[index].direction === 'desc')))
     //eslint-disable-next-line
   }
 

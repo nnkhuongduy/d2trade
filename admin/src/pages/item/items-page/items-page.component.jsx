@@ -15,7 +15,7 @@ import {
 import ItemNewDialog from '../../../components/dialogs/item/item-new.component'
 import Toolbar from '../toolbar.component'
 import ToolbarContent from '../toolbar-content.component'
-import ItemsMasonry from '../virtualized-items.component'
+import ItemsMasonry from './virtualized-items.component'
 import Filter from '../filter.component'
 import Confirmation from '../../../components/dialogs/confirmation/confirmation.component'
 import ItemInfoDialog from '../../../components/dialogs/item/item-info.component'

@@ -9,6 +9,7 @@ import heroReducer from './hero/hero.reducer'
 import backdropReducer from './backdrop/backdrop.reducer'
 import snackbarReducer from './snackbar/snackbar.reducer'
 import offersReducer from './offers/offers.reducer'
+import receiptsReducer from './receipts/receipts.reducer'
 
 const rootReducer = combineReducers({
   users: userReducer,
@@ -19,7 +20,8 @@ const rootReducer = combineReducers({
   hero: heroReducer,
   backdrop: backdropReducer,
   snackbar: snackbarReducer,
-  offers: offersReducer
+  offers: offersReducer,
+  receipts: receiptsReducer
 });
 
 export default rootReducer;

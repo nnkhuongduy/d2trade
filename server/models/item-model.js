@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const itemsSchema = new Schema({
   name: String,
-  icon_url: String,
+  iconUrl: String,
   hero: String,
   rarity: String,
   prices: {

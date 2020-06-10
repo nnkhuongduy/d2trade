@@ -7,6 +7,7 @@ const newItem = item => {
         if (!dataItem) {
           new Items({
             ...item,
+            iconUrl: item.icon_url ? item.icon_url : item.iconUrl,
             name: item.name.replace('Inscribed ', '')
           }).save((err) => {
             if (!err) resolve()

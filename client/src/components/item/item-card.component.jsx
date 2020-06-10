@@ -77,10 +77,9 @@ const ItemCard = ({ item, selectable, onClick, disabled, heroes }) => {
     <ItemTooltip
       title={item.assetId !== 'moneyItem' ?
         <>
-          <Typography>{item.name}</Typography>
-          <Grid container alignItems='center'>
+          <Grid container direction='column' alignItems='center' spacing={1}>
             <Grid item>
-              Hero:
+              <Typography>{item.name}</Typography>
             </Grid>
             {heroes && <Grid item>
               <img className={classes.hero} src={heroes.find(hero => hero.localized_name === item.hero).portrait_url} alt='hero_img' />

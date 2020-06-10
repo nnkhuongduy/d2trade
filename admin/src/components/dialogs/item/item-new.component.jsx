@@ -18,7 +18,7 @@ import { postItemStart, fetchItemSuccess } from '../../../redux/item/item.action
 import { selectItem, selectFetchingState } from '../../../redux/item/item.selectors'
 
 const INITIAL_ITEM = {
-  icon_url: "",
+  iconUrl: "",
   name: "Tên Item",
   nameColor: "D2D2D2",
   prices: {

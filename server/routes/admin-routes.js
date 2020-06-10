@@ -12,6 +12,8 @@ const getOffers = require('../services/get-offers')
 const getSiteConfigs = require('../services/get-site-configs')
 const putConfig = require('../services/put-config')
 const createReceipt = require('../services/create-receipt')
+const clearErrorOffers = require('../services/clear-error-offers')
+const getReceipts = require('../services/get-receipts')
 
 adminRouter.get("/users", (req, res) => {
   getUsers()
@@ -51,6 +53,18 @@ adminRouter.get('/configs', (req, res) => {
     .catch(err => errorHandler(err, res, 500))
 })
 
+adminRouter.get('/offers/clear', (req, res) => {
+  clearErrorOffers()
+    .then(() => res.sendStatus(200))
+    .catch(err => errorHandler(err, res, 500))
+})
+
+adminRouter.get('/receipts', (req, res) => {
+  getReceipts()
+    .then(receipts => res.json(receipts))
+    .catch(err => errorHandler(err, res, 500))
+})
+
 adminRouter.post("/user/balance/edit", async (req, res) => {
   const steamId = req.body.steamId
   let updateObj = {};
@@ -63,7 +77,7 @@ adminRouter.post("/user/balance/edit", async (req, res) => {
   try {
     await editUser(steamId, updateObj)
 
-    await createReceipt(req.body, steamId)
+    await createReceipt(req.body.value, steamId)
 
     res.sendStatus(200)
   } catch (err) {
