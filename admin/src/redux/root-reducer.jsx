@@ -10,6 +10,7 @@ import backdropReducer from './backdrop/backdrop.reducer'
 import snackbarReducer from './snackbar/snackbar.reducer'
 import offersReducer from './offers/offers.reducer'
 import receiptsReducer from './receipts/receipts.reducer'
+import adminReducer from './admin/admin.reducer'
 
 const rootReducer = combineReducers({
   users: userReducer,
@@ -21,7 +22,8 @@ const rootReducer = combineReducers({
   backdrop: backdropReducer,
   snackbar: snackbarReducer,
   offers: offersReducer,
-  receipts: receiptsReducer
+  receipts: receiptsReducer,
+  admin: adminReducer
 });
 
 export default rootReducer;

@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { hot } from 'react-hot-loader/root'
+import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
 
 import { makeStyles } from '@material-ui/styles'
 import { Toolbar } from '@material-ui/core'
@@ -10,6 +12,7 @@ import Header from './components/header/header.component'
 import Backdrop from './components/backdrop/backdrop.component'
 import Snackbar from './components/snackbar/snackbar.component'
 
+import PrivateRoute from './pages/private-route/private-route.component'
 import Dashboard from './pages/dashboard/dashboard.component'
 import UsersPage from './pages/user/users-page/users-page.component'
 import ItemsPage from './pages/item/items-page/items-page.component'
@@ -17,6 +20,12 @@ import BotPage from './pages/item/bot-page/bot-page.component'
 import OffersPage from './pages/offers-page/offers-page.component'
 import ConfigsPage from './pages/configs-page/configs-page.component'
 import UserPage from './pages/user/user-page/user-page.component'
+import RevenuePage from './pages/revenue/revenue-page.component'
+import LoginPage from './pages/log-in/log-in-page.component'
+
+import { backgroundLogInStart } from './redux/admin/admin.actions'
+
+import { selectAdmin } from './redux/admin/admin.selectors'
 
 import './App.scss';
 
@@ -30,31 +39,49 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const App = ({ backdrop }) => {
+const App = ({ logIn, admin }) => {
   const classes = useStyles()
   const [drawerOpen, setDrawerOpen] = useState(false)
 
+  useEffect(() => {
+    logIn();
+  }, [])
+
   return (
     <div className={classes.root}>
-      <Header onMenuClick={() => setDrawerOpen(!drawerOpen)} />
-      <CustomizedDrawer open={drawerOpen} />
-      <div className={classes.content}>
-        <Toolbar />
-        <Switch>
-          <Route exact path='/dashboard' component={Dashboard} />
-          <Route exact path='/users' component={UsersPage} />
-          <Route exact path='/users/:steamid' component={UserPage} />
-          <Route exact path='/items' component={ItemsPage} />
-          <Route exact path='/items/bot' component={BotPage} />
-          <Route exact path='/offers' component={OffersPage} />
-          <Route exact path='/configs' component={ConfigsPage} />
-          <Route path='*'><Redirect to='/dashboard' /></Route>
-        </Switch>
-      </div>
-      <Backdrop />
-      <Snackbar />
+      <Switch>
+        <Route exact path='/login' component={LoginPage} />
+        <Route path='*'>
+          <Header onMenuClick={() => setDrawerOpen(!drawerOpen)} />
+          <CustomizedDrawer open={drawerOpen} />
+          <div className={classes.content}>
+            <Toolbar />
+            <Switch>
+              <PrivateRoute exact path='/dashboard' component={Dashboard} />
+              <PrivateRoute exact path='/users' component={UsersPage} />
+              <PrivateRoute exact path='/users/:steamid' component={UserPage} />
+              <PrivateRoute exact path='/items' component={ItemsPage} />
+              <PrivateRoute exact path='/items/bot' component={BotPage} />
+              <PrivateRoute exact path='/offers' component={OffersPage} />
+              <PrivateRoute exact path='/revenue' component={RevenuePage} />
+              <PrivateRoute exact path='/configs' component={ConfigsPage} />
+              <Route path='*'><Redirect to='/dashboard' /></Route>
+            </Switch>
+          </div>
+          <Backdrop />
+          <Snackbar />
+        </Route>
+      </Switch>
     </div>
   );
 }
 
-export default process.env.NODE_ENV === 'development' ? hot(App) : App;
+const mapDispatchToProps = dispatch => ({
+  logIn: () => dispatch(backgroundLogInStart())
+})
+
+const mapStateToProps = createStructuredSelector({
+  admin: selectAdmin
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(process.env.NODE_ENV === 'development' ? hot(App) : App);

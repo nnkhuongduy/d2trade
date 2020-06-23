@@ -3,9 +3,8 @@ const bodyParser = require('body-parser');
 const cors = require("cors");
 const session = require('express-session')
 const cookieParser = require("cookie-parser");
-const passport = require('passport');
+const passport = require('../configs/passport-setup');
 
-require('./passport-setup')
 const authRoutes = require('../routes/auth-routes')
 const adminRoutes = require('../routes/admin-routes')
 

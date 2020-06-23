@@ -80,16 +80,9 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteIte
   useEffect(() => {
     if (!heroes) fetchHeroes()
     if (!items) fetchItems()
-    if (items) setCurrentItems(items)
+    // if (items) setCurrentItems(items)
     //eslint-disable-next-line
   }, [])
-
-  useEffect(() => {
-    if (items) {
-      setCurrentItems(items)
-    }
-    //eslint-disable-next-line
-  }, [items])
 
   useEffect(() => {
     if (items)
@@ -100,18 +93,21 @@ const ItemsPage = ({ heroes, fetchHeroes, items, fetching, fetchItems, deleteIte
   useEffect(() => {
     const filter = tools[2].value
 
-    if (items && filter)
-      setCurrentItems(items.filter(item => {
-        return ((filter.hero ? filter.hero === item.hero : true) &&
-          (filter.rarity ? filter.rarity === item.rarity : true) &&
-          (!filter.configs.any ?
-            (filter.configs.isNonMarket === item.configs.isNonMarket &&
-              filter.configs.isDisabled === item.configs.isDisabled)
-            : true) &&
-          (filter.price.min ? item.prices[filter.price.type] >= filter.price.min : true) &&
-          (filter.price.max ? item.prices[filter.price.type] <= filter.price.max : true))
-      }))
-  }, [tools])
+    if (items)
+      if (filter)
+        setCurrentItems(items.filter(item => {
+          return ((filter.hero ? filter.hero === item.hero : true) &&
+            (filter.rarity ? filter.rarity === item.rarity : true) &&
+            (!filter.configs.any ?
+              (filter.configs.isNonMarket === item.configs.isNonMarket &&
+                filter.configs.isDisabled === item.configs.isDisabled)
+              : true) &&
+            (filter.price.min ? item.prices[filter.price.type] >= filter.price.min : true) &&
+            (filter.price.max ? item.prices[filter.price.type] <= filter.price.max : true))
+        }))
+      else setCurrentItems(items)
+    //eslint-disable-next-line
+  }, [tools, items, currentItems])
 
   useEffect(() => {
     if (!deleteState && !_.isEmpty(deleteItems))

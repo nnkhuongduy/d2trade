@@ -7,6 +7,7 @@ import { siteConfigsRootSaga } from './site-configs/site-configs.sagas'
 import { heroRootSaga } from './hero/hero.sagas'
 import { offersRootSaga } from './offers/offers.sagas'
 import { receiptsRootSaga } from './receipts/receipts.sagas'
+import { adminRootSagas } from './admin/admin.sagas'
 
 export default function* rootSaga() {
   yield all([
@@ -16,6 +17,7 @@ export default function* rootSaga() {
     call(siteConfigsRootSaga),
     call(heroRootSaga),
     call(offersRootSaga),
-    call(receiptsRootSaga)
+    call(receiptsRootSaga),
+    call(adminRootSagas)
   ])
 }

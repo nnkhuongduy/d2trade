@@ -4,14 +4,16 @@ import { createStructuredSelector } from 'reselect'
 
 import { makeStyles } from '@material-ui/styles'
 import {
-  Paper, Grid, Collapse, TextField, LinearProgress, IconButton
+  Paper, Grid, Collapse, TextField, LinearProgress, IconButton, Button
 } from '@material-ui/core'
 import { Edit, Done, Refresh } from '@material-ui/icons'
 
 import Confirmation from '../../components/dialogs/confirmation/confirmation.component'
 import Toolbar from '../../components/toolbar/toolbar.component'
+import PasswordDialog from './password-dialog.component'
 
 import { fetchSiteConfigsStart, putSiteConfigStart } from '../../redux/site-configs/site-configs.actions'
+import { updatePasswordStart } from '../../redux/admin/admin.actions'
 
 import { selectSiteConfigs, selectHandling } from '../../redux/site-configs/site-configs.selectors'
 
@@ -29,10 +31,17 @@ const INITIAL_ROWS = [
     value: 0,
     type: 'number',
     edit: false
+  },
+  {
+    label: 'Tên tài khoản Adimn',
+    data: 'adminName',
+    value: '',
+    type: 'text',
+    edit: false
   }
 ]
 
-const ConfigsPage = ({ configs, fetchConfigs, handling, putConfig }) => {
+const ConfigsPage = ({ configs, fetchConfigs, handling, putConfig, updatePassword }) => {
   const classes = useStyles()
 
   const [rows, setRows] = useState(INITIAL_ROWS)
@@ -45,6 +54,7 @@ const ConfigsPage = ({ configs, fetchConfigs, handling, putConfig }) => {
       func: () => { fetchConfigs() }
     }
   ])
+  const [dialog, setDialog] = useState(false)
 
   useEffect(() => {
     if (!configs)
@@ -102,40 +112,45 @@ const ConfigsPage = ({ configs, fetchConfigs, handling, putConfig }) => {
             <Grid container justify='center'>
               <Grid item xs={12} md={8}>
                 <Paper className={classes.paper}>
-                  <Grid container>
+                  <Grid container direction='column' spacing={1}>
                     {rows.map((row, index) => (
-                      <Fragment key={index}>
-                        <Grid item xs={4}>
-                          {row.label}
+                      <Grid item key={index}>
+                        <Grid container alignItems='center'>
+                          <Grid item xs={4}>
+                            {row.label}
+                          </Grid>
+                          <Grid item xs={1}>
+                            :
                         </Grid>
-                        <Grid item xs={1}>
-                          :
+                          <Grid item xs={6}>
+                            {row.edit ?
+                              <TextField
+                                margin='none'
+                                type={row.type}
+                                size='small'
+                                value={row.value}
+                                onChange={e => onChange(index, e.target.value)}
+                              />
+                              :
+                              row.value
+                            }
+                          </Grid>
+                          <Grid item xs={1}>
+                            {row.edit ?
+                              <IconButton size='small' onClick={() => onSave(index)}>
+                                <Done fontSize="small" />
+                              </IconButton>
+                              :
+                              <IconButton size='small' onClick={() => onEdit(index)}>
+                                <Edit fontSize="small" />
+                              </IconButton>}
+                          </Grid>
+                        </Grid>
                       </Grid>
-                        <Grid item xs={6}>
-                          {row.edit ?
-                            <TextField
-                              margin='none'
-                              type={row.type}
-                              size='small'
-                              value={row.value}
-                              onChange={e => onChange(index, e.target.value)}
-                            />
-                            :
-                            row.value
-                          }
-                        </Grid>
-                        <Grid item xs={1}>
-                          {row.edit ?
-                            <IconButton size='small' onClick={() => onSave(index)}>
-                              <Done fontSize="small" />
-                            </IconButton>
-                            :
-                            <IconButton size='small' onClick={() => onEdit(index)}>
-                              <Edit fontSize="small" />
-                            </IconButton>}
-                        </Grid>
-                      </Fragment>
                     ))}
+                    <Grid item>
+                      <Button variant='contained' color='secondary' onClick={() => setDialog(true)}>Đổi mật khẩu ADMIN</Button>
+                    </Grid>
                   </Grid>
                 </Paper>
               </Grid>
@@ -147,13 +162,19 @@ const ConfigsPage = ({ configs, fetchConfigs, handling, putConfig }) => {
         onClose={() => setConfirm(false)}
         onConfirm={onConfirm}
       />
+      <PasswordDialog
+        open={dialog}
+        onClose={() => setDialog(false)}
+        onConfirm={password => updatePassword(password)}
+      />
     </>
   )
 }
 
 const mapDispatchToProps = dispatch => ({
   fetchConfigs: () => dispatch(fetchSiteConfigsStart()),
-  putConfig: config => dispatch(putSiteConfigStart(config))
+  putConfig: config => dispatch(putSiteConfigStart(config)),
+  updatePassword: password => dispatch(updatePasswordStart(password))
 })
 
 const mapStateToProps = createStructuredSelector({

@@ -82,7 +82,7 @@ const UserProfile = ({ user }) => {
             <Typography>Lịch sử biến động số dư</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <ReceiptsContainer filter={{ steamId: user.steamid }} />
+            <ReceiptsContainer filter={{ query: { steamId: user.steamid } }} />
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </Grid>

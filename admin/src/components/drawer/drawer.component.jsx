@@ -12,7 +12,8 @@ import {
   Build as BuildIcon,
   LocalOffer as LocalOfferIcon,
   Style as StyleIcon,
-  AccountBalance
+  AccountBalance,
+  AttachMoney
 } from '@material-ui/icons'
 
 const drawerWidth = 240;
@@ -53,11 +54,12 @@ const CustomizedDrawer = ({ open }) => {
   const classes = useStyles()
   const location = useLocation();
   const [items, setItems] = useState([
-    { label: "Users", Icon: PersonIcon, selected: false, link: '/users' },
+    { label: "Người dùng", Icon: PersonIcon, selected: false, link: '/users' },
     { label: "Items", Icon: StyleIcon, selected: false, link: '/items' },
-    { label: "Bot's Inventory", Icon: AccountBalance, selected: false, link: '/items/bot' },
+    { label: "Kho đồ", Icon: AccountBalance, selected: false, link: '/items/bot' },
     { label: "Offers", Icon: LocalOfferIcon, selected: false, link: '/offers' },
-    { label: "Configs", Icon: BuildIcon, selected: false, link: '/configs' },
+    { label: "Doanh thu", Icon: AttachMoney, selected: false, link: '/revenue' },
+    { label: "Thiết lập", Icon: BuildIcon, selected: false, link: '/configs' },
   ])
 
   useEffect(() => {

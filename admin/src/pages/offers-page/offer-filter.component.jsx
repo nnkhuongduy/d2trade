@@ -24,8 +24,9 @@ const OfferFilter = ({ filter, onChange }) => {
       <Grid item>
         <TextField
           id='search-query'
-          label='STEAM ID'
+          label='Steam ID'
           variant='outlined'
+          size='small'
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -46,6 +47,7 @@ const OfferFilter = ({ filter, onChange }) => {
           label="Từ"
           format="DD/MM/yyyy"
           value={filter.date.from}
+          size='small'
           InputAdornmentProps={{ position: "start" }}
           onChange={date => onChange({ ...filter, date: { ...filter.date, from: moment(date).format('YYYY-MM-DD[T00:00:00.000Z]'), active: true } })}
         />
@@ -61,6 +63,7 @@ const OfferFilter = ({ filter, onChange }) => {
           label="Đến"
           format="DD/MM/yyyy"
           value={filter.date.to}
+          size='small'
           InputAdornmentProps={{ position: "start" }}
           onChange={date => onChange({
             ...filter, date: {

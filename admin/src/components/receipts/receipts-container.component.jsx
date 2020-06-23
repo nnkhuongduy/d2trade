@@ -6,7 +6,7 @@ import clsx from 'clsx'
 
 import { makeStyles, useTheme } from '@material-ui/styles'
 import {
-  Paper, CircularProgress, Avatar, Link
+  Paper, CircularProgress, Avatar, Link, Grid
 } from '@material-ui/core'
 
 import comparator from '../../helpers/sort-function'
@@ -55,7 +55,7 @@ const INITIAL_COLUMNS = [
   },
 ]
 
-const ReceiptsContainer = ({ receipts, fetchingReceipts, users, fetchingUsers, fetchReceipts, fetchUsers, filter }) => {
+const ReceiptsContainer = ({ receipts, users, fetchReceipts, fetchUsers, filter, full }) => {
   const theme = useTheme()
 
   const [columns, setColumns] = useState(INITIAL_COLUMNS)
@@ -74,7 +74,17 @@ const ReceiptsContainer = ({ receipts, fetchingReceipts, users, fetchingUsers, f
       setReceiptsState(receipts.map((receipt, index) => ({
         ...receipt,
         index: index,
-        avatar: <Link href={`users/${receipt.user.steamid}`} target='_blank' rel='noopener'><Avatar src={receipt.user.avatar} /></Link>,
+        avatar:
+          <Link href={`users/${receipt.user.steamid}`} target='_blank' rel='noopener'>
+            <Grid container spacing={1} alignItems='center'>
+              <Grid item>
+                <Avatar src={receipt.user.avatar} />
+              </Grid>
+              {full && <Grid item>{receipt.user.personaname}</Grid>}
+            </Grid>
+
+
+          </Link>,
         date: moment(receipt.createdAt).tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY'),
         total: (receipt.total >= 0 ? '+ ' : '- ') + Math.abs(receipt.total).toLocaleString('en-US'),
       })))
@@ -83,7 +93,16 @@ const ReceiptsContainer = ({ receipts, fetchingReceipts, users, fetchingUsers, f
   }, [receipts, users])
 
   useEffect(() => {
-    setRows(filter ? receiptsState.filter(receipt => receipt.steamId === filter.steamId) : [...receiptsState])
+    if (filter) {
+      const name = Boolean(filter.query.accountName);
+      const id = Boolean(filter.query.steamId);
+
+      if (name || id) {
+        if (name) setRows(receiptsState.filter(receipt => receipt.user.personaname.toLowerCase().includes(filter.query.accountName.toLowerCase())))
+        if (id) setRows(receiptsState.filter(receipt => receipt.steamId.includes(filter.query.steamId)))
+      } else setRows(receiptsState)
+    }
+    else setRows(receiptsState)
     //eslint-disable-next-line
   }, [receiptsState, filter])
 

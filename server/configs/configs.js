@@ -23,7 +23,8 @@ const CONFIGS = {
   PORT,
   MONGODB,
   STEAM_BOT,
-  STEAM_INFO
+  STEAM_INFO,
+  SALT_ROUNDS: 10
 }
 
 module.exports = CONFIGS;

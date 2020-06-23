@@ -8,14 +8,9 @@ import {
 
 const useStyles = makeStyles(theme => ({
   cancel: {
-    color: 'white',
-    backgroundColor: theme.palette.error.main,
+    color: 'red',
     paddingLeft: theme.spacing(3),
     paddingRight: theme.spacing(3),
-    '&:hover': {
-      color: 'white',
-      backgroundColor: theme.palette.error.dark,
-    }
   }
 }))
 

@@ -1,5 +1,5 @@
 const authRouter = require('express').Router();
-const passport = require('passport');
+const passport = require('../configs/passport-setup');
 const editUser = require('../services/edit-user')
 const moment = require('moment')
 const CLIENT_HOMEPAGE_URL = 'http://localhost:3000';

@@ -24,7 +24,6 @@ const BotPage = ({
   botItems, fetchBotItems, items, fetchItems, itemsFetching, botFetching
 }) => {
 
-  const [itemsFiltered, setItemsFiltered] = useState(null)
   const [currentItems, setCurrentItems] = useState([])
   const [addDialog, setAddDialog] = useState({
     active: false,
@@ -65,37 +64,35 @@ const BotPage = ({
     if (!items) fetchItems()
   }, [])
 
+  // useEffect(() => {
+  //   if (items && botItems) {
+  //     setCurrentItems(botItems)
+  //   }
+  // }, [items, botItems])
+
   useEffect(() => {
-    if (items && botItems) {
-      setCurrentItems(botItems)
-    }
-  }, [items, botItems])
+    if (botItems)
+      setCurrentItems(botItems.filter(item => item.name.toLowerCase().includes(tools[0].value.toLowerCase())))
+    //eslint-disable-next-line
+  }, [tools[0].value])
 
-  // useEffect(() => {
-  //   setCurrentItems(itemsFiltered)
-  // }, [itemsFiltered])
+  useEffect(() => {
+    const filter = tools[2].value
 
-  // useEffect(() => {
-  //   if (itemsFiltered)
-  //     setCurrentItems(itemsFiltered.filter(item => item.name.toLowerCase().includes(tools[0].value.toLowerCase())))
-  //   //eslint-disable-next-line
-  // }, [tools[0].value])
-
-  // useEffect(() => {
-  //   const filter = tools[2].value
-
-  //   if (itemsFiltered && filter)
-  //     setCurrentItems(itemsFiltered.filter(item => {
-  //       return ((filter.hero ? filter.hero === item.hero : true) &&
-  //         (filter.rarity ? filter.rarity === item.rarity : true) &&
-  //         (!filter.configs.any ?
-  //           (filter.configs.isNonMarket === item.configs.isNonMarket &&
-  //             filter.configs.isDisabled === item.configs.isDisabled)
-  //           : true) &&
-  //         (filter.price.min ? item.prices[filter.price.type] >= filter.price.min : true) &&
-  //         (filter.price.max ? item.prices[filter.price.type] <= filter.price.max : true))
-  //     }))
-  // }, [tools])
+    if (items && botItems)
+      if (filter)
+        setCurrentItems(botItems.filter(item => {
+          return ((filter.hero ? filter.hero === item.hero : true) &&
+            (filter.rarity ? filter.rarity === item.rarity : true) &&
+            (!filter.configs.any ?
+              (filter.configs.isNonMarket === item.configs.isNonMarket &&
+                filter.configs.isDisabled === item.configs.isDisabled)
+              : true) &&
+            (filter.price.min ? item.prices[filter.price.type] >= filter.price.min : true) &&
+            (filter.price.max ? item.prices[filter.price.type] <= filter.price.max : true))
+        }))
+      else setCurrentItems(botItems)
+  }, [tools, items, botItems])
 
   const onItemClick = item => {
     if (item.available) setInfoDialog({
