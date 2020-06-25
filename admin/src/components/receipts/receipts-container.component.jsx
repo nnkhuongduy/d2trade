@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import moment from 'moment-timezone'
-import clsx from 'clsx'
 
-import { makeStyles, useTheme } from '@material-ui/styles'
+import { useTheme } from '@material-ui/styles'
 import {
-  Paper, CircularProgress, Avatar, Link, Grid
+  Paper, Avatar, Link, Grid
 } from '@material-ui/core'
 
 import comparator from '../../helpers/sort-function'

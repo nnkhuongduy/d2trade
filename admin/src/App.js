@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 import { hot } from 'react-hot-loader/root'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
@@ -41,11 +41,18 @@ const useStyles = makeStyles(theme => ({
 
 const App = ({ logIn, admin }) => {
   const classes = useStyles()
+  const history = useHistory()
   const [drawerOpen, setDrawerOpen] = useState(false)
 
   useEffect(() => {
     logIn();
+    //eslint-disable-next-line
   }, [])
+
+  useEffect(() => {
+    if (!admin) history.push('/')
+    //eslint-disable-next-line
+  }, [admin])
 
   return (
     <div className={classes.root}>

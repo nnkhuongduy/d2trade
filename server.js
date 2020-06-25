@@ -15,6 +15,7 @@ const errorHandler = require('./server/services/error-handler')
 const SiteConfigs = require('./server/models/site-configs-model')
 const Heroes = require('./server/models/hero-model.js')
 const createReceipt = require('./server/services/create-receipt')
+const bcrypt = require('bcrypt')
 
 app.get('/inventory/bot', (req, res) => {
   getInventory(CONFIGS.STEAM_INFO.STEAM_BOT_ID)
@@ -78,12 +79,6 @@ app.get('/users/:steamid/offers', (req, res) => {
   getUserOffers(steamId)
     .then(offers => res.json(offers))
     .catch(err => errorHandler(err, res, 500))
-})
-
-app.get('/test', (req, res) => {
-  Heroes.find({}, '-_id localized_name portrait_url', (err, heroes) => {
-    res.json(heroes)
-  })
 })
 
 app.post('/edituser', (req, res) => {

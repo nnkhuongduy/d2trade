@@ -21,7 +21,14 @@ passport.deserializeUser(async (id, done) => {
 
     if (user) done(null, user)
     else done(new Error("Failed to deserialize an user"))
-  } else done(null, id);
+  } else {
+    const admin = await SiteConfigs.findOne({ name: 'admin' })
+
+    admin.value.lastLogin = new Date()
+    admin.markModified('value')
+    await admin.save()
+    done(null, id)
+  }
 });
 
 passport.use('steam', new SteamStrategy({

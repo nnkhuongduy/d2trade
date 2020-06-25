@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 
 import { withStyles } from '@material-ui/styles'
 import {
-  TableCell, TableSortLabel, Avatar
+  TableCell, TableSortLabel
 } from '@material-ui/core'
 
 import { AutoSizer, Column, Table } from 'react-virtualized'

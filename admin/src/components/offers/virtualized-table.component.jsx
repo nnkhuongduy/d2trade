@@ -1,12 +1,10 @@
 import React, { PureComponent } from 'react'
 import clsx from 'clsx'
 import PropTypes from 'prop-types'
-import moment from 'moment-timezone'
-import { Link } from 'react-router-dom'
 
 import { withStyles } from '@material-ui/styles'
 import {
-  TableCell, TableSortLabel, Avatar
+  TableCell, TableSortLabel
 } from '@material-ui/core'
 
 import { AutoSizer, Column, Table } from 'react-virtualized'

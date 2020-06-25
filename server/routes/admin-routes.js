@@ -16,6 +16,7 @@ const createReceipt = require('../services/create-receipt')
 const clearErrorOffers = require('../services/clear-error-offers')
 const getReceipts = require('../services/get-receipts')
 const adminNewPassword = require('../services/admin-new-password')
+const adminUpdate = require('../services/admin-update')
 const adminAuthorize = require('../services/admin-authorize')
 
 const authCheck = (req, res, next) => {
@@ -78,6 +79,11 @@ adminRouter.get('/login', authCheck, (req, res) => {
   res.json(req.user)
 })
 
+adminRouter.get('/logout', (req, res) => {
+  req.logOut()
+  res.sendStatus(200)
+})
+
 adminRouter.post("/user/balance/edit", authCheck, async (req, res) => {
   const steamId = req.body.steamId
   let updateObj = {};
@@ -129,6 +135,14 @@ adminRouter.put('/configs', authCheck, (req, res) => {
   const config = req.body
 
   putConfig(config)
+    .then(() => res.sendStatus(200))
+    .catch(err => errorHandler(err, res, 500))
+})
+
+adminRouter.put('/info', authCheck, (req, res) => {
+  const info = req.body
+
+  adminUpdate(info)
     .then(() => res.sendStatus(200))
     .catch(err => errorHandler(err, res, 500))
 })

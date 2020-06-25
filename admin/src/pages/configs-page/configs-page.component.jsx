@@ -1,16 +1,17 @@
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
 import { makeStyles } from '@material-ui/styles'
 import {
-  Paper, Grid, Collapse, TextField, LinearProgress, IconButton, Button
+  Paper, Grid, Collapse, TextField, LinearProgress, IconButton, Button, Typography
 } from '@material-ui/core'
 import { Edit, Done, Refresh } from '@material-ui/icons'
 
 import Confirmation from '../../components/dialogs/confirmation/confirmation.component'
 import Toolbar from '../../components/toolbar/toolbar.component'
 import PasswordDialog from './password-dialog.component'
+import AdminInfo from './admin-info.component'
 
 import { fetchSiteConfigsStart, putSiteConfigStart } from '../../redux/site-configs/site-configs.actions'
 import { updatePasswordStart } from '../../redux/admin/admin.actions'
@@ -26,20 +27,47 @@ const useStyles = makeStyles(theme => ({
 
 const INITIAL_ROWS = [
   {
-    label: 'Rate chuyển đơn vị tự động',
+    label: "Rate chuyển đơn vị tự động",
     data: 'currencyRate',
     value: 0,
     type: 'number',
     edit: false
   },
-  {
-    label: 'Tên tài khoản Adimn',
-    data: 'adminName',
-    value: '',
-    type: 'text',
-    edit: false
-  }
 ]
+
+const Config = ({ row, index, onSave, onEdit, onChange }) => (
+  <Grid container alignItems='center'>
+    <Grid item xs={4}>
+      <Typography>{row.label}</Typography>
+    </Grid>
+    <Grid item xs={1}>
+      <Typography>:</Typography>
+    </Grid>
+    <Grid item xs={6}>
+      {row.edit ?
+        <TextField
+          margin='none'
+          type={row.type}
+          size='small'
+          value={row.value}
+          onChange={e => onChange(index, e.target.value)}
+        />
+        :
+        <Typography>{row.value}</Typography>
+      }
+    </Grid>
+    <Grid item xs={1}>
+      {row.edit ?
+        <IconButton size='small' onClick={() => onSave(index)}>
+          <Done fontSize="small" />
+        </IconButton>
+        :
+        <IconButton size='small' onClick={() => onEdit(index)}>
+          <Edit fontSize="small" />
+        </IconButton>}
+    </Grid>
+  </Grid>
+)
 
 const ConfigsPage = ({ configs, fetchConfigs, handling, putConfig, updatePassword }) => {
   const classes = useStyles()
@@ -59,11 +87,13 @@ const ConfigsPage = ({ configs, fetchConfigs, handling, putConfig, updatePasswor
   useEffect(() => {
     if (!configs)
       fetchConfigs()
+    //eslint-disable-next-line
   }, [])
 
   useEffect(() => {
     if (configs)
       setRows(rows.map((row, index) => ({ ...row, value: configs[index].value })))
+    //eslint-disable-next-line
   }, [configs])
 
   const onChange = (index, value) => {
@@ -112,42 +142,15 @@ const ConfigsPage = ({ configs, fetchConfigs, handling, putConfig, updatePasswor
             <Grid container justify='center'>
               <Grid item xs={12} md={8}>
                 <Paper className={classes.paper}>
-                  <Grid container direction='column' spacing={1}>
+                  <Grid container direction='column' wrap='nowrap' spacing={2}>
                     {rows.map((row, index) => (
                       <Grid item key={index}>
-                        <Grid container alignItems='center'>
-                          <Grid item xs={4}>
-                            {row.label}
-                          </Grid>
-                          <Grid item xs={1}>
-                            :
-                        </Grid>
-                          <Grid item xs={6}>
-                            {row.edit ?
-                              <TextField
-                                margin='none'
-                                type={row.type}
-                                size='small'
-                                value={row.value}
-                                onChange={e => onChange(index, e.target.value)}
-                              />
-                              :
-                              row.value
-                            }
-                          </Grid>
-                          <Grid item xs={1}>
-                            {row.edit ?
-                              <IconButton size='small' onClick={() => onSave(index)}>
-                                <Done fontSize="small" />
-                              </IconButton>
-                              :
-                              <IconButton size='small' onClick={() => onEdit(index)}>
-                                <Edit fontSize="small" />
-                              </IconButton>}
-                          </Grid>
-                        </Grid>
+                        <Config row={row} index={index} onEdit={onEdit} onSave={onSave} onChange={onChange} />
                       </Grid>
                     ))}
+                    <Grid item>
+                      <AdminInfo configs={configs} />
+                    </Grid>
                     <Grid item>
                       <Button variant='contained' color='secondary' onClick={() => setDialog(true)}>Đổi mật khẩu ADMIN</Button>
                     </Grid>

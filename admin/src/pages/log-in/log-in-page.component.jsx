@@ -49,6 +49,7 @@ const LogInPage = ({ logIn, loggingIn, admin }) => {
   useEffect(() => {
     if (admin)
       history.push('/')
+    //eslint-disable-next-line
   }, [admin])
 
   const logInHandle = e => {
@@ -103,11 +104,10 @@ const LogInPage = ({ logIn, loggingIn, admin }) => {
             <Grid item>
               <Button
                 variant='contained'
-                disabled={!Boolean(password.length)}
+                disabled={!Boolean(password.length) || loggingIn}
                 color='primary'
                 onClick={logInHandle}
                 type='submit'
-                disabled={loggingIn}
               >
                 Đăng Nhập
                 </Button>
