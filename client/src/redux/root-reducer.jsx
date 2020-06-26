@@ -10,6 +10,7 @@ import offerReducer from './offer/offer.reducer';
 import backdropReducer from './backdrop/backdrop.reducer';
 import snackbarReducer from './snackbar/snackbar.reducer';
 import siteReducer from './site/site.reducer';
+import dialogReducer from './dialog/dialog.reducer'
 
 const persistConfig = {
   key: 'root',
@@ -25,7 +26,8 @@ const rootReducer = combineReducers({
   offer: offerReducer,
   backdrop: backdropReducer,
   snackbar: snackbarReducer,
-  site: siteReducer
+  site: siteReducer,
+  dialog: dialogReducer
 });
 
 export default persistReducer(persistConfig, rootReducer);

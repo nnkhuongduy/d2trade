@@ -12,6 +12,7 @@ import Header from './components/header/header.component'
 import Footer from './components/footer/footer.component'
 import TradeUrlDialog from './components/trade-url/trade-url-dialog.component'
 import Snackbar from './components/snackbar/snackbar.component'
+import ConfirmationDialog from './components/dialog/confirmation.component'
 
 import HomePage from './pages/home/home-page.component'
 import UserPage from './pages/user/user-page.component'
@@ -81,6 +82,7 @@ const App = ({ logIn, user, backdrop, setBackdrop, botFetching, userFetching }) 
         <CircularProgress color="inherit" />
       </Backdrop>
       <Snackbar />
+      <ConfirmationDialog />
     </>
   )
 }

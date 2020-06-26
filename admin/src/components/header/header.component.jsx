@@ -9,7 +9,6 @@ import {
 import {
   Menu as MenuIcon,
   Dashboard as DashboardIcon,
-  Notifications as NotificationsIcon,
   Person as PersonIcon
 } from '@material-ui/icons'
 
@@ -69,9 +68,6 @@ const Header = ({ onMenuClick, logOut }) => {
                 <DashboardIcon />
               </IconButton>
             </Link>
-            <IconButton aria-label="notifications">
-              <NotificationsIcon />
-            </IconButton>
             <IconButton aria-label="person" onClick={onPersonClick}>
               <PersonIcon />
             </IconButton>

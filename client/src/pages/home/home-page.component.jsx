@@ -14,6 +14,7 @@ import Stash from '../../components/stash/stash.component'
 import InventoryContainer from '../../components/inventory/inventory-container.component'
 
 import { postOfferStart } from '../../redux/offer/offer.actions'
+import { toggleConfirmation } from '../../redux/dialog/dialog.actions'
 
 import { selectTradeable } from '../../redux/stash/stash.selectors'
 import { selectCurrentUser } from '../../redux/user/user.selectors'
@@ -44,7 +45,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const HomePage = ({ tradeable, user, postOffer }) => {
+const HomePage = ({ tradeable, user, postOffer, toggleConfirmation }) => {
   const classes = useStyles()
   const [tab, setTab] = useState(1)
   const theme = useTheme()
@@ -61,7 +62,7 @@ const HomePage = ({ tradeable, user, postOffer }) => {
                 variant='contained'
                 className={classes.button}
                 disabled={!tradeable || (user && !checkTradeUrl(user.tradeOfferUrl))}
-                onClick={() => postOffer()}
+                onClick={() => toggleConfirmation('Bạn có chắc chắn muốn thực hiện phiên trade này?', () => postOffer())}
               >
                 TRADE
             </Button>
@@ -180,7 +181,8 @@ const HomePage = ({ tradeable, user, postOffer }) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  postOffer: () => dispatch(postOfferStart())
+  postOffer: () => dispatch(postOfferStart()),
+  toggleConfirmation: (text, func) => dispatch(toggleConfirmation(text, func))
 })
 
 const mapStateToProps = createStructuredSelector({
